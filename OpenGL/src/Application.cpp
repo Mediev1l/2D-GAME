@@ -134,7 +134,7 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
-	glfwSwapInterval(1);
+	glfwSwapInterval(2);
 
 
 
@@ -202,12 +202,12 @@ int main(void)
 	ASSERT(location != -1);
 
 
-		float time = glfwGetTime();
+		//float time = glfwGetTime();
 		//float color = (sin(time) / 2.0f) + 0.5f;
 
 
 		float color = 0.0f;
-		float increment = 0.05f;
+		float increment = 0.005f;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{

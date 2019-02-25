@@ -136,9 +136,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Stats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Character.h" />
+    <ClInclude Include="src\Coords.h" />
+    <ClInclude Include="src\Enemy.h" />
+    <ClInclude Include="src\Item.h" />
+    <ClInclude Include="src\Object.h" />
+    <ClInclude Include="src\Obstacle.h" />
+    <ClInclude Include="src\Skill.h" />
+    <ClInclude Include="src\Stats.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
