@@ -18,7 +18,7 @@ Map::Map(std::string TileIdsPath, std::string BitmapsPath, Shader& shader)
 	int numberofsprites = 10;
 	for (int i = 0; i < numberofsprites; ++i)
 	{
-		_Tiles.push_back(Tile("res/Sprites/wooden.jpg",shader));
+		_Tiles.emplace_back("res/Sprites/"+to_string(i)+".jpg",shader);
 	}
 }
 

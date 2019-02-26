@@ -118,8 +118,6 @@ int main(void)
 		// -----
 		processInput(window);
 
-
-		//Renderowanie
 		renderer.Render();
 
 
