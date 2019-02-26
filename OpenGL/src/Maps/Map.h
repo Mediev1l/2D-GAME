@@ -4,17 +4,19 @@
 #include <string>
 #include <vector>
 #include "Tile.h"
+#include "Shader.h"
 class Map
 {
 public:
 	Map() = delete;
 	Map(const Map&) = delete;
-	Map(std::string FilePath, std::string BitmapsPath);
+	Map(std::string FilePath, std::string BitmapsPath, Shader& shader);
 	~Map();
+
+	unsigned int getTextureID(int nrelem) { return _Tiles[_TileIds[nrelem]].getID(); };
 private:
 	std::vector<int> _TileIds;
-	//int _width;
-	//int _height;
 	std::vector<Tile> _Tiles;
+	Shader& shader;
 };
 #endif

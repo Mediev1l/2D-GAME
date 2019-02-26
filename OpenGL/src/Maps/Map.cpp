@@ -1,6 +1,8 @@
 #include "Map.h"
 using namespace std;
-Map::Map(std::string TileIdsPath, std::string BitmapsPath)
+Map::Map(std::string TileIdsPath, std::string BitmapsPath, Shader& shader)
+	:
+	shader(shader)
 {
 	ifstream TileIds(TileIdsPath);
 	if (TileIds.good() == false)
@@ -16,7 +18,7 @@ Map::Map(std::string TileIdsPath, std::string BitmapsPath)
 	int numberofsprites = 10;
 	for (int i = 0; i < numberofsprites; ++i)
 	{
-		_Tiles.emplace_back(BitmapsPath+"/"+"wooden.jpg"+".jpg");
+		_Tiles.push_back(Tile("res/Sprites/wooden.jpg",shader));
 	}
 }
 

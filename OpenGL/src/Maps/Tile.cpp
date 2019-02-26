@@ -2,7 +2,7 @@
 
 
 
-Tile::Tile(std::string Path)
+Tile::Tile(std::string Path, Shader& shader)
 {
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
@@ -19,13 +19,16 @@ Tile::Tile(std::string Path)
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		//glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{
 		throw std::runtime_error("Failed to load texture: "+std::to_string(id));
 	}
 	stbi_image_free(data);
+
+	shader.use();
+	shader.setInt("texture1", 0);
 }
 
 Tile::~Tile()

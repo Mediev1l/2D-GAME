@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\STBIMAGE;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW 2.1.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\STBIMAGE;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW 2.1.0\include;$(SolutionDir)OpenGL\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -90,7 +90,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\STBIMAGE;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW 2.1.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\STBIMAGE;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW 2.1.0\include;$(SolutionDir)OpenGL\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -106,7 +106,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\STBIMAGE;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW 2.1.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\STBIMAGE;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW 2.1.0\include;$(SolutionDir)OpenGL\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\STBIMAGE;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW 2.1.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\STBIMAGE;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW 2.1.0\include;$(SolutionDir)OpenGL\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Maps\Map.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Shader.cpp" />
@@ -148,6 +149,7 @@
     <None Include="src\vs.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Maps\Map.h" />
     <ClInclude Include="src\Hero.h" />
     <ClInclude Include="src\Character.h" />
@@ -164,6 +166,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Sprites\wooden.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\Sprites\map1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
