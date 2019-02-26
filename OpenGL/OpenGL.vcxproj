@@ -165,6 +165,16 @@
     <ClInclude Include="src\Maps\Tile.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\Sprites\0.jpg" />
+    <Image Include="res\Sprites\1.jpg" />
+    <Image Include="res\Sprites\2.jpg" />
+    <Image Include="res\Sprites\3.jpg" />
+    <Image Include="res\Sprites\4.jpg" />
+    <Image Include="res\Sprites\5.jpg" />
+    <Image Include="res\Sprites\6.jpg" />
+    <Image Include="res\Sprites\7.jpg" />
+    <Image Include="res\Sprites\8.jpg" />
+    <Image Include="res\Sprites\9.jpg" />
     <Image Include="res\Sprites\wooden.jpg" />
   </ItemGroup>
   <ItemGroup>
