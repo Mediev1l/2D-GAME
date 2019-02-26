@@ -15,7 +15,7 @@ Obiekt odpowiadajacy za Postac (Glowny Bohater)
 #include "Stats.h"
 #include "Skill.h"
 
-class Character : public Coords, Stats, Skill
+class Character : public Coords, Stats
 {
 protected:
 	
