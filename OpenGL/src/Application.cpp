@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "Timer.h"
+#include "Shader.h"
 
 #include <iostream>
 #include <fstream>
@@ -115,13 +117,20 @@ static int CreateShader(const std::string& vertexShader, const std::string& frag
 
 }
 
+void processInput(GLFWwindow *window);
+
+Timer t;
 int main(void)
 {
+
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 	GLFWwindow* window;
 
 	/* Initialize the library */
-	if (!glfwInit())
-		return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
@@ -134,7 +143,7 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
-	glfwSwapInterval(2);
+	//glfwSwapInterval(2);
 
 
 
@@ -152,55 +161,33 @@ int main(void)
 		-0.5f,  0.5f
 	};
 
-	GLuint index[]
-	{
-		0, 1, 2,
-		2, 3, 0
+	float vertices2[] = {
+		// positions          // colors         coords
+		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  // top right
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  // bottom right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  // bottom left
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,  // top left 
 	};
 
-	GLuint VBO;
+	Shader myShader("src/vs.vs", "src/fs.fs");
 
-	// Tworzymy 1 bufor
-	GLLogCall(glGenBuffers(1, &VBO));
+	unsigned int VBO, VAO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
 
-	// przypisujemy bufor jako GL_ARRAY_BUFFER (enumerator)
-	GLLogCall(glBindBuffer(GL_ARRAY_BUFFER, VBO));
+	glBindVertexArray(VAO);
 
-	// Kopiujemy zdefiniowany vertex do buforu
-	GLLogCall(glBufferData(GL_ARRAY_BUFFER, 8 *  sizeof(float), vertices, GL_STATIC_DRAW));
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
 
-	// okreslamy lokacje i format danych
-	GLLogCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0));
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// texture coord attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
-	// wlaczamy attrybut 0
-	GLLogCall(glEnableVertexAttribArray(0));
-
-
-	GLuint IBO;
 	
-	// Tworzymy 1 bufor
-	GLLogCall(glGenBuffers(1, &IBO));
-	
-	// przypisujemy bufor jako GL_ARRAY_BUFFER (enumerator)
-	GLLogCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO));
-	
-	// Kopiujemy zdefiniowany vertex do buforu
-	GLLogCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), index, GL_STATIC_DRAW));
-	
-
-
-
-	ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
-
-	GLuint shader = CreateShader(source.VertexShader, source.FragmentShader);
-
-
-	GLLogCall(glUseProgram(shader));
-	
-	GLLogCall(int location = glGetUniformLocation(shader, "u_Color"));
-	
-	ASSERT(location != -1);
-
 
 		//float time = glfwGetTime();
 		//float color = (sin(time) / 2.0f) + 0.5f;
@@ -211,8 +198,37 @@ int main(void)
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
+
+		//Providing delta Time
+		t.Mark();
+		float deltaTime = t.getDelta();
+		while (deltaTime <= t.getSingleFrameTime())
+		{
+			t.Mark();
+			deltaTime += t.getDelta();
+		}
+		t.setGlobalDelta(deltaTime);
+		//Updating Label name
+		char buffer[20];
+		_itoa_s((1 / deltaTime), buffer, 10);
+		std::string a = "Kacp3r3 & Bartek Playground FPS: ";
+		a += buffer;
+		glfwSetWindowTitle(window, a.c_str());
+
+
+		// input
+		// -----
+		processInput(window);
+
+		myShader.use();
+		// render
+		// ------
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT);
 
 		if (color > 1.0f)
 			increment = -0.05f;
@@ -220,16 +236,10 @@ int main(void)
 			increment = 0.05f;
 
 		color += increment;
-		
 
+		//GLLogCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 		
-		GLLogCall(glUniform4f(location, color, 0.3f, 0.8f, 1.0f));
-
-
-		
-		GLLogCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-		
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 0, 4);
 
 
 		/* Swap front and back buffers */
@@ -238,8 +248,29 @@ int main(void)
 		/* Poll for and process events */
 		glfwPollEvents();
 	}
-	glDeleteProgram(shader);
 
 	glfwTerminate();
 	return 0;
+}
+
+
+void processInput(GLFWwindow *window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	float deltaTime = t.getGlobalDelta();
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		std::cout << "Klikam cos?";
+		//camera.ProcessKeyboard(FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		//camera.ProcessKeyboard(BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		//camera.ProcessKeyboard(LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		//camera.ProcessKeyboard(RIGHT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
