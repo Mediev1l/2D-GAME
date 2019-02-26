@@ -60,36 +60,35 @@ Renderer::~Renderer()
 
 void Renderer::Render()
 {
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  1.0f),
-		glm::vec3(2.0f,  5.0f, 1.0f),
-		glm::vec3(-1.0f, -2.2f, 1.0f),
-		glm::vec3(-3.0f, -2.0f, 1.0f),
-		glm::vec3(2.0f, -0.4f, 1.0f),
-		glm::vec3(-1.0f,  3.0f, 1.0f),
-		glm::vec3(1.0f, -2.0f, 1.0f),
-		glm::vec3(1.0f,  2.0f, 1.0f),
-		glm::vec3(1.0f,  0.2f, 1.0f),
-		glm::vec3(-1.0f,  1.0f, 1.0f)
-	};
+	//Powiedzmy ze mapa bedzie 10/10 kafeletk
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < 10; i++)
 	{
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::normalize(cubePositions[i]));
-		model = glm::scale(model, glm::vec3(0.2,0.2,0.2));
+		for (int j = 0; j < 10; j++)
+		{
 
-		_mainShader.setMat4("model", model);
+			//Eksperymentalnie udowodniono ze dziala xD
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(-0.9f, 0.9f, 0.0f));
+			model = glm::translate(model, glm::vec3(0.2f*j,-0.2f*i,0.0f));
+			
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _maps.getTextureID(i));
+			//Skalowanko lepiej na koncu xD
+			model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+			
 
-		_mainShader.use();
-		glBindVertexArray(VAO);
+			_mainShader.setMat4("model", model);
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, _maps.getTextureID(i*10+j));
+
+			_mainShader.use();
+			glBindVertexArray(VAO);
+
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		}
 	}
 }
