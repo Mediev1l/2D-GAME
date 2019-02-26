@@ -1,13 +1,26 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+//================================================================
+//= Our libraries
+//================================================================
+#include "Maps/Map.h"
 #include "Timer.h"
 #include "Shader.h"
 
+
+//================================================================
+//= Windows Libraries
+//================================================================
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 
+
+
+
+
+//================================================================
+//= Tak
+//================================================================
 #define ASSERT(x) if(!(x)) __debugbreak();
 #define GLLogCall(x) GLClearError(); x; ASSERT(GLCheckError(#x, __FILE__, __LINE__))
 
@@ -16,117 +29,23 @@ static void GLClearError()
 	while (glGetError() != GL_NO_ERROR);
 }
 
-static bool GLCheckError(const char* function, const char* file, int line)
-{
-	while (GLenum error = glGetError())
-	{
-		std::cerr << "[OpenGL Error] (" << error << ")" << std::endl;
-		std::cerr << "[Function] " << function << "" << std::endl;
-		std::cerr << "[File] " << file << "" << std::endl;
-		std::cerr << "[Line] (" << line << ")" << std::endl;
-		return false;
-	}
 
-	return true;
-}
-
-struct ShaderProgramSource
-{
-	std::string VertexShader;
-	std::string FragmentShader;
-};
-
-ShaderProgramSource ParseShader(const std::string& filePath)
-{
-	std::ifstream stream(filePath);
-
-	std::stringstream ss[2];
-
-	enum class type
-	{
-		DEFAULT = -1,
-		VERTEX = 0,
-		FRAGMENT = 1
-	};
-
-	std::string line;
-	type typ = type::DEFAULT;
-	while (std::getline(stream, line))
-	{
-		if (line.find("#shader") != std::string::npos)
-		{
-			if (line.find("vertex") != std::string::npos)
-				typ = type::VERTEX;
-			else if (line.find("fragment") != std::string::npos)
-				typ = type::FRAGMENT;
-		}
-		else
-		{
-			ss[(int)typ] << line << '\n';
-		}
-	}
-
-	return { ss[0].str(), ss[1].str() };
-}
-
-static GLuint CompileShader(GLuint type,const std::string& source)
-{
-	GLuint id = glCreateShader(type);
-	const char* src = source.c_str();
-	glShaderSource(id, 1, &src, NULL);
-	glCompileShader(id);
-
-	int result;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-
-	if (result == GL_FALSE)
-	{
-
-		int length;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-		char* message = (char*)alloca(length * sizeof(char));
-
-		glGetShaderInfoLog(id, sizeof(int), &length, message);
-		std::cerr << "Error durning compiling " << (type == GL_VERTEX_SHADER ? "Vertex Shader" : "Fragment Shader")<<std::endl;
-		std::cerr << message << std::endl;
-		glDeleteShader(id);
-		return 0;
-	}
-
-	return id;
-}
-
-// funkcja do przetworzenia shaderow
-static int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
-{
-	// utworzenie programu zawierajacego zawartosc polaczonych shaderow
-	GLuint program = glCreateProgram();
-	GLLogCall(GLuint vs = CompileShader(GL_VERTEX_SHADER, vertexShader));
-	GLLogCall(GLuint fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader));
-	
-	// dodanie shaderow do programu
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
-	glLinkProgram(program);
-	glValidateProgram(program);
-
-	glDeleteShader(vs);
-	glDeleteShader(fs);
-
-	return program;
-
-}
-
+//================================================================
+//= Window Events Callbacks
+//================================================================
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
-// settings
+
+
+
+//================================================================
+//= GLOBALSETTINGS
+//================================================================
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
-
-// camera
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -136,16 +55,19 @@ Timer t;
 int main(void)
 {
 
+	//================================================================
+	//= Initialize GLFW and force to use 3.3 OpenGL
+	//================================================================
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+
+	//================================================================
+	//= Creating the Window
+	//================================================================
 	GLFWwindow* window;
-
-	/* Initialize the library */
-
-	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Hello World", NULL, NULL);
 	if (!window)
 	{
@@ -156,24 +78,22 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
+	//Fps lock
 	//glfwSwapInterval(2);
 
 
-
+	//================================================================
+	//= Glew Initialization
+	//================================================================
 	if (glewInit() != GLEW_OK)
 		std::cout << "ERROR";
 
 
 	std::cout << glGetString(GL_VERSION) <<std::endl;
 
-	float vertices[] = 
-	{
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f
-	};
-
+	//================================================================
+	//= Jeden kwadrat :O
+	//================================================================
 	float vertices2[] = {
 		// positions          // colors         coords
 		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  // top right
@@ -182,6 +102,9 @@ int main(void)
 		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,  // top left 
 	};
 
+	//================================================================
+	//= Facey
+	//================================================================
 	unsigned int indices[] = {  // note that we start from 0!
 	0, 1, 3,  // first Triangle
 	1, 2, 3   // second Triangle
@@ -212,13 +135,6 @@ int main(void)
 
 
 	
-
-		//float time = glfwGetTime();
-		//float color = (sin(time) / 2.0f) + 0.5f;
-
-
-		float color = 0.0f;
-		float increment = 0.005f;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -253,13 +169,6 @@ int main(void)
 
 		/* Render here */
 		//glClear(GL_COLOR_BUFFER_BIT);
-
-		if (color > 1.0f)
-			increment = -0.05f;
-		else if (color < 0.0f)
-			increment = 0.05f;
-
-		color += increment;
 
 		//GLLogCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 		glBindVertexArray(VAO);
