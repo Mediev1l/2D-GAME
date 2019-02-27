@@ -1,7 +1,14 @@
 #include "GameEngine.h"
 
 GameEngine::GameEngine()
-	: window(nullptr), t(), renderer(), SCR_WIDTH(1280), SCR_HEIGHT(720), lastX(SCR_WIDTH / 2.0f), lastY(SCR_HEIGHT / 2.0f), firstMouse(true)
+	: 
+	window(nullptr)
+	,renderer(nullptr)
+	, t(), SCR_WIDTH(1280)
+	, SCR_HEIGHT(720)
+	, lastX(SCR_WIDTH / 2.0f)
+	, lastY(SCR_HEIGHT / 2.0f)
+	, firstMouse(true)
 {
 }
 
@@ -44,6 +51,8 @@ void GameEngine::Game_Init()
 
 
 		std::cout << glGetString(GL_VERSION) << std::endl;
+
+		renderer = new Renderer();
 	}
 	catch (std::runtime_error &e)
 	{
@@ -51,6 +60,7 @@ void GameEngine::Game_Init()
 		int a;
 		std::cin >> a;
 	}
+
 }
 
 void GameEngine::Game_Run()
@@ -87,7 +97,7 @@ void GameEngine::Game_Run()
 
 
 		//Renderowanie
-		renderer.Render();
+		renderer->Render();
 
 
 		/* Swap front and back buffers */

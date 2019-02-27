@@ -29,7 +29,7 @@ protected:
 
 	GLFWwindow* window;
 	Timer t;
-	Renderer renderer;
+	Renderer* renderer;
 
 	//================================================================
 	//= GLOBALSETTINGS
@@ -45,6 +45,7 @@ protected:
 public:
 
 	GameEngine();
+	~GameEngine() { delete renderer; };
 
 	void Game_Init();
 	void Game_Run();

@@ -17,6 +17,6 @@ public:
 private:
 	std::vector<int> _TileIds;
 	std::vector<Tile> _Tiles;
-	Shader shader;
+	Shader& shader;
 };
 #endif

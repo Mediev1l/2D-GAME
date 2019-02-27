@@ -169,6 +169,8 @@
   <ItemGroup>
     <Image Include="res\Sprites\0.jpg" />
     <Image Include="res\Sprites\1.jpg" />
+    <Image Include="res\Sprites\10 - 2.jpg" />
+    <Image Include="res\Sprites\10.jpg" />
     <Image Include="res\Sprites\2.jpg" />
     <Image Include="res\Sprites\3.jpg" />
     <Image Include="res\Sprites\4.jpg" />

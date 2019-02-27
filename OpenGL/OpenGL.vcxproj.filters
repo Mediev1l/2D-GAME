@@ -126,6 +126,12 @@
     <Image Include="res\Sprites\9.jpg">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="res\Sprites\10.jpg">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\10 - 2.jpg">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\Sprites\map1.txt" />

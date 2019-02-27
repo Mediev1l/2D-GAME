@@ -12,11 +12,15 @@ public:
 
 	void Render();
 private:
-	//Current and next map
-	Map _maps;
 
 	//Main renderShader
 	Shader _mainShader;
+
+
+	//Current and next map
+	Map _maps;
+
+	
 
 	//Vbo vao ebo itp
 	unsigned int VBO, VAO, EBO;
