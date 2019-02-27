@@ -1,11 +1,12 @@
-#ifndef TILE_H
-#define TILE_H
+#ifndef _TILE_H
+#define _TILE_H
 #include <string>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 #include "Shader.h"
+#define STB_IMAGE_IMPLEMENTATION
 
 class Tile
 {

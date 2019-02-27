@@ -9,6 +9,32 @@
 #include <sstream>
 #include <iostream>
 
+//================================================================
+//= TAK
+//================================================================
+#define ASSERT(x) if(!(x)) __debugbreak();
+#define GLLogCall(x) GLClearError(); x; ASSERT(GLCheckError(#x, __FILE__, __LINE__))
+
+static void GLClearError()
+{
+	while (glGetError() != GL_NO_ERROR);
+}
+
+static bool GLCheckError(const char* function, const char* file, int line)
+{
+	while (GLenum error = glGetError())
+	{
+		std::cerr << "[OpenGL Error] (" << error << ")" << std::endl;
+		std::cerr << "[Function] " << function << "" << std::endl;
+		std::cerr << "[File] " << file << "" << std::endl;
+		std::cerr << "[Line] (" << line << ")" << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+
 
 class Shader
 {

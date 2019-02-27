@@ -27,8 +27,9 @@ Tile::Tile(std::string Path, Shader& shader)
 	}
 	stbi_image_free(data);
 
-	shader.use();
-	shader.setInt("texture1", 0);
+	// raczej potrzebne jak jest wiêcej textur na jednej kafelce (I might be wrong >.>)
+	//shader.use();
+	//shader.setInt("texture1", 0);
 }
 
 Tile::~Tile()

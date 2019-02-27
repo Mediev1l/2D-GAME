@@ -1,3 +1,8 @@
+
+
+#ifndef _Timer_H
+#define _Timer_H
+
 #include "GLFW\glfw3.h"
 #include <chrono>
 class Timer
@@ -16,4 +21,9 @@ private:
 	std::chrono::duration<float> delta;
 	float maxFPS;
 };
+
+
+
+#endif 
+
 

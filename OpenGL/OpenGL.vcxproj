@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameEngine.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Maps\Map.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -149,6 +150,7 @@
     <None Include="src\vs.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameEngine.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Maps\Map.h" />
     <ClInclude Include="src\Hero.h" />
