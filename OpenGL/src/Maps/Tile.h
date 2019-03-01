@@ -5,14 +5,14 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
-#include "Shader.h"
+#include "Shaders/Shader.h"
 #define STB_IMAGE_IMPLEMENTATION
 
 class Tile
 {
 public:
 	Tile() = delete;
-	Tile(std::string Path,Shader& shader);
+	Tile(std::string Path,bool transparent);
 	~Tile();
 	unsigned int getID() { return id; };
 private:

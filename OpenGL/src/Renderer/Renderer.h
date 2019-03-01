@@ -1,6 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 #include "Maps/Map.h"
+#include "Character.h"
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
@@ -10,7 +11,7 @@ public:
 	Renderer();
 	~Renderer();
 
-	void Render();
+	void Render(std::vector<Character>& _characters);
 private:
 
 	//Main renderShader

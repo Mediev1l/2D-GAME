@@ -2,13 +2,14 @@
 #ifndef _GameEngine_H
 #define _GameEngine_H
 
+//Nie wiem dlaczego wywala b³¹d jak to nie jest w Main.cpp
+//#define STB_IMAGE_IMPLEMENTATION
 //================================================================
 //= Our libraries
 //================================================================
-#define STB_IMAGE_IMPLEMENTATION
 #include "Renderer/Renderer.h"
-#include "Timer.h"
-//#include "Maps/Map.h"
+#include "Utility/Timer.h"
+#include "Hero.h"
 
 
 //================================================================
@@ -36,10 +37,11 @@ protected:
 	//================================================================
 	const unsigned int SCR_WIDTH;
 	const unsigned int SCR_HEIGHT;
-	float lastX;
-	float lastY;
+	double lastX;
+	double lastY;
 	bool firstMouse;
-
+	std::string WindowName;
+	std::vector<Character> _characters;
 
 
 public:
@@ -57,9 +59,6 @@ public:
 	void mouse_callback(double xpos, double ypos);
 	void scroll_callback(double xoffset, double yoffset);
 	void processInput();
-
-
-
 };
 
 

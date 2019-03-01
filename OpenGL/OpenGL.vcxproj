@@ -135,22 +135,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\GameEngine.cpp" />
+    <ClCompile Include="src\GameEngine\GameEngine.cpp" />
+    <ClCompile Include="src\Hero.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Maps\Map.cpp" />
-    <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Shaders\Shader.cpp" />
     <ClCompile Include="src\Stats.cpp" />
-    <ClCompile Include="src\Timer.cpp" />
+    <ClCompile Include="src\Utility\Timer.cpp" />
     <ClCompile Include="src\Maps\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\Basic.shader" />
-    <None Include="src\fs.fs" />
-    <None Include="src\vs.vs" />
+    <None Include="src\Shaders\fs.fs" />
+    <None Include="src\Shaders\vs.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GameEngine.h" />
+    <ClInclude Include="src\GameEngine\GameEngine.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Maps\Map.h" />
     <ClInclude Include="src\Hero.h" />
@@ -160,29 +160,31 @@
     <ClInclude Include="src\Item.h" />
     <ClInclude Include="src\Object.h" />
     <ClInclude Include="src\Obstacle.h" />
-    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Shaders\Shader.h" />
     <ClInclude Include="src\Skill.h" />
     <ClInclude Include="src\Stats.h" />
-    <ClInclude Include="src\Timer.h" />
+    <ClInclude Include="src\Utility\Timer.h" />
     <ClInclude Include="src\Maps\Tile.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Sprites\0.jpg" />
-    <Image Include="res\Sprites\1.jpg" />
-    <Image Include="res\Sprites\10 - 2.jpg" />
-    <Image Include="res\Sprites\10.jpg" />
-    <Image Include="res\Sprites\2.jpg" />
-    <Image Include="res\Sprites\3.jpg" />
-    <Image Include="res\Sprites\4.jpg" />
-    <Image Include="res\Sprites\5.jpg" />
-    <Image Include="res\Sprites\6.jpg" />
-    <Image Include="res\Sprites\7.jpg" />
-    <Image Include="res\Sprites\8.jpg" />
-    <Image Include="res\Sprites\9.jpg" />
+    <Image Include="res\Sprites\Map1\0.jpg" />
+    <Image Include="res\Sprites\Map1\1.jpg" />
+    <Image Include="res\Sprites\Map1\10.jpg" />
+    <Image Include="res\Sprites\Map1\10-white.jpg" />
+    <Image Include="res\Sprites\Map1\2.jpg" />
+    <Image Include="res\Sprites\Map1\3.jpg" />
+    <Image Include="res\Sprites\Map1\4.jpg" />
+    <Image Include="res\Sprites\Map1\5.jpg" />
+    <Image Include="res\Sprites\Map1\6.jpg" />
+    <Image Include="res\Sprites\Map1\7.jpg" />
+    <Image Include="res\Sprites\Map1\8.jpg" />
+    <Image Include="res\Sprites\Map1\9.jpg" />
+    <Image Include="res\Sprites\Player\awesome.png" />
+    <Image Include="res\Sprites\Player\issac.png" />
     <Image Include="res\Sprites\wooden.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="res\Sprites\map1.txt" />
+    <Text Include="res\Sprites\Map1\map1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

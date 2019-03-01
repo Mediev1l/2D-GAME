@@ -7,7 +7,8 @@ class Hero : public Character
 protected:
 
 public:
-	Hero(){};
+	Hero()=delete;
+	Hero(float x, float y, float vel, std::string texturepath);
 	~Hero() {};
 };
 #endif

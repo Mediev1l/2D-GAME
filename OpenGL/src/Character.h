@@ -7,19 +7,25 @@ Obiekt odpowiadajacy za Postac (Glowny Bohater)
 // + nazwac to inaczej
 
 */
-
 #ifndef _Character_H
 #define _Character_H
 
-#include "Coords.h"
 #include "Stats.h"
-#include "Skill.h"
+#include "Coords.h"
+#include "Maps/Tile.h"
 
-class Character : public Coords, Stats
+class Character: public Coords, Stats
 {
+public:
+	Character(std::string TexturePath) : texture(TexturePath,true) {};
+	float getX() { return posX; };
+	float getY() { return posY; };
+	float getVelocity() { return Velocity; };
+	void UpdateX(float ux) { posX += ux; };
+	void UpdateY(float uy) { posY += uy; };
+	unsigned int getTexture() { return texture.getID(); };
 protected:
-	
-
+	//Coords
+	Tile texture;
 };
-
 #endif

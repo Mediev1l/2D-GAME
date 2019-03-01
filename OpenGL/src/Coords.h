@@ -11,8 +11,10 @@ Prosty obiekt z koordynatami
 
 struct Coords
 {
-	float m_pos_X;
-	float m_pos_Y;
+public:
+	float posX;
+	float posY;
+	float Velocity;
 };
 
 #endif

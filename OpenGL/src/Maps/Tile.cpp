@@ -2,7 +2,7 @@
 
 
 
-Tile::Tile(std::string Path, Shader& shader)
+Tile::Tile(std::string Path, bool transparent)
 {
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
@@ -18,7 +18,9 @@ Tile::Tile(std::string Path, Shader& shader)
 	unsigned char *data = stbi_load(Path.c_str(), &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		if(!transparent) glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		else glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	
 		//glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -29,8 +31,8 @@ Tile::Tile(std::string Path, Shader& shader)
 
 	// raczej potrzebne jak jest wiêcej textur na jednej kafelce (I might be wrong >.>)
 	// Poprawie pozniej na razie nie psój
-	shader.use();
-	shader.setInt("texture1", 0);
+	//shader.use();
+	//shader.setInt("texture1", 0);
 }
 
 Tile::~Tile()

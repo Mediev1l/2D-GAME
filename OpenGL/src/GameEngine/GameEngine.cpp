@@ -2,13 +2,15 @@
 
 GameEngine::GameEngine()
 	: 
-	window(nullptr)
-	,renderer(nullptr)
-	, t(), SCR_WIDTH(1280)
-	, SCR_HEIGHT(720)
-	, lastX(SCR_WIDTH / 2.0f)
-	, lastY(SCR_HEIGHT / 2.0f)
+	  window(nullptr)
+	, renderer(nullptr)
+	, t()
+	, SCR_WIDTH(800)
+	, SCR_HEIGHT(800)
+	, lastX(SCR_WIDTH / 2.0)
+	, lastY(SCR_HEIGHT / 2.0)
 	, firstMouse(true)
+	, WindowName("Kacp3r3 & Bartek Playground")
 {
 }
 
@@ -61,6 +63,9 @@ void GameEngine::Game_Init()
 		std::cin >> a;
 	}
 
+	//PLAYER ADDED HERE
+	_characters.push_back(Hero(5, 5, 3, "res/Sprites/Player/issac.png"));
+
 }
 
 void GameEngine::Game_Run()
@@ -76,18 +81,12 @@ void GameEngine::Game_Run()
 
 		//Providing delta Time
 		t.Mark();
-		float deltaTime = t.getDelta();
-		while (deltaTime <= t.getSingleFrameTime())
+		while (t.getDelta() <= t.getSingleFrameTime())
 		{
 			t.Mark();
-			deltaTime += t.getDelta();
 		}
-		t.setGlobalDelta(deltaTime);
 		//Updating Label name
-		char buffer[20];
-		_itoa_s((1 / deltaTime), buffer, 10);
-		std::string a = "Kacp3r3 & Bartek Playground FPS: ";
-		a += buffer;
+		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
 		glfwSetWindowTitle(window, a.c_str());
 
 
@@ -97,7 +96,7 @@ void GameEngine::Game_Run()
 
 
 		//Renderowanie
-		renderer->Render();
+		renderer->Render(_characters);
 
 
 		/* Swap front and back buffers */
@@ -116,21 +115,22 @@ void GameEngine::processInput()
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	float deltaTime = t.getGlobalDelta();
-
-
+	float deltaTime = t.getDelta();
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		_characters[0].UpdateY(-_characters[0].getVelocity()*deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
+		_characters[0].UpdateY(_characters[0].getVelocity()*deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
+		_characters[0].UpdateX(-_characters[0].getVelocity()*deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
+		_characters[0].UpdateX(_characters[0].getVelocity()*deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -159,8 +159,8 @@ void GameEngine::mouse_callback(double xpos, double ypos)
 		firstMouse = false;
 	}
 
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+	double xoffset = xpos - lastX;
+	double yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
 	lastX = xpos;
 	lastY = ypos;
