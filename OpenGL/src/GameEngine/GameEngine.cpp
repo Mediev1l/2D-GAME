@@ -1,8 +1,8 @@
 #include "GameEngine.h"
 
 GameEngine::GameEngine()
-	: 
-	  window(nullptr)
+	:
+	window(nullptr)
 	, renderer(nullptr)
 	, t()
 	, SCR_WIDTH(800)
@@ -55,6 +55,7 @@ void GameEngine::Game_Init()
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
 		renderer = new Renderer();
+		_map = &renderer->getMap();
 	}
 	catch (std::runtime_error &e)
 	{
@@ -64,7 +65,7 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero(5, 5, 3, "res/Sprites/Player/issac.png"));
+	_characters.push_back(Hero(5.0f, 6.0f, 3.0f, "res/Sprites/Player/issac.png"));
 
 }
 
@@ -112,25 +113,31 @@ void GameEngine::Game_Run()
 
 void GameEngine::processInput()
 {
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	{
+		std::cout << "PlayerX: " << _characters[0].getX() << '\n';
+		std::cout << "PlayerY: " << _characters[0].getY() << '\n';
+	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
+	//Ja to napisze ³adniej ale póŸniej Ok? XD
 	float deltaTime = t.getDelta();
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		_characters[0].UpdateY(-_characters[0].getVelocity()*deltaTime);
+		CheckForPlayerColissionY(deltaTime, true);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		_characters[0].UpdateY(_characters[0].getVelocity()*deltaTime);
+		CheckForPlayerColissionY(deltaTime, false);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		_characters[0].UpdateX(-_characters[0].getVelocity()*deltaTime);
+		CheckForPlayerColissionX(deltaTime, true);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		_characters[0].UpdateX(_characters[0].getVelocity()*deltaTime);
+		CheckForPlayerColissionX(deltaTime, false);
 	}
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -173,4 +180,74 @@ void GameEngine::mouse_callback(double xpos, double ypos)
 void GameEngine::scroll_callback(double xoffset, double yoffset)
 {
 	//camera.ProcessMouseScroll(yoffset);
+}
+
+void GameEngine::CheckForPlayerColissionX(float deltaTime, bool left)
+{
+	//Przesuniêcie
+	float newX = _characters[0].getVelocity()*deltaTime;
+
+	//Domniemana nowa pozycja
+	float newXTest = _characters[0].getX()+(left?-newX:newX);
+
+	//Sprawdz czy pod tym X jest obstacle
+	if ( 
+		left?
+		//Ide w lewo i nachodze na klocek od spodu
+		//  G³az y: 2
+		//  Gracz y: 2.xyz
+		_map->isObstacle((int)(newXTest+0.1f), int(_characters[0].getY()+0.1f ))
+		||
+		//Ide w lewo i nachodze klocek od góry
+		// Gracz 1.89
+		// G³az 2
+		_map->isObstacle((int)(newXTest + 0.1f), round(_characters[0].getY()))
+		||
+		//Jakis trzeci Przypadek lol
+		_map->isObstacle((int)(newXTest + 0.1f), ceil(_characters[0].getY()-0.1f))
+		
+		:
+
+		_map->isObstacle((int)(newXTest+0.9f), int(_characters[0].getY()+0.1f ))
+		||
+		_map->isObstacle((int)(newXTest + 0.9f), round(_characters[0].getY() ))
+		||
+		_map->isObstacle((int)(newXTest + 0.9f), ceil(_characters[0].getY()-0.1f ))
+		)
+	{
+		std::cout << "Kolizja!" << std::endl;
+		//_characters[0].setX(left?(int)newXTest + 1.0f:(int)newXTest-1.0f);
+	}
+	else _characters[0].UpdateX(left?-newX:newX);
+}
+
+void GameEngine::CheckForPlayerColissionY(float deltaTime, bool top)
+{
+	//Przesuniêcie
+	float newY = _characters[0].getVelocity()*deltaTime;
+
+	//Domniemana nowa pozycja
+	float newYTest = _characters[0].getY() + (top ? -newY : newY);
+
+	//Sprawdz czy pod tym Y jest obstacle
+	if (
+		top ?
+		_map->isObstacle( int(_characters[0].getX()+0.1f), (int)(newYTest + 0.1f))
+		||
+		_map->isObstacle(round(_characters[0].getX()), (int)(newYTest + 0.1f))
+		||
+		_map->isObstacle(ceil(_characters[0].getX() - 0.1f), (int)(newYTest + 0.1f))
+		:
+		_map->isObstacle(int(_characters[0].getX()+0.1f), (int)(newYTest + 0.9f))
+		||
+		_map->isObstacle( round(_characters[0].getX()), (int)(newYTest + 0.9f))
+		||
+		_map->isObstacle(ceil(_characters[0].getX()-0.1f), (int)(newYTest + 0.9f))
+		)
+
+	{
+		std::cout << "Kolizja!" << std::endl;
+		//_characters[0].setY(top?(int)newYTest + 1.0f:(int)newYTest-1.0f);
+	}
+	else _characters[0].UpdateY(top ? -newY : newY);
 }

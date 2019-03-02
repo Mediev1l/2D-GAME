@@ -2,7 +2,9 @@
 
 
 
-Tile::Tile(std::string Path, bool transparent)
+Tile::Tile(std::string Path,bool solid,  bool transparent)
+	:
+	obstacle(solid)
 {
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);

@@ -12,6 +12,7 @@ public:
 	~Renderer();
 
 	void Render(std::vector<Character>& _characters);
+	Map& getMap() { return _maps; };
 private:
 
 	//Main renderShader

@@ -17,10 +17,14 @@ Obiekt odpowiadajacy za Postac (Glowny Bohater)
 class Character: public Coords, Stats
 {
 public:
-	Character(std::string TexturePath) : texture(TexturePath,true) {};
+	Character(std::string TexturePath) : texture(TexturePath,true,true) {};
 	float getX() { return posX; };
 	float getY() { return posY; };
 	float getVelocity() { return Velocity; };
+
+	void setY(float y) { posY = y; };
+	void setX(float x) { posX = x; };
+
 	void UpdateX(float ux) { posX += ux; };
 	void UpdateY(float uy) { posY += uy; };
 	unsigned int getTexture() { return texture.getID(); };

@@ -42,7 +42,9 @@ protected:
 	bool firstMouse;
 	std::string WindowName;
 	std::vector<Character> _characters;
-
+	Map* _map;
+	void CheckForPlayerColissionX(float deltaTime, bool left);
+	void CheckForPlayerColissionY(float deltaTime, bool top);
 
 public:
 
@@ -60,6 +62,5 @@ public:
 	void scroll_callback(double xoffset, double yoffset);
 	void processInput();
 };
-
 
 #endif // !_GameEngine_H

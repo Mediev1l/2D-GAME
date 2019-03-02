@@ -12,10 +12,12 @@ class Tile
 {
 public:
 	Tile() = delete;
-	Tile(std::string Path,bool transparent);
+	Tile(std::string Path,bool solid, bool transparent);
 	~Tile();
 	unsigned int getID() { return id; };
+	bool isObstacle() { return obstacle; }
 private:
 	unsigned int id;
+	bool obstacle;
 };
 #endif
