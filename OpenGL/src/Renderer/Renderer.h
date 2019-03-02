@@ -2,6 +2,7 @@
 #define RENDERER_H
 #include "Maps/Map.h"
 #include "Character.h"
+#include "Item.h"
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
@@ -12,6 +13,7 @@ public:
 	~Renderer();
 
 	void Render(std::vector<Character>& _characters);
+	void RenderItem(Item& _item);
 	Map& getMap() { return _maps; };
 private:
 

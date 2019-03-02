@@ -67,6 +67,11 @@ void GameEngine::Game_Init()
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero(5.0f, 6.0f, 3.0f, "res/Sprites/Player/issac.png"));
 
+	//ITEMS
+	_item = new Item("res/Sprites/Items/item_0.png", "res/Items/", 0);
+	_item->setX(5);
+	_item->setY(5);
+
 }
 
 void GameEngine::Game_Run()
@@ -74,6 +79,8 @@ void GameEngine::Game_Run()
 
 	// Game  Initialization
 	Game_Init();
+
+	
 
 
 	/* Loop until the user closes the window */
@@ -98,6 +105,7 @@ void GameEngine::Game_Run()
 
 		//Renderowanie
 		renderer->Render(_characters);
+		renderer->RenderItem(*_item);
 
 
 		/* Swap front and back buffers */

@@ -93,3 +93,28 @@ void Renderer::Render(std::vector<Character>& _characters)
 	}
 
 }
+
+void Renderer::RenderItem(Item & _item)
+{
+	{
+		//Eksperymentalnie udowodniono ze dziala xD
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-0.9f, 0.9f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.2f*(_item.getX()), -0.2f*(_item.getY()), 0.0f));
+
+
+		//Skalowanko lepiej na koncu xD
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+
+
+		_mainShader.setMat4("model", model);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, _item.getTexture());
+
+		_mainShader.use();
+		glBindVertexArray(VAO);
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+}

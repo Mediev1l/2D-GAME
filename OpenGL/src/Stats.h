@@ -15,7 +15,7 @@ protected:
 	float m_speed;
 	float m_att_speed;
 	float m_damage;
-	float m_size;
+
 public:
 	Stats();	
 

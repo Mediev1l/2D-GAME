@@ -43,6 +43,7 @@ protected:
 	std::string WindowName;
 	std::vector<Character> _characters;
 	Map* _map;
+	Item* _item;
 	void CheckForPlayerColissionX(float deltaTime, bool left);
 	void CheckForPlayerColissionY(float deltaTime, bool top);
 

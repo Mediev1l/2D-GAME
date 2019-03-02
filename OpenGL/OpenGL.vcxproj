@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="src\GameEngine\GameEngine.cpp" />
     <ClCompile Include="src\Hero.cpp" />
+    <ClCompile Include="src\Item.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Maps\Map.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\Maps\Tile.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\Sprites\Items\item_0.png" />
     <Image Include="res\Sprites\Map1\0.jpg" />
     <Image Include="res\Sprites\Map1\1.jpg" />
     <Image Include="res\Sprites\Map1\10.jpg" />
@@ -184,6 +186,7 @@
     <Image Include="res\Sprites\wooden.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="res\Items\item_0.txt" />
     <Text Include="res\Sprites\Map1\map1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

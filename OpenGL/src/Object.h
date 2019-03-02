@@ -18,7 +18,7 @@ protected:
 	std::string m_name;
 	int m_size;
 public:
-	Object();
+	Object() {};
 
 
 };

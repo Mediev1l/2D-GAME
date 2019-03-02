@@ -42,6 +42,9 @@
     <ClCompile Include="src\Hero.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="src\Item.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\vs.vs" />
@@ -140,8 +143,12 @@
     <Image Include="res\Sprites\Player\issac.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="res\Sprites\Items\item_0.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\Sprites\Map1\map1.txt" />
+    <Text Include="res\Items\item_0.txt" />
   </ItemGroup>
 </Project>
