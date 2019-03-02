@@ -32,35 +32,35 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::Render(std::vector<Character>& _characters)
-{
-	//Powiedzmy ze mapa bedzie 10/10 kafeletk
 
+
+void Renderer::RenderMap(size_t width, size_t height)
+{
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	_mainShader.use();
 	_mainShader.setInt("texture1", 0);
 
-	for (int y = 0; y < 10; y++)
+	for (int y = 0; y < width; y++)
 	{
-		for (int x = 0; x < 10; x++)
+		for (int x = 0; x < height; x++)
 		{
 
 			//Eksperymentalnie udowodniono ze dziala xD
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(-0.9f, 0.9f, 0.0f));
-			model = glm::translate(model, glm::vec3(0.2f*x,-0.2f*y,0.0f));
-			
+			model = glm::translate(model, glm::vec3(0.2f*x, -0.2f*y, 0.0f));
+
 
 			//Skalowanko lepiej na koncu xD
 			model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-			
+
 
 			_mainShader.setMat4("model", model);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, _maps.getTextureID(y*10+x));
+			glBindTexture(GL_TEXTURE_2D, _maps.getTextureID(y * 10 + x));
 
 			_mainShader.use();
 			glBindVertexArray(VAO);
@@ -68,6 +68,13 @@ void Renderer::Render(std::vector<Character>& _characters)
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 	}
+}
+
+void Renderer::RenderCharacter(std::vector<Character>& _characters)
+{
+	//Powiedzmy ze mapa bedzie 10/10 kafeletk
+
+
 
 	//Drawing the player
 	{
@@ -96,6 +103,7 @@ void Renderer::Render(std::vector<Character>& _characters)
 
 void Renderer::RenderItem(Item & _item)
 {
+	if(_item.getOnMap() == true)
 	{
 		//Eksperymentalnie udowodniono ze dziala xD
 		glm::mat4 model = glm::mat4(1.0f);

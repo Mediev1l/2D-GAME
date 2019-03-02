@@ -67,10 +67,10 @@ void GameEngine::Game_Init()
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero(5.0f, 6.0f, 3.0f, "res/Sprites/Player/issac.png"));
 
-	//ITEMS
-	_item = new Item("res/Sprites/Items/item_0.png", "res/Items/", 0);
+	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z 
+	_item = new Item("res/Sprites/Items/", "res/Items/", 0);
 	_item->setX(5);
-	_item->setY(5);
+	_item->setY(6);
 
 }
 
@@ -103,9 +103,10 @@ void GameEngine::Game_Run()
 		processInput();
 
 
-		//Renderowanie
-		renderer->Render(_characters);
+		//Renderowanie || rozdzielone by gracz byl rysowany na koncu
+		renderer->RenderMap(10, 10);
 		renderer->RenderItem(*_item);
+		renderer->RenderCharacter(_characters);
 
 
 		/* Swap front and back buffers */

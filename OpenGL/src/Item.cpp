@@ -1,7 +1,7 @@
 #include "Item.h"
 
 Item::Item(const std::string & TexturePath,const std::string& ItemPath, size_t itemID)
-	: texture(TexturePath, false, true), id(itemID), Stats()
+	: texture(TexturePath + "item_" + std::to_string(itemID) + ".png", false, true), id(itemID), Stats() , onMap(true)
 {
 	std::fstream itemFile;
 	std::string text;

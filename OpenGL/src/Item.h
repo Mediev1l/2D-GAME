@@ -21,12 +21,14 @@ protected:
 	size_t id;
 	std::string description;
 	Tile texture;
+	bool onMap;
 
 public:
 	Item(const std::string& TexturePath,const std::string& ItemPath, size_t itemID);
 
 	float getX() { return posX; };
 	float getY() { return posY; };
+	bool getOnMap() { return onMap; };
 	size_t getID() { return id; };
 	std::string getDescription() { return description; }
 	float getVelocity() { return Velocity; };
@@ -35,6 +37,7 @@ public:
 	void setX(float x) { posX = x; };
 	void setID(size_t id) { this->id = id; };
 	void setDescription(std::string& desc) { description = desc; };
+	void setOnMap(bool ex) { onMap = ex; };
 
 	unsigned int getTexture() { return texture.getID(); };
 
