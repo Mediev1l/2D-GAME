@@ -10,6 +10,7 @@
 #include "Renderer/Renderer.h"
 #include "Utility/Timer.h"
 #include "Characters/Hero.h"
+#include "Characters/Enemy.h"
 
 
 //================================================================
@@ -59,13 +60,15 @@ protected:
 		UP=0,
 		DOWN=1,
 		LEFT=2,
-		RIGHT=3
+		RIGHT=3,
+		NONE=4
 	};
 	void ProcessPlayerMove(double deltaTime,Direction dir);
-	bool CheckForPlayerColissionX(double newX, Direction dir,GLuint& fx, GLuint& fy);
-	bool CheckForPlayerColissionY(double newY, Direction dir, GLuint& fx, GLuint& fy);
-
+	bool CheckForColissionX(GLuint index, double newX, Direction dir,GLuint& fx, GLuint& fy);
+	bool CheckForColissionY(GLuint index, double newY, Direction dir, GLuint& fx, GLuint& fy);
 	void ProcessItemPickup();
+
+	void ProcessEnemiesMove(double deltaTime);
 
 public:
 

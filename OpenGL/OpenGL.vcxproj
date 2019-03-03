@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Characters\Character.cpp" />
+    <ClCompile Include="src\Characters\Enemy.cpp" />
     <ClCompile Include="src\GameEngine\GameEngine.cpp" />
     <ClCompile Include="src\Characters\Hero.cpp" />
     <ClCompile Include="src\Items\Item.cpp" />

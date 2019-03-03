@@ -51,6 +51,9 @@
     <ClCompile Include="src\Items\Item.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="src\Characters\Enemy.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\vs.vs" />

@@ -35,6 +35,8 @@ public:
 	void consumeItem(const Item& item);
 	//Koniec do przekminiania
 
+	//virtual void Bechaviour(const Character& player, double deltaTime) = 0;
+
 protected:
 
 	//Mozna skopiowaæ do Hero kwestia przekminy

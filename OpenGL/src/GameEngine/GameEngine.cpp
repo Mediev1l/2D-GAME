@@ -2,7 +2,7 @@
 
 GameEngine::GameEngine()
 	:
-	window(nullptr)
+	  window(nullptr)
 	, renderer(nullptr)
 	, t()
 	, SCR_WIDTH(800)
@@ -66,6 +66,7 @@ void GameEngine::Game_Init()
 
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero(5.0, 6.0, 3.0, "res/Sprites/Player/issac.png"));
+	_characters.push_back(Enemy(1.0, 6.0, 1.0, "res/Sprites/Enemies/Skelly/skelly.png"));
 
 	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
 	//Na sztywno ustawianie na mapie ze jest tam item
@@ -99,17 +100,15 @@ void GameEngine::Game_Run()
 		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
 		glfwSetWindowTitle(window, a.c_str());
 
-
 		// input
 		// -----
 		processInput();
-
+		ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():1.0);
 
 		//Renderowanie || rozdzielone by gracz byl rysowany na koncu
 		renderer->RenderMap();
 		renderer->RenderItems(_items);
 		renderer->RenderCharacter(_characters);
-
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -249,7 +248,7 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 	GLuint fixedX;
 	GLuint fixedY;
 	//Sprawdz czy pod now¹ pozycj¹ jest kolizja
-	bool collision = CheckForPlayerColissionX(newX,dir,fixedX,fixedY) || CheckForPlayerColissionY(newY,dir, fixedX, fixedY);
+	bool collision = CheckForColissionX(0,newX,dir,fixedX,fixedY) || CheckForColissionY(0,newY,dir, fixedX, fixedY);
 	if (collision)
 	{
 		std::cout << "Kolizja!" << '\n';
@@ -272,13 +271,15 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 				_canPickup = true;
 				break;
 			}
+			default:
+				break;
 		}
 	}
 	_characters[0].setX(newX);
 	_characters[0].setY(newY);
 }
 
-bool GameEngine::CheckForPlayerColissionX(double newX, Direction dir, GLuint& fx, GLuint& fy)
+bool GameEngine::CheckForColissionX(GLuint index, double newX, Direction dir, GLuint& fx, GLuint& fy)
 {
 	bool left = dir == LEFT ? true : false;
 	//Sprawdz czy pod tym X jest obstacle
@@ -289,48 +290,48 @@ bool GameEngine::CheckForPlayerColissionX(double newX, Direction dir, GLuint& fx
 				//Ide w lewo i nachodze na klocek od spodu
 				//  G³az y: 2
 				//  Gracz y: 2.xyz
-				if (_map->isObstacle((GLuint)(newX + 0.1f), (GLuint)(_characters[0].getY() + 0.1f)))
+				if (_map->isObstacle((GLuint)(newX + 0.1f), (GLuint)(_characters[index].getY() + 0.1f)))
 				{
 					fx = (GLuint)(newX + 0.1f);
-					fy = (GLuint)(_characters[0].getY() + 0.1f);
+					fy = (GLuint)(_characters[index].getY() + 0.1f);
 					return true;
 				}	
 				//Ide w lewo i nachodze klocek od góry
 				// Gracz 1.89
 				// G³az 2
-				else if (_map->isObstacle((GLuint)(newX + 0.1), (GLuint)round(_characters[0].getY())))
+				else if (_map->isObstacle((GLuint)(newX + 0.1), (GLuint)round(_characters[index].getY())))
 				{
 					fx = (GLuint)(newX + 0.1f);
-					fy = (GLuint)round(_characters[0].getY());
+					fy = (GLuint)round(_characters[index].getY());
 					return true;
 				}	
 				//Jakis trzeci Przypadek lol
-				else if (_map->isObstacle((GLuint)(newX + 0.1f), (GLuint)ceil(_characters[0].getY() - 0.1f)))
+				else if (_map->isObstacle((GLuint)(newX + 0.1f), (GLuint)ceil(_characters[index].getY() - 0.1f)))
 				{
 					fx = (GLuint)(newX + 0.1f);
-					fy = (GLuint)ceil(_characters[0].getY() - 0.1f);
+					fy = (GLuint)ceil(_characters[index].getY() - 0.1f);
 					return true;
 				}
 			}
 			else
 			{
 
-				if (_map->isObstacle((GLuint)(newX + 0.9f), GLuint(_characters[0].getY() + 0.1f)))
+				if (_map->isObstacle((GLuint)(newX + 0.9f), GLuint(_characters[index].getY() + 0.1f)))
 				{
 					fx = (GLuint)(newX + 0.9f);
-					fy = GLuint(_characters[0].getY() + 0.1f);
+					fy = GLuint(_characters[index].getY() + 0.1f);
 					return true;
 				}
-				else if (_map->isObstacle((GLuint)(newX + 0.9f), (GLuint)round(_characters[0].getY())))
+				else if (_map->isObstacle((GLuint)(newX + 0.9f), (GLuint)round(_characters[index].getY())))
 				{
 					fx = (GLuint)(newX + 0.9f);
-					fy = (GLuint)round(_characters[0].getY());
+					fy = (GLuint)round(_characters[index].getY());
 					return true;
 				}
-				else if (_map->isObstacle((GLuint)(newX + 0.9f), (GLuint)ceil(_characters[0].getY() - 0.1f)))
+				else if (_map->isObstacle((GLuint)(newX + 0.9f), (GLuint)ceil(_characters[index].getY() - 0.1f)))
 				{
 					fx = (GLuint)(newX + 0.9f);
-					fy = (GLuint)ceil(_characters[0].getY() - 0.1f);
+					fy = (GLuint)ceil(_characters[index].getY() - 0.1f);
 					return true;
 				}
 			}
@@ -339,7 +340,7 @@ bool GameEngine::CheckForPlayerColissionX(double newX, Direction dir, GLuint& fx
 		 return false;
 }
 
-bool GameEngine::CheckForPlayerColissionY(double newY, Direction dir, GLuint& fx, GLuint& fy)
+bool GameEngine::CheckForColissionY(GLuint index,double newY, Direction dir, GLuint& fx, GLuint& fy)
 {
 	bool top = dir == UP ? true : false;
 
@@ -348,42 +349,42 @@ bool GameEngine::CheckForPlayerColissionY(double newY, Direction dir, GLuint& fx
 		//Sprawdz czy pod tym Y jest obstacle
 		if (top)
 		{
-			if (_map->isObstacle(int(_characters[0].getX() + 0.1f), (GLuint)(newY + 0.1f))  )
+			if (_map->isObstacle(int(_characters[index].getX() + 0.1f), (GLuint)(newY + 0.1f))  )
 			{
-				fx = GLuint(_characters[0].getX() + 0.1f);
+				fx = GLuint(_characters[index].getX() + 0.1f);
 				fy = (GLuint)(newY + 0.1f);
 				return true;
 			}
-			else if (_map->isObstacle((GLuint)round(_characters[0].getX()), (GLuint)(newY + 0.1f)))
+			else if (_map->isObstacle((GLuint)round(_characters[index].getX()), (GLuint)(newY + 0.1f)))
 			{
-				fx = (GLuint)round(_characters[0].getX());
+				fx = (GLuint)round(_characters[index].getX());
 				fy = (GLuint)(newY + 0.1f);
 				return true;
 			}
-			else if (_map->isObstacle((GLuint)ceil(_characters[0].getX() - 0.1f), (GLuint)(newY + 0.1f)))
+			else if (_map->isObstacle((GLuint)ceil(_characters[index].getX() - 0.1f), (GLuint)(newY + 0.1f)))
 			{
-				fx = (GLuint)ceil(_characters[0].getX() - 0.1f);
+				fx = (GLuint)ceil(_characters[index].getX() - 0.1f);
 				fy = (GLuint)(newY + 0.1f);
 				return true;
 			}
 		}
 		else
 		{
-			if (_map->isObstacle(GLuint(_characters[0].getX() + 0.1f), (GLuint)(newY + 0.9f)) )
+			if (_map->isObstacle(GLuint(_characters[index].getX() + 0.1f), (GLuint)(newY + 0.9f)) )
 			{
-				fx = GLuint(_characters[0].getX() + 0.1f);
+				fx = GLuint(_characters[index].getX() + 0.1f);
 				fy = (GLuint)(newY + 0.9f);
 				return true;
 			}
-			else if (_map->isObstacle((GLuint)round(_characters[0].getX()), (GLuint)(newY + 0.9f)) )
+			else if (_map->isObstacle((GLuint)round(_characters[index].getX()), (GLuint)(newY + 0.9f)) )
 			{
-				fx = (GLuint)round(_characters[0].getX());
+				fx = (GLuint)round(_characters[index].getX());
 				fy = (GLuint)(newY + 0.9f);
 				return true;
 			}
-			else if (_map->isObstacle((GLuint)ceil(_characters[0].getX() - 0.1f), (GLuint)(newY + 0.9f)) )
+			else if (_map->isObstacle((GLuint)ceil(_characters[index].getX() - 0.1f), (GLuint)(newY + 0.9f)) )
 			{
-				fx = (GLuint)ceil(_characters[0].getX() - 0.1f);
+				fx = (GLuint)ceil(_characters[index].getX() - 0.1f);
 				fy = (GLuint)(newY + 0.9f);
 				return true;
 			}
@@ -418,5 +419,145 @@ void GameEngine::ProcessItemPickup()
 		_characters[0].consumeItem(_items[nearestid]);
 		_items[nearestid].setOnMap(false);
 		_map->setTileContent((GLuint)_items[nearestid].getX(), (GLuint)_items[nearestid].getY(), Tile::Content::Nothing);
+	}
+}
+
+void GameEngine::ProcessEnemiesMove(double deltaTime)
+{
+	//Zmienne upraszczaj¹ce kod
+	double px = _characters[0].getX();
+	double py = _characters[0].getY();
+	for (GLuint i = 1; i < (GLuint)_characters.size(); ++i)
+	{
+		double mx = _characters[i].getX();
+		double my = _characters[i].getY();
+		double mv = _characters[i].getVelocity();
+		for (GLuint j = 0; j < 2; ++j)
+		{
+			std::cout <<"j: "<< j << '\n';
+			bool move = true;
+			double newX = mx;
+			double newY = my;
+
+			//Wieksze od 0 to Gracz z lewej strony
+			//mx - px;
+			//Wieksze od 0 to Gracz u góry
+			//my - py;
+			double dirx = mx - px;
+			double diry = my - py;
+
+			//Rozpatrzmy os X
+			Direction DirX;
+			if (dirx > 0)DirX = LEFT;
+			else if (dirx < 0)DirX = RIGHT;
+			else DirX = NONE;
+
+			//Rozpatrzmy os Y
+			Direction DirY;
+			if (diry > 0)DirY = UP;
+			else if (diry < 0)DirY = DOWN;
+			else DirY = NONE;
+
+			//reasumujac
+			Direction dir;
+			if (j == 0)
+			{
+				if (abs(dirx) < abs(diry) && abs(dirx) > 1.0)
+				{
+					if (DirX != NONE) dir = DirX;
+					else dir = NONE;
+					if (abs(dirx) < 0.5)break;
+				}
+				else
+				{
+					if (abs(diry) > 0.2) dir = DirY;
+					else dir = NONE;
+					if (abs(diry) < 0.5)break;
+				}
+			}
+			else
+			{
+				if (abs(dirx) > abs(diry))
+				{
+					if (DirX != NONE) dir = DirX;
+					else dir = NONE;
+					if (abs(dirx) < 0.1)break;
+				}
+				else 
+				{
+					if (abs(diry) > 0.2) dir = DirY;
+					else dir = NONE;
+
+					if (abs(diry) < 0.1)break;
+				}
+			}
+
+			std::cout << dir << '\n';
+			switch (dir)
+			{
+			case UP:
+			{
+				newY -= deltaTime * mv;
+				break;
+			}
+			case DOWN:
+			{
+				newY += deltaTime * mv;
+				break;
+			}
+			case LEFT:
+			{
+				newX -= deltaTime * mv;
+				break;
+			}
+			case RIGHT:
+			{
+				newX += deltaTime * mv;
+				break;
+			}
+			case NONE:
+			{
+				break;
+			}
+			}
+
+			GLuint fixedX;
+			GLuint fixedY;
+			//Sprawdz czy pod now¹ pozycj¹ jest kolizja
+			bool collision = CheckForColissionX(i, newX, dir, fixedX, fixedY) || CheckForColissionY(i, newY, dir, fixedX, fixedY);
+			if (collision)
+			{
+				//std::cout << "Kolizja!" << '\n';
+				switch (_map->getTileContent(fixedX, fixedY))
+				{
+					//Nigdy sie nie wydarzy ale co tam
+				case Tile::Content::Nothing:
+				{
+					break;
+				}
+				case Tile::Content::Obstacle:
+				{
+					//Tutaj return
+					move = false;
+					break;
+				}
+				case Tile::Content::Item:
+				{
+					//Tutaj proces przechwycenia itemka
+					//_canPickup = true;
+					break;
+				}
+				default:
+					break;
+				}
+			}
+			if (move)
+			{
+				_characters[i].setX(newX);
+				_characters[i].setY(newY);
+				break;
+			}
+			
+		}
 	}
 }

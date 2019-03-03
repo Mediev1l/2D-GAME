@@ -9,6 +9,7 @@ protected:
 public:
 	Hero()=delete;
 	Hero(double x, double y, double vel, std::string texturepath);
+	void Bechaviour(const Character& player, double deltaTime) {};
 	~Hero() {};
 };
 #endif
