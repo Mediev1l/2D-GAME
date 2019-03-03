@@ -1,7 +1,7 @@
 #ifndef HERO_H
 #define HERO_H
-#include "Character.h"
-#include "Item.h"
+#include "Characters/Character.h"
+#include "Items/Item.h"
 class Hero : public Character
 {
 protected:

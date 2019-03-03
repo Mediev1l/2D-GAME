@@ -10,10 +10,10 @@ Obiekt odpowiedzialny za wszystkie przedmioty w grze
 
 #include  <fstream>
 
-#include "Object.h"
-#include "Stats.h"
-#include "Coords.h"
-#include "Maps\Tile.h"
+#include "Basics/Object.h"
+#include "Stats/Stats.h"
+#include "Basics/Coords.h"
+#include "Maps/Tile.h"
 
 class Item : public Object, public Stats
 {

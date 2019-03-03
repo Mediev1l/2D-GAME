@@ -10,10 +10,10 @@ Obiekt odpowiadajacy za Postac (Glowny Bohater)
 #ifndef _Character_H
 #define _Character_H
 
-#include "Stats.h"
-#include "Coords.h"
+#include "Stats/Stats.h"
+#include "Basics/Coords.h"
 #include "Maps/Tile.h"
-#include "Item.h"
+#include "Items/Item.h"
 #include <vector>
 
 class Character: public Coords, public Stats

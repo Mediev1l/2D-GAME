@@ -135,15 +135,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Character.cpp" />
+    <ClCompile Include="src\Characters\Character.cpp" />
     <ClCompile Include="src\GameEngine\GameEngine.cpp" />
-    <ClCompile Include="src\Hero.cpp" />
-    <ClCompile Include="src\Item.cpp" />
+    <ClCompile Include="src\Characters\Hero.cpp" />
+    <ClCompile Include="src\Items\Item.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Maps\Map.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shaders\Shader.cpp" />
-    <ClCompile Include="src\Stats.cpp" />
+    <ClCompile Include="src\Stats\Stats.cpp" />
     <ClCompile Include="src\Utility\Timer.cpp" />
     <ClCompile Include="src\Maps\Tile.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
@@ -156,16 +156,15 @@
     <ClInclude Include="src\GameEngine\GameEngine.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Maps\Map.h" />
-    <ClInclude Include="src\Hero.h" />
-    <ClInclude Include="src\Character.h" />
-    <ClInclude Include="src\Coords.h" />
-    <ClInclude Include="src\Enemy.h" />
-    <ClInclude Include="src\Item.h" />
-    <ClInclude Include="src\Object.h" />
-    <ClInclude Include="src\Obstacle.h" />
+    <ClInclude Include="src\Characters\Hero.h" />
+    <ClInclude Include="src\Characters\Character.h" />
+    <ClInclude Include="src\Basics\Coords.h" />
+    <ClInclude Include="src\Characters\Enemy.h" />
+    <ClInclude Include="src\Items\Item.h" />
+    <ClInclude Include="src\Basics\Object.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
-    <ClInclude Include="src\Skill.h" />
-    <ClInclude Include="src\Stats.h" />
+    <ClInclude Include="src\Stats\Skill.h" />
+    <ClInclude Include="src\Stats\Stats.h" />
     <ClInclude Include="src\Utility\Timer.h" />
     <ClInclude Include="src\Maps\Tile.h" />
     <ClInclude Include="src\Renderer\Texture.h" />

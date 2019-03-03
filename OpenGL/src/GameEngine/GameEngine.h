@@ -9,7 +9,7 @@
 //================================================================
 #include "Renderer/Renderer.h"
 #include "Utility/Timer.h"
-#include "Hero.h"
+#include "Characters/Hero.h"
 
 
 //================================================================
