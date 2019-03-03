@@ -8,7 +8,7 @@ protected:
 
 public:
 	Hero()=delete;
-	Hero(float x, float y, float vel, std::string texturepath);
+	Hero(double x, double y, double vel, std::string texturepath);
 	~Hero() {};
 };
 #endif

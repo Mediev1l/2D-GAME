@@ -5,7 +5,7 @@
 Renderer::Renderer()
 	:
 	_mainShader("src/Shaders/vs.vs","src/Shaders/fs.fs")
-	,_maps{ "res/Sprites/Map1/map1.txt","" }
+	,_maps{ "res/Sprites/Map1/map1.txt","res/Sprites/Map1/" }
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -25,6 +25,10 @@ Renderer::Renderer()
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	//To ma byæ wywo³ane przed u¿yciem jakiejkolwiek tekstury
+	_mainShader.use();
+	_mainShader.setInt("texture1", 0);
 }
 
 
@@ -34,17 +38,14 @@ Renderer::~Renderer()
 
 
 
-void Renderer::RenderMap(size_t width, size_t height)
+void Renderer::RenderMap()
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	_mainShader.use();
-	_mainShader.setInt("texture1", 0);
-
-	for (int y = 0; y < width; y++)
+	for (GLuint y = 0; y < (GLuint)_maps.getHeight(); y++)
 	{
-		for (int x = 0; x < height; x++)
+		for (GLuint x = 0; x < (GLuint)_maps.getWidth(); x++)
 		{
 
 			//Eksperymentalnie udowodniono ze dziala xD
@@ -60,7 +61,7 @@ void Renderer::RenderMap(size_t width, size_t height)
 			_mainShader.setMat4("model", model);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, _maps.getTextureID(y * 10 + x));
+			glBindTexture(GL_TEXTURE_2D,_maps.getTexture(x,y));
 
 			_mainShader.use();
 			glBindVertexArray(VAO);
@@ -70,18 +71,15 @@ void Renderer::RenderMap(size_t width, size_t height)
 	}
 }
 
-void Renderer::RenderCharacter(std::vector<Character>& _characters)
+void Renderer::RenderCharacter(std::vector<Character>& characters)
 {
-	//Powiedzmy ze mapa bedzie 10/10 kafeletk
-
-
-
-	//Drawing the player
+	//Rysowanie od ty³u = gracz zawsze na wierzchu
+	for(int i = (int)characters.size()-1; i>-1;--i)
 	{
 		//Eksperymentalnie udowodniono ze dziala xD
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-0.9f, 0.9f, 0.0f));
-		model = glm::translate(model, glm::vec3(0.2f*(_characters[0].getX()), -0.2f*(_characters[0].getY()), 0.0f));
+		model = glm::translate(model, glm::vec3(0.2f*(characters[i].getX()), -0.2f*(characters[i].getY()), 0.0f));
 
 
 		//Skalowanko lepiej na koncu xD
@@ -91,7 +89,7 @@ void Renderer::RenderCharacter(std::vector<Character>& _characters)
 		_mainShader.setMat4("model", model);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _characters[0].getTexture());
+		glBindTexture(GL_TEXTURE_2D, characters[i].getTexture());
 
 		_mainShader.use();
 		glBindVertexArray(VAO);
@@ -101,28 +99,32 @@ void Renderer::RenderCharacter(std::vector<Character>& _characters)
 
 }
 
-void Renderer::RenderItem(Item & _item)
+void Renderer::RenderItems(std::vector<Item>& items)
 {
-	if(_item.getOnMap() == true)
+	//Od ty³u bo sobie skopiowa³em z characters kappa
+	for (int i = (int)items.size()-1; i > -1; --i)
 	{
-		//Eksperymentalnie udowodniono ze dziala xD
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-0.9f, 0.9f, 0.0f));
-		model = glm::translate(model, glm::vec3(0.2f*(_item.getX()), -0.2f*(_item.getY()), 0.0f));
+		if (items[i].getOnMap() == true)
+		{
+			//Eksperymentalnie udowodniono ze dziala xD
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(-0.9f, 0.9f, 0.0f));
+			model = glm::translate(model, glm::vec3(0.2f*(items[i].getX()), -0.2f*(items[i].getY()), 0.0f));
 
 
-		//Skalowanko lepiej na koncu xD
-		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+			//Skalowanko lepiej na koncu xD
+			model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 
 
-		_mainShader.setMat4("model", model);
+			_mainShader.setMat4("model", model);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _item.getTexture());
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, items[i].getTexture());
 
-		_mainShader.use();
-		glBindVertexArray(VAO);
+			_mainShader.use();
+			glBindVertexArray(VAO);
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		}
 	}
 }

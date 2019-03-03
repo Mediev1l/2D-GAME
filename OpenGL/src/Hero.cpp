@@ -1,9 +1,11 @@
 #include "Hero.h"
 
-Hero::Hero(float x, float y, float vel, std::string texturepath): Character(texturepath)
+Hero::Hero(double x, double y, double vel, std::string texturepath)
+	: 
+	Character(texturepath)
 {
 	posX = x;
 	posY = y;
-	Velocity = vel;
+	m_speed = vel;
 	//std::cout << "Id textury hero: " << getTexture() << '\n';
 }

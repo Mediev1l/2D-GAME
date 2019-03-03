@@ -1,23 +1,44 @@
 #ifndef _TILE_H
 #define _TILE_H
-#include <string>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <stb_image.h>
 #include "Shaders/Shader.h"
-#define STB_IMAGE_IMPLEMENTATION
+#include "Renderer/Texture.h"
+
 
 class Tile
 {
 public:
+	enum Content
+	{
+		Nothing = 0,
+		Obstacle = 1,
+		Item = 2
+	};
 	Tile() = delete;
-	Tile(std::string Path,bool solid, bool transparent);
+	Tile(bool solid,Content con, GLuint x, GLuint y, GLuint texture, GLuint& w);
 	~Tile();
-	unsigned int getID() { return id; };
-	bool isObstacle() { return obstacle; }
+
+	//================================================================
+	//= Podstawowe Gettery
+	//================================================================
+	GLuint getTextureID() { return _textureID; };
+	Content getContent() { return _content; };
+	bool isSolid() { return _solid; }
+
+	//================================================================
+	//= Podstawowe Settery
+	//================================================================
+	void setContent(Content content) 
+	{
+		_content = content;
+		if (content == Item)_solid = true; 
+		if (content == Obstacle)_solid = true; 
+		if (content == Nothing)_solid = false;
+	};
+
 private:
-	unsigned int id;
-	bool obstacle;
+	GLuint _textureID;
+	GLuint _tileID;
+	bool _solid;
+	Content _content;
 };
 #endif

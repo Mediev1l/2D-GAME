@@ -40,12 +40,32 @@ protected:
 	double lastX;
 	double lastY;
 	bool firstMouse;
+	bool _canPickup;
+
+	//================================================================
+	//= Game Objects
+	//================================================================
 	std::string WindowName;
 	std::vector<Character> _characters;
 	Map* _map;
-	Item* _item;
-	void CheckForPlayerColissionX(float deltaTime, bool left);
-	void CheckForPlayerColissionY(float deltaTime, bool top);
+	std::vector<Item> _items;
+
+
+	//================================================================
+	//= Game Processor
+	//================================================================
+	enum Direction
+	{
+		UP=0,
+		DOWN=1,
+		LEFT=2,
+		RIGHT=3
+	};
+	void ProcessPlayerMove(double deltaTime,Direction dir);
+	bool CheckForPlayerColissionX(double newX, Direction dir,GLuint& fx, GLuint& fy);
+	bool CheckForPlayerColissionY(double newY, Direction dir, GLuint& fx, GLuint& fy);
+
+	void ProcessItemPickup();
 
 public:
 

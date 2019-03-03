@@ -1,8 +1,14 @@
 #include "Item.h"
 
-Item::Item(const std::string & TexturePath,const std::string& ItemPath, size_t itemID)
-	: texture(TexturePath + "item_" + std::to_string(itemID) + ".png", false, true), id(itemID), Stats() , onMap(true)
+Item::Item(const std::string& TexturePath,const std::string& ItemPath, GLuint itemID)
+	: 
+	   id(itemID)
+	 , Stats() 
+	 , onMap(true)
+	 , _texture(TexturePath + "item_" + std::to_string(itemID) + ".png",true)
 {
+
+
 	std::fstream itemFile;
 	std::string text;
 
@@ -29,15 +35,13 @@ Item::Item(const std::string & TexturePath,const std::string& ItemPath, size_t i
 	m_shield = stoi(text);
 
 	std::getline(itemFile, text);
-	m_speed = stof(text);
+	m_speed = stod(text);
 
 	std::getline(itemFile, text);
-	m_att_speed = stof(text);
+	m_att_speed = stod(text);
 
 	std::getline(itemFile, text);
-	m_damage = stof(text);
+	m_damage = stod(text);
 
 	itemFile.close();
-
-
 }

@@ -15,31 +15,34 @@ Obiekt odpowiedzialny za wszystkie przedmioty w grze
 #include "Coords.h"
 #include "Maps\Tile.h"
 
-class Item : public Object, Stats
+class Item : public Object, public Stats
 {
 protected:
-	size_t id;
+	GLuint id;
 	std::string description;
-	Tile texture;
+	Texture _texture;
 	bool onMap;
 
 public:
-	Item(const std::string& TexturePath,const std::string& ItemPath, size_t itemID);
+	Item(const std::string& TexturePath,const std::string& ItemPath, GLuint itemID);
 
-	float getX() { return posX; };
-	float getY() { return posY; };
+	double getX() { return posX; };
+	double getY() { return posY; };
 	bool getOnMap() { return onMap; };
-	size_t getID() { return id; };
+	GLuint getID() { return id; };
 	std::string getDescription() { return description; }
-	float getVelocity() { return Velocity; };
+	double getVelocity() { return Velocity; };
+
+
+
 
 	void setY(float y) { posY = y; };
 	void setX(float x) { posX = x; };
-	void setID(size_t id) { this->id = id; };
+	void setID(GLuint id) { this->id = id; };
 	void setDescription(std::string& desc) { description = desc; };
 	void setOnMap(bool ex) { onMap = ex; };
 
-	unsigned int getTexture() { return texture.getID(); };
+	unsigned int getTexture() { return _texture.getID(); };
 
 
 

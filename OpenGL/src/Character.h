@@ -13,23 +13,35 @@ Obiekt odpowiadajacy za Postac (Glowny Bohater)
 #include "Stats.h"
 #include "Coords.h"
 #include "Maps/Tile.h"
+#include "Item.h"
+#include <vector>
 
-class Character: public Coords, Stats
+class Character: public Coords, public Stats
 {
 public:
-	Character(std::string TexturePath) : texture(TexturePath,true,true) {};
-	float getX() { return posX; };
-	float getY() { return posY; };
-	float getVelocity() { return Velocity; };
+	Character(std::string TexturePath) : _texture(TexturePath,true), Stats(), Coords() {};
+	double getX() { return posX; };
+	double getY() { return posY; };
+	double getVelocity() { return m_speed; };
 
-	void setY(float y) { posY = y; };
-	void setX(float x) { posX = x; };
+	void setY(double y) { posY = y; };
+	void setX(double x) { posX = x; };
 
-	void UpdateX(float ux) { posX += ux; };
-	void UpdateY(float uy) { posY += uy; };
-	unsigned int getTexture() { return texture.getID(); };
+	void UpdateX(double ux) { posX += ux; };
+	void UpdateY(double uy) { posY += uy; };
+	GLuint getTexture() { return _texture.getID(); };
+
+	//Mozna skopiowaæ do Hero kwestia przekminy
+	void consumeItem(const Item& item);
+	//Koniec do przekminiania
+
 protected:
+
+	//Mozna skopiowaæ do Hero kwestia przekminy
+	std::vector<Item> _items;
+	//Koniec do przekminiania
+
 	//Coords
-	Tile texture;
+	Texture _texture;
 };
 #endif

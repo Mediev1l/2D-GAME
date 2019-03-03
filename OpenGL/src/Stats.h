@@ -12,12 +12,16 @@ class Stats
 protected:
 	int m_health;
 	int m_shield; // albo tylko hp
-	float m_speed;
-	float m_att_speed;
-	float m_damage;
-
+	double m_speed;
+	double m_att_speed;
+	double m_damage;
 public:
 	Stats();	
+	int getHealth()const { return m_health; };
+	int getShield()const { return m_shield; };
+	double getAttackSpeed()const { return m_att_speed; };
+	double getMovementSpeed()const { return m_speed; };
+	double getDamage()const { return m_damage; };
 
 };
 

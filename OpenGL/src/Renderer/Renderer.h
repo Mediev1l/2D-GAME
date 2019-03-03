@@ -12,9 +12,9 @@ public:
 	Renderer();
 	~Renderer();
 
-	void RenderMap(size_t width, size_t height);
+	void RenderMap();
 	void RenderCharacter(std::vector<Character>& _characters);
-	void RenderItem(Item& _item);
+	void RenderItems(std::vector<Item>& items);
 	Map& getMap() { return _maps; };
 private:
 

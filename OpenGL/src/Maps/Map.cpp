@@ -2,34 +2,40 @@
 using namespace std;
 Map::Map(std::string TileIdsPath, std::string BitmapsPath)
 {
+	//Otwarcie pliku z Map¹
 	ifstream TileIds(TileIdsPath);
 	if (TileIds.good() == false)
 	{
 		throw std::runtime_error("Couldn't open the file: " + TileIdsPath);
 	}
 
-	int x;
-	int solid;
-	while (TileIds >> x)
-	{
-		TileIds >> solid;
-		_TileIds.emplace_back(x,solid==0?false:true);
-	}
-	int numberofsprites = 11;
-	for (int i = 0; i < numberofsprites; ++i)
-	{
-		_Tiles.emplace_back("res/Sprites/Map1/"+to_string(i)+".jpg",Get(i).second,false);
-	}
-	//std::cout<<"Id 1 kafelki mapy: "<<_Tiles[0].getID()<<'\n';
-}
+	//Wczytanie wymiarów mapy
+	TileIds >> _width;
+	TileIds >> _height;
+	TileIds >> _nTextures;
 
+	GLuint solid;
+	GLuint textureID;
+	//Initialize all Tiles
+	for(GLuint y=0;y<_height;++y)
+		for (GLuint x = 0; x < _width; ++x)
+		{
+			TileIds >> textureID;
+			TileIds >> solid;
+			_Tiles.emplace_back(solid == 0 ? false : true
+								,solid==0?Tile::Content::Nothing:Tile::Content::Obstacle
+								,x,y, textureID, _width);
+		}
+
+	//Initialize All Textures
+	for (GLuint i = 0; i < _nTextures; ++i)
+		_textures.emplace_back(BitmapsPath + to_string(i) + ".jpg", false);
+}
 Map::~Map()
 {
 }
 
-std::pair<int, bool>& Map::Get(int i)
+void Map::setTileContent(GLuint x, GLuint y, Tile::Content content)
 {
-	for (int j = 0; j < _TileIds.size(); ++j) if (_TileIds[j].first == i) return _TileIds[j];
-	std::pair<int, bool> a(-1, false);
-	return a;
+	_Tiles[y*_width + x].setContent(content);
 }

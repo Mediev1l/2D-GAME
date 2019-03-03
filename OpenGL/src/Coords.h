@@ -12,8 +12,8 @@ Prosty obiekt z koordynatami
 struct Coords
 {
 public:
-	float posX;
-	float posY;
+	double posX;
+	double posY;
 	float Velocity;
 };
 

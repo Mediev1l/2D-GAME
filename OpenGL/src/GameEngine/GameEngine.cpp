@@ -65,12 +65,14 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero(5.0f, 6.0f, 3.0f, "res/Sprites/Player/issac.png"));
+	_characters.push_back(Hero(5.0, 6.0, 3.0, "res/Sprites/Player/issac.png"));
 
-	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z 
-	_item = new Item("res/Sprites/Items/", "res/Items/", 0);
-	_item->setX(5);
-	_item->setY(6);
+	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
+	//Na sztywno ustawianie na mapie ze jest tam item
+	_items.emplace_back("res/Sprites/Items/", "res/Items/", 0);
+	_items[0].setX(5);
+	_items[0].setY(7);
+	_map->setTileContent(5, 7, Tile::Content::Item);
 
 }
 
@@ -104,8 +106,8 @@ void GameEngine::Game_Run()
 
 
 		//Renderowanie || rozdzielone by gracz byl rysowany na koncu
-		renderer->RenderMap(10, 10);
-		renderer->RenderItem(*_item);
+		renderer->RenderMap();
+		renderer->RenderItems(_items);
 		renderer->RenderCharacter(_characters);
 
 
@@ -126,27 +128,44 @@ void GameEngine::processInput()
 	{
 		std::cout << "PlayerX: " << _characters[0].getX() << '\n';
 		std::cout << "PlayerY: " << _characters[0].getY() << '\n';
+		std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
+		std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
 	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	//Ja to napisze ³adniej ale póŸniej Ok? XD
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	{
+		if (_canPickup)
+		{
+			ProcessItemPickup();
+		}
+	}
+
 	float deltaTime = t.getDelta();
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS
+		||
+		glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		CheckForPlayerColissionY(deltaTime, true);
+		ProcessPlayerMove(deltaTime, Direction::UP);
 	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS
+		||
+		glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		CheckForPlayerColissionY(deltaTime, false);
+		ProcessPlayerMove(deltaTime, Direction::DOWN);
 	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS
+		||
+		glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
-		CheckForPlayerColissionX(deltaTime, true);
+		ProcessPlayerMove(deltaTime, Direction::LEFT);
 	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS
+		||
+		glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
-		CheckForPlayerColissionX(deltaTime, false);
+		ProcessPlayerMove(deltaTime, Direction::RIGHT);
 	}
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -191,72 +210,213 @@ void GameEngine::scroll_callback(double xoffset, double yoffset)
 	//camera.ProcessMouseScroll(yoffset);
 }
 
-void GameEngine::CheckForPlayerColissionX(float deltaTime, bool left)
+void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 {
-	//Przesuniêcie
-	float newX = _characters[0].getVelocity()*deltaTime;
+	//Zmienne upraszczaj¹ce kod
+	double px = _characters[0].getX();
+	double py = _characters[0].getY();
+	double pv = _characters[0].getVelocity();
+	double newX = px;
+	double newY = py;
 
-	//Domniemana nowa pozycja
-	float newXTest = _characters[0].getX()+(left?-newX:newX);
+	//Ustaw flage na 0
+	_canPickup = false;
 
-	//Sprawdz czy pod tym X jest obstacle
-	if ( 
-		left?
-		//Ide w lewo i nachodze na klocek od spodu
-		//  G³az y: 2
-		//  Gracz y: 2.xyz
-		_map->isObstacle((int)(newXTest+0.1f), int(_characters[0].getY()+0.1f ))
-		||
-		//Ide w lewo i nachodze klocek od góry
-		// Gracz 1.89
-		// G³az 2
-		_map->isObstacle((int)(newXTest + 0.1f), round(_characters[0].getY()))
-		||
-		//Jakis trzeci Przypadek lol
-		_map->isObstacle((int)(newXTest + 0.1f), ceil(_characters[0].getY()-0.1f))
-		
-		:
-
-		_map->isObstacle((int)(newXTest+0.9f), int(_characters[0].getY()+0.1f ))
-		||
-		_map->isObstacle((int)(newXTest + 0.9f), round(_characters[0].getY() ))
-		||
-		_map->isObstacle((int)(newXTest + 0.9f), ceil(_characters[0].getY()-0.1f ))
-		)
+	switch (dir)
 	{
-		std::cout << "Kolizja!" << std::endl;
-		//_characters[0].setX(left?(int)newXTest + 1.0f:(int)newXTest-1.0f);
+		case UP:
+		{
+			newY -= deltaTime * pv;
+			break;
+		}
+		case DOWN:
+		{
+			newY += deltaTime * pv;
+			break;
+		}
+		case LEFT:
+		{
+			newX -= deltaTime * pv;
+			break;
+		}
+		case RIGHT:
+		{
+			newX += deltaTime * pv;
+			break;
+		}
 	}
-	else _characters[0].UpdateX(left?-newX:newX);
+
+	GLuint fixedX;
+	GLuint fixedY;
+	//Sprawdz czy pod now¹ pozycj¹ jest kolizja
+	bool collision = CheckForPlayerColissionX(newX,dir,fixedX,fixedY) || CheckForPlayerColissionY(newY,dir, fixedX, fixedY);
+	if (collision)
+	{
+		std::cout << "Kolizja!" << '\n';
+		switch (_map->getTileContent(fixedX, fixedY))
+		{
+			//Nigdy sie nie wydarzy ale co tam
+			case Tile::Content::Nothing:
+			{
+				break;
+			}
+			case Tile::Content::Obstacle:
+			{
+				//Tutaj return
+				return;
+				break;
+			}
+			case Tile::Content::Item:
+			{
+				//Tutaj proces przechwycenia itemka
+				_canPickup = true;
+				break;
+			}
+		}
+	}
+	_characters[0].setX(newX);
+	_characters[0].setY(newY);
 }
 
-void GameEngine::CheckForPlayerColissionY(float deltaTime, bool top)
+bool GameEngine::CheckForPlayerColissionX(double newX, Direction dir, GLuint& fx, GLuint& fy)
 {
-	//Przesuniêcie
-	float newY = _characters[0].getVelocity()*deltaTime;
-
-	//Domniemana nowa pozycja
-	float newYTest = _characters[0].getY() + (top ? -newY : newY);
-
-	//Sprawdz czy pod tym Y jest obstacle
-	if (
-		top ?
-		_map->isObstacle( int(_characters[0].getX()+0.1f), (int)(newYTest + 0.1f))
-		||
-		_map->isObstacle(round(_characters[0].getX()), (int)(newYTest + 0.1f))
-		||
-		_map->isObstacle(ceil(_characters[0].getX() - 0.1f), (int)(newYTest + 0.1f))
-		:
-		_map->isObstacle(int(_characters[0].getX()+0.1f), (int)(newYTest + 0.9f))
-		||
-		_map->isObstacle( round(_characters[0].getX()), (int)(newYTest + 0.9f))
-		||
-		_map->isObstacle(ceil(_characters[0].getX()-0.1f), (int)(newYTest + 0.9f))
-		)
-
+	bool left = dir == LEFT ? true : false;
+	//Sprawdz czy pod tym X jest obstacle
+	if (dir == LEFT || dir == RIGHT)
 	{
-		std::cout << "Kolizja!" << std::endl;
-		//_characters[0].setY(top?(int)newYTest + 1.0f:(int)newYTest-1.0f);
+			if (left)
+			{
+				//Ide w lewo i nachodze na klocek od spodu
+				//  G³az y: 2
+				//  Gracz y: 2.xyz
+				if (_map->isObstacle((GLuint)(newX + 0.1f), (GLuint)(_characters[0].getY() + 0.1f)))
+				{
+					fx = (GLuint)(newX + 0.1f);
+					fy = (GLuint)(_characters[0].getY() + 0.1f);
+					return true;
+				}	
+				//Ide w lewo i nachodze klocek od góry
+				// Gracz 1.89
+				// G³az 2
+				else if (_map->isObstacle((GLuint)(newX + 0.1), (GLuint)round(_characters[0].getY())))
+				{
+					fx = (GLuint)(newX + 0.1f);
+					fy = (GLuint)round(_characters[0].getY());
+					return true;
+				}	
+				//Jakis trzeci Przypadek lol
+				else if (_map->isObstacle((GLuint)(newX + 0.1f), (GLuint)ceil(_characters[0].getY() - 0.1f)))
+				{
+					fx = (GLuint)(newX + 0.1f);
+					fy = (GLuint)ceil(_characters[0].getY() - 0.1f);
+					return true;
+				}
+			}
+			else
+			{
+
+				if (_map->isObstacle((GLuint)(newX + 0.9f), GLuint(_characters[0].getY() + 0.1f)))
+				{
+					fx = (GLuint)(newX + 0.9f);
+					fy = GLuint(_characters[0].getY() + 0.1f);
+					return true;
+				}
+				else if (_map->isObstacle((GLuint)(newX + 0.9f), (GLuint)round(_characters[0].getY())))
+				{
+					fx = (GLuint)(newX + 0.9f);
+					fy = (GLuint)round(_characters[0].getY());
+					return true;
+				}
+				else if (_map->isObstacle((GLuint)(newX + 0.9f), (GLuint)ceil(_characters[0].getY() - 0.1f)))
+				{
+					fx = (GLuint)(newX + 0.9f);
+					fy = (GLuint)ceil(_characters[0].getY() - 0.1f);
+					return true;
+				}
+			}
+			return false;
+		}
+		 return false;
+}
+
+bool GameEngine::CheckForPlayerColissionY(double newY, Direction dir, GLuint& fx, GLuint& fy)
+{
+	bool top = dir == UP ? true : false;
+
+	if (dir == UP || dir == DOWN)
+	{
+		//Sprawdz czy pod tym Y jest obstacle
+		if (top)
+		{
+			if (_map->isObstacle(int(_characters[0].getX() + 0.1f), (GLuint)(newY + 0.1f))  )
+			{
+				fx = GLuint(_characters[0].getX() + 0.1f);
+				fy = (GLuint)(newY + 0.1f);
+				return true;
+			}
+			else if (_map->isObstacle((GLuint)round(_characters[0].getX()), (GLuint)(newY + 0.1f)))
+			{
+				fx = (GLuint)round(_characters[0].getX());
+				fy = (GLuint)(newY + 0.1f);
+				return true;
+			}
+			else if (_map->isObstacle((GLuint)ceil(_characters[0].getX() - 0.1f), (GLuint)(newY + 0.1f)))
+			{
+				fx = (GLuint)ceil(_characters[0].getX() - 0.1f);
+				fy = (GLuint)(newY + 0.1f);
+				return true;
+			}
+		}
+		else
+		{
+			if (_map->isObstacle(GLuint(_characters[0].getX() + 0.1f), (GLuint)(newY + 0.9f)) )
+			{
+				fx = GLuint(_characters[0].getX() + 0.1f);
+				fy = (GLuint)(newY + 0.9f);
+				return true;
+			}
+			else if (_map->isObstacle((GLuint)round(_characters[0].getX()), (GLuint)(newY + 0.9f)) )
+			{
+				fx = (GLuint)round(_characters[0].getX());
+				fy = (GLuint)(newY + 0.9f);
+				return true;
+			}
+			else if (_map->isObstacle((GLuint)ceil(_characters[0].getX() - 0.1f), (GLuint)(newY + 0.9f)) )
+			{
+				fx = (GLuint)ceil(_characters[0].getX() - 0.1f);
+				fy = (GLuint)(newY + 0.9f);
+				return true;
+			}
+		}
+		return false;
 	}
-	else _characters[0].UpdateY(top ? -newY : newY);
+	return false;
+}
+
+void GameEngine::ProcessItemPickup()
+{
+	double px = _characters[0].getX();
+	double py = _characters[0].getY();
+
+	GLuint nearestid=-1;
+	double distance=100.0;
+	for (GLuint i = 0; i < _items.size(); ++i)
+	{
+		if (_items[i].getOnMap())
+		{
+			double localdist = abs(_items[i].getX() - px) + abs(_items[i].getY() - py);
+			if (localdist < distance)
+			{
+				distance = localdist;
+				nearestid = i;
+			}
+		}
+	}
+	
+	if (nearestid != -1)
+	{
+		_characters[0].consumeItem(_items[nearestid]);
+		_items[nearestid].setOnMap(false);
+		_map->setTileContent((GLuint)_items[nearestid].getX(), (GLuint)_items[nearestid].getY(), Tile::Content::Nothing);
+	}
 }
