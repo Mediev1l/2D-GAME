@@ -67,6 +67,9 @@ protected:
 	void ProcessItemPickup();
 
 	void ProcessEnemiesMove(double deltaTime);
+	void OpenDoors();
+	void CloseDoors();
+	void closeDoors();
 
 public:
 

@@ -16,7 +16,25 @@ public:
 	void RenderCharacter(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item>& items);
 	Map& getMap() { return _maps; };
+
+	void CloseDoors() { DoorState = Object::DoorClosed; };
+	void OpenDoors() { DoorState = Object::DoorOpened; };
 private:
+
+	enum Object
+	{
+		DoorOpened = 0,
+		DoorClosed = 1
+	};
+
+	void DrawDoors(Object& obj);
+	//Drawing values
+	double ScaleFactorX;
+	double ScaleFactorY;
+	double StartPosX;
+	double StartPosY;
+	double TranslateValueX;
+	double TranslateValueY;
 
 	//Main renderShader
 	Shader _mainShader;
@@ -25,7 +43,13 @@ private:
 	//Current and next map
 	Map _maps;
 
-	
+
+
+
+	//Basic objects on EveryMap
+	//Vektor na drzwi,tabliczki etc
+	Object DoorState;
+	std::vector<Texture> _objects;
 
 	//Vbo vao ebo itp
 	unsigned int VBO, VAO, EBO;
