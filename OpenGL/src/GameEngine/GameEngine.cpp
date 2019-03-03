@@ -433,9 +433,15 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 		double my = _characters[i].getY();
 		double mv = _characters[i].getVelocity();
 
-		bool move = true;
+		bool move1 = true;
+		bool move2 = true;
 		double newX = mx;
 		double newY = my;
+
+		//Trochê Matmy
+		double VelLength = sqrt((mx - px)*(mx - px) + (my - py)*(my - py));
+		double HowMuchInX = abs((mx - px) / VelLength);
+		double HowMuchInY = abs((my - py) / VelLength);
 
 		//Wieksze od 0 to Gracz z lewej strony
 		//mx - px;
@@ -459,10 +465,10 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 		//reasumujac
 		Direction dir[2];
 			
-		if (DirX != NONE && abs(dirx)>0.1) dir[0] = DirX;
+		if (DirX != NONE && abs(dirx)>0.05) dir[0] = DirX;
 		else dir[0] = NONE;
 		
-		if (DirY != NONE && abs(diry) > 0.1) dir[1] = DirY;
+		if (DirY != NONE && abs(diry) > 0.05) dir[1] = DirY;
 		else dir[1] = NONE;
 
 		for(GLuint i=0;i<2;i++)
@@ -471,22 +477,22 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 			{
 			case UP:
 			{
-				newY -= deltaTime * mv;
+				newY -= deltaTime * mv * HowMuchInY;
 				break;
 			}
 			case DOWN:
 			{
-				newY += deltaTime * mv;
+				newY += deltaTime * mv* HowMuchInY;
 				break;
 			}
 			case LEFT:
 			{
-				newX -= deltaTime * mv;
+				newX -= deltaTime * mv* HowMuchInX;
 				break;
 			}
 			case RIGHT:
 			{
-				newX += deltaTime * mv;
+				newX += deltaTime * mv* HowMuchInX;
 				break;
 			}
 			case NONE:
@@ -514,7 +520,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 				case Tile::Content::Obstacle:
 				{
 					//Tutaj return
-					move = false;
+					move1 = false;
 					break;
 				}
 				case Tile::Content::Item:
@@ -527,13 +533,9 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					break;
 				}
 			}
-			if (move)
-			{
-				_characters[i].setX(newX);
-			}
+			
 
 			//Move in Y
-			move = true;
 			fixedX = 0;
 			fixedY = 0;
 			bool collisionY = CheckForColissionY(i, newY, dir[1], fixedX, fixedY);
@@ -550,7 +552,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 				case Tile::Content::Obstacle:
 				{
 					//Tutaj return
-					move = false;
+					move2 = false;
 					break;
 				}
 				case Tile::Content::Item:
@@ -563,12 +565,16 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					break;
 				}
 			}
-			if (move)
+			if (move1)
+			{
+				_characters[i].setX(newX);
+			}
+			if (move2)
 			{
 				_characters[i].setY(newY);
 			}
-			std::cout << "mobX: " << mx << " moby: " << my << '\n';
-			std::cout << "NewX: " << newX << " newY: " << newY << 'n';
+			//std::cout << "mobX: " << mx << " moby: " << my << '\n';
+			//std::cout << "NewX: " << newX << " newY: " << newY << 'n';
 	}
 	
 }
