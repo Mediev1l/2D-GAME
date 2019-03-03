@@ -2,8 +2,6 @@
 #ifndef _GameEngine_H
 #define _GameEngine_H
 
-//Nie wiem dlaczego wywala b³¹d jak to nie jest w Main.cpp
-//#define STB_IMAGE_IMPLEMENTATION
 //================================================================
 //= Our libraries
 //================================================================

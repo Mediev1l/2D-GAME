@@ -245,13 +245,13 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 		}
 	}
 
-	GLuint fixedX;
-	GLuint fixedY;
+	GLuint fixedX= (GLuint)px;
+	GLuint fixedY= (GLuint)py;
 	//Sprawdz czy pod now¹ pozycj¹ jest kolizja
 	bool collision = CheckForColissionX(0,newX,dir,fixedX,fixedY) || CheckForColissionY(0,newY,dir, fixedX, fixedY);
 	if (collision)
 	{
-		std::cout << "Kolizja!" << '\n';
+		//std::cout << "Kolizja!" << '\n';
 		switch (_map->getTileContent(fixedX, fixedY))
 		{
 			//Nigdy sie nie wydarzy ale co tam
@@ -432,68 +432,42 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 		double mx = _characters[i].getX();
 		double my = _characters[i].getY();
 		double mv = _characters[i].getVelocity();
-		for (GLuint j = 0; j < 2; ++j)
+
+		bool move = true;
+		double newX = mx;
+		double newY = my;
+
+		//Wieksze od 0 to Gracz z lewej strony
+		//mx - px;
+		//Wieksze od 0 to Gracz u góry
+		//my - py;
+		double dirx = mx - px;
+		double diry = my - py;
+
+		//Rozpatrzmy os X
+		Direction DirX;
+		if (dirx > 0)DirX = LEFT;
+		else if (dirx < 0)DirX = RIGHT;
+		else DirX = NONE;
+
+		//Rozpatrzmy os Y
+		Direction DirY;
+		if (diry > 0)DirY = UP;
+		else if (diry < 0)DirY = DOWN;
+		else DirY = NONE;
+
+		//reasumujac
+		Direction dir[2];
+			
+		if (DirX != NONE && abs(dirx)>0.1) dir[0] = DirX;
+		else dir[0] = NONE;
+		
+		if (DirY != NONE && abs(diry) > 0.1) dir[1] = DirY;
+		else dir[1] = NONE;
+
+		for(GLuint i=0;i<2;i++)
 		{
-			std::cout <<"j: "<< j << '\n';
-			bool move = true;
-			double newX = mx;
-			double newY = my;
-
-			//Wieksze od 0 to Gracz z lewej strony
-			//mx - px;
-			//Wieksze od 0 to Gracz u góry
-			//my - py;
-			double dirx = mx - px;
-			double diry = my - py;
-
-			//Rozpatrzmy os X
-			Direction DirX;
-			if (dirx > 0)DirX = LEFT;
-			else if (dirx < 0)DirX = RIGHT;
-			else DirX = NONE;
-
-			//Rozpatrzmy os Y
-			Direction DirY;
-			if (diry > 0)DirY = UP;
-			else if (diry < 0)DirY = DOWN;
-			else DirY = NONE;
-
-			//reasumujac
-			Direction dir;
-			if (j == 0)
-			{
-				if (abs(dirx) < abs(diry) && abs(dirx) > 1.0)
-				{
-					if (DirX != NONE) dir = DirX;
-					else dir = NONE;
-					if (abs(dirx) < 0.5)break;
-				}
-				else
-				{
-					if (abs(diry) > 0.2) dir = DirY;
-					else dir = NONE;
-					if (abs(diry) < 0.5)break;
-				}
-			}
-			else
-			{
-				if (abs(dirx) > abs(diry))
-				{
-					if (DirX != NONE) dir = DirX;
-					else dir = NONE;
-					if (abs(dirx) < 0.1)break;
-				}
-				else 
-				{
-					if (abs(diry) > 0.2) dir = DirY;
-					else dir = NONE;
-
-					if (abs(diry) < 0.1)break;
-				}
-			}
-
-			std::cout << dir << '\n';
-			switch (dir)
+			switch (dir[i])
 			{
 			case UP:
 			{
@@ -520,12 +494,14 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 				break;
 			}
 			}
+		}
 
-			GLuint fixedX;
-			GLuint fixedY;
+		//Move in X
+			GLuint fixedX=0;
+			GLuint fixedY=0;
 			//Sprawdz czy pod now¹ pozycj¹ jest kolizja
-			bool collision = CheckForColissionX(i, newX, dir, fixedX, fixedY) || CheckForColissionY(i, newY, dir, fixedX, fixedY);
-			if (collision)
+			bool collisionX = CheckForColissionX(i, newX, dir[0], fixedX, fixedY);
+			if (collisionX)
 			{
 				//std::cout << "Kolizja!" << '\n';
 				switch (_map->getTileContent(fixedX, fixedY))
@@ -554,10 +530,45 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 			if (move)
 			{
 				_characters[i].setX(newX);
-				_characters[i].setY(newY);
-				break;
 			}
-			
-		}
+
+			//Move in Y
+			move = true;
+			fixedX = 0;
+			fixedY = 0;
+			bool collisionY = CheckForColissionY(i, newY, dir[1], fixedX, fixedY);
+			if (collisionY)
+			{
+				//std::cout << "Kolizja!" << '\n';
+				switch (_map->getTileContent(fixedX, fixedY))
+				{
+					//Nigdy sie nie wydarzy ale co tam
+				case Tile::Content::Nothing:
+				{
+					break;
+				}
+				case Tile::Content::Obstacle:
+				{
+					//Tutaj return
+					move = false;
+					break;
+				}
+				case Tile::Content::Item:
+				{
+					//Tutaj proces przechwycenia itemka
+					//_canPickup = true;
+					break;
+				}
+				default:
+					break;
+				}
+			}
+			if (move)
+			{
+				_characters[i].setY(newY);
+			}
+			std::cout << "mobX: " << mx << " moby: " << my << '\n';
+			std::cout << "NewX: " << newX << " newY: " << newY << 'n';
 	}
+	
 }
