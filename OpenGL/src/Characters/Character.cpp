@@ -1,5 +1,6 @@
 #include "Character.h"
 
+
 void Character::consumeItem(const Item & item)
 {
 	_items.emplace_back(item);

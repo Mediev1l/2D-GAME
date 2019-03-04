@@ -9,15 +9,15 @@ class Timer
 public:
 	Timer();
 	~Timer();
-	float getDelta();
-	float getSingleFrameTime();
-	float getFPS();
+	double getDelta();
+	double getSingleFrameTime();
+	double getFPS();
 	void Mark();
 	std::string date();
 private:
-	float delta;
-	float maxFPS;
-	float SingleFrame;
+	double delta;
+	double maxFPS;
+	double SingleFrame;
 	std::chrono::system_clock::time_point current;
 	std::chrono::system_clock::time_point last;
 };

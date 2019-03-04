@@ -11,17 +11,17 @@ Timer::~Timer()
 {
 }
 
-float Timer::getDelta()
+double Timer::getDelta()
 {
 	return delta;
 }
 
-float Timer::getSingleFrameTime()
+double Timer::getSingleFrameTime()
 {
 	return SingleFrame;
 }
 
-float Timer::getFPS()
+double Timer::getFPS()
 {
 	return 1.0f/delta;
 }
@@ -31,7 +31,7 @@ void Timer::Mark()
 	if (delta >= 1 / maxFPS) delta = 0;
 	last = current;
 	current = std::chrono::system_clock::now();
-	delta+= std::chrono::duration<float>(current - last).count();
+	delta+= std::chrono::duration<double>(current - last).count();
 }
 
 std::string Timer::date()
