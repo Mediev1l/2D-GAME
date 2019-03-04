@@ -176,7 +176,7 @@ void GameEngine::processInput()
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-		ProcessPlayerShoot(t.getDelta());
+		ProcessPlayerShoot();
 	}
 
 	//Fun
