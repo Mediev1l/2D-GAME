@@ -161,6 +161,9 @@
     <Image Include="res\Sprites\Objects\opened.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="res\Sprites\Enemies\Zombie\zombie.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\Sprites\Map1\map1.txt" />
