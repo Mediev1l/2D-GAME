@@ -40,7 +40,6 @@ protected:
 	double lastY;
 	bool firstMouse;
 	bool _canPickup;
-
 	//================================================================
 	//= Game Objects
 	//================================================================
@@ -72,7 +71,6 @@ protected:
 	void ProcessEnemiesMove(double deltaTime);
 	void OpenDoors();
 	void CloseDoors();
-	void closeDoors();
 
 public:
 

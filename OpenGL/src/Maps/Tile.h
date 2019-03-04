@@ -11,7 +11,9 @@ public:
 	{
 		Nothing = 0,
 		Obstacle = 1,
-		Item = 2
+		Item = 2,
+		Character = 3,
+		Doors = 4
 	};
 	Tile() = delete;
 	Tile(bool solid,Content con, GLuint x, GLuint y, GLuint texture, GLuint& w);

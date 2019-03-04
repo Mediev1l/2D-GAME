@@ -173,6 +173,7 @@
     <ClInclude Include="src\Weapons\Projectile.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\Sprites\Enemies\Zombie\zombie.png" />
     <Image Include="res\Sprites\Items\item_0.png" />
     <Image Include="res\Sprites\Map1\0.jpg" />
     <Image Include="res\Sprites\Map1\1.jpg" />

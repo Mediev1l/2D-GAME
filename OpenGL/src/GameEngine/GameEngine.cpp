@@ -5,8 +5,8 @@ GameEngine::GameEngine()
 	  window(nullptr)
 	, renderer(nullptr)
 	, t()
-	, SCR_WIDTH(800)
-	, SCR_HEIGHT(800)
+	, SCR_WIDTH(1000)
+	, SCR_HEIGHT(1000)
 	, lastX(SCR_WIDTH / 2.0)
 	, lastY(SCR_HEIGHT / 2.0)
 	, firstMouse(true)
@@ -67,6 +67,7 @@ void GameEngine::Game_Init()
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero(5.0, 6.0, 3.0, "res/Sprites/Player/issac.png"));
 	_characters.push_back(Enemy(1.0, 6.0, 1.0, "res/Sprites/Enemies/Skelly/skelly.png"));
+	_characters.push_back(Enemy(4.0, 3.0, 1.0, "res/Sprites/Enemies/Zombie/zombie.png"));
 
 	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
 	//Na sztywno ustawianie na mapie ze jest tam item
@@ -130,7 +131,7 @@ void GameEngine::processInput()
 		std::cout << "PlayerX: " << _characters[0].getX() << '\n';
 		std::cout << "PlayerY: " << _characters[0].getY() << '\n';
 		std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
-		std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
+		//std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
 	}
 	//Closing Window
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -271,6 +272,9 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 		}
 	}
 
+	if (newX < 0)newX = 0;
+	if (newY < 0)newY = 0;
+
 	GLuint fixedX= (GLuint)px;
 	GLuint fixedY= (GLuint)py;
 	//Sprawdz czy pod now¹ pozycj¹ jest kolizja
@@ -285,6 +289,7 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 			{
 				break;
 			}
+			case Tile::Content::Character:
 			case Tile::Content::Obstacle:
 			{
 				//Tutaj return
@@ -369,7 +374,6 @@ bool GameEngine::CheckForColissionX(GLuint index, double newX, Direction dir, GL
 bool GameEngine::CheckForColissionY(GLuint index,double newY, Direction dir, GLuint& fx, GLuint& fy)
 {
 	bool top = dir == UP ? true : false;
-
 	if (dir == UP || dir == DOWN)
 	{
 		//Sprawdz czy pod tym Y jest obstacle
@@ -576,10 +580,10 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 		//reasumujac
 		Direction dir[2];
 			
-		if (DirX != NONE && abs(dirx)>0.05) dir[0] = DirX;
+		if (DirX != NONE && abs(dirx)>0.1) dir[0] = DirX;
 		else dir[0] = NONE;
 		
-		if (DirY != NONE && abs(diry) > 0.05) dir[1] = DirY;
+		if (DirY != NONE && abs(diry) > 0.1) dir[1] = DirY;
 		else dir[1] = NONE;
 
 		for(GLuint i=0;i<2;i++)
@@ -613,6 +617,9 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 			}
 		}
 
+		if (newY < 0)newY = 0;
+		if (newX < 0)newX = 0;
+
 		//Move in X
 			GLuint fixedX=0;
 			GLuint fixedY=0;
@@ -628,6 +635,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 				{
 					break;
 				}
+				case Tile::Content::Character:
 				case Tile::Content::Obstacle:
 				{
 					//Tutaj return
@@ -660,6 +668,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 				{
 					break;
 				}
+				case Tile::Content::Character:
 				case Tile::Content::Obstacle:
 				{
 					//Tutaj return
@@ -678,10 +687,39 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 			}
 			if (move1)
 			{
+				//Do poprawy!!
+				if (!move2)
+				{
+					double value = mv * deltaTime*HowMuchInY;
+					if (dir[0] == LEFT)
+					{
+						/*if(abs(newY-value)>0.11)*/ newX -= value;
+					}
+					else
+					{
+						/*if (abs(newY + value) > 0.11)*/ newX += value;
+					}
+					
+				}
 				_characters[i].setX(newX);
 			}
 			if (move2)
 			{
+
+				//DoPoprawy!
+				if (!move1)
+				{
+					double value = mv * deltaTime*HowMuchInX;
+					if (dir[1] == UP)
+					{
+						/*if (abs(newX - value) > 0.11)*/ newY -= value;
+					}
+					else
+					{
+						/*if (abs(newX + value) > 0.11)*/ newY += value;
+					}
+
+				}
 				_characters[i].setY(newY);
 			}
 			//std::cout << "mobX: " << mx << " moby: " << my << '\n';
