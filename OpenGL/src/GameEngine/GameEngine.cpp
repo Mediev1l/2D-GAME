@@ -123,6 +123,8 @@ void GameEngine::Game_Run()
 
 void GameEngine::processInput()
 {
+
+	//Debug info
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 	{
 		std::cout << "PlayerX: " << _characters[0].getX() << '\n';
@@ -130,6 +132,7 @@ void GameEngine::processInput()
 		std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
 		std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
 	}
+	//Closing Window
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
@@ -180,6 +183,15 @@ void GameEngine::processInput()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+	{
+		CloseDoors();
+	}
+	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+	{
+		OpenDoors();
+	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -676,4 +688,30 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 			//std::cout << "NewX: " << newX << " newY: " << newY << 'n';
 	}
 	
+}
+
+void GameEngine::OpenDoors()
+{
+	GLuint x = ceil(_map->getWidth() / 2.0) - 1;
+	GLuint y = ceil(_map->getHeight() / 2.0) - 1;
+	GLuint id[] = { x,0,0,y,_map->getWidth() - 1,y };
+
+	for (GLuint i = 0; i < 6; i+=2)
+	{
+		_map->setTileContent(id[i], id[i + 1], Tile::Content::Nothing);
+	}
+	renderer->OpenDoors();
+}
+
+void GameEngine::CloseDoors()
+{
+	GLuint x = ceil(_map->getWidth() / 2.0) - 1;
+	GLuint y = ceil(_map->getHeight() / 2.0) - 1;
+	GLuint id[] = { x,0,0,y,_map->getWidth() - 1,y };
+
+	for (GLuint i = 0; i < 6; i += 2)
+	{
+		_map->setTileContent(id[i], id[i + 1], Tile::Content::Obstacle);
+	}
+	renderer->CloseDoors();
 }
