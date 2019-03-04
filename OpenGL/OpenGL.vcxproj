@@ -148,7 +148,6 @@
     <ClCompile Include="src\Utility\Timer.cpp" />
     <ClCompile Include="src\Maps\Tile.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
-    <ClCompile Include="src\Weapons\Projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\fs.fs" />
@@ -170,7 +169,6 @@
     <ClInclude Include="src\Utility\Timer.h" />
     <ClInclude Include="src\Maps\Tile.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
-    <ClInclude Include="src\Weapons\Projectile.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Sprites\Items\item_0.png" />

@@ -14,35 +14,18 @@ Obiekt odpowiadajacy za Postac (Glowny Bohater)
 #include "Basics/Coords.h"
 #include "Maps/Tile.h"
 #include "Items/Item.h"
-#include "Weapons/Projectile.h"
 #include <vector>
 
 class Character: public Coords, public Stats
 {
 public:
-
-	enum Dir
-	{
-		NONE = -1,
-		UP = 0,
-		DOWN = 1,
-		LEFT = 2,
-		RIGHT = 3
-
-	};
-
 	Character(std::string TexturePath) : _texture(TexturePath,true), Stats(), Coords() {};
 	double getX() { return posX; };
 	double getY() { return posY; };
 	double getVelocity() { return m_speed; };
-	Dir getSide() { return side; };
 
 	void setY(double y) { posY = y; };
 	void setX(double x) { posX = x; };
-	void setSide(Character::Dir sid) { side = sid; };
-
-	std::vector<Projectile>& getpiFpaF() { return _piFpaF; };
-	
 
 	void UpdateX(double ux) { posX += ux; };
 	void UpdateY(double uy) { posY += uy; };
@@ -50,9 +33,6 @@ public:
 
 	//Mozna skopiowaæ do Hero kwestia przekminy
 	void consumeItem(const Item& item);
-
-
-
 	//Koniec do przekminiania
 
 	//virtual void Bechaviour(const Character& player, double deltaTime) = 0;
@@ -65,11 +45,5 @@ protected:
 
 	//Coords
 	Texture _texture;
-
-	//Weapons
-	std::vector<Projectile> _piFpaF;
-
-	//W ktora strone jest zwrocony
-	Dir side;
 };
 #endif

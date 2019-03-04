@@ -14,7 +14,7 @@ struct Coords
 public:
 	double posX;
 	double posY;
-	double Velocity;
+	float Velocity;
 };
 
 #endif

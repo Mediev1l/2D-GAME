@@ -137,7 +137,7 @@ void GameEngine::processInput()
 		glfwSetWindowShouldClose(window, true);
 
 	//PickupItems
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
 		if (_canPickup)
 		{
@@ -147,7 +147,7 @@ void GameEngine::processInput()
 
 
 	//MovementProcessor
-	double deltaTime = t.getDelta();
+	float deltaTime = t.getDelta();
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS
 		||
 		glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
@@ -171,11 +171,6 @@ void GameEngine::processInput()
 		glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::RIGHT);
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-	{
-		ProcessPlayerShoot(t.getDelta());
 	}
 
 	//Fun
@@ -248,25 +243,21 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 		case UP:
 		{
 			newY -= deltaTime * pv;
-			_characters[0].setSide(Character::UP);
 			break;
 		}
 		case DOWN:
 		{
 			newY += deltaTime * pv;
-			_characters[0].setSide(Character::DOWN);
 			break;
 		}
 		case LEFT:
 		{
 			newX -= deltaTime * pv;
-			_characters[0].setSide(Character::LEFT);
 			break;
 		}
 		case RIGHT:
 		{
 			newX += deltaTime * pv;
-			_characters[0].setSide(Character::RIGHT);
 			break;
 		}
 	}
@@ -445,91 +436,6 @@ void GameEngine::ProcessItemPickup()
 		_characters[0].consumeItem(_items[nearestid]);
 		_items[nearestid].setOnMap(false);
 		_map->setTileContent((GLuint)_items[nearestid].getX(), (GLuint)_items[nearestid].getY(), Tile::Content::Nothing);
-	}
-}
-
-void GameEngine::ProcessPlayerShoot()
-{
-	double px =_characters[0].getX();
-	double py = _characters[0].getY();
-	
-	Character::Dir  pdir = _characters[0].getSide();
-	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
-	
-
-
-	switch (pdir)
-	{
-		case UP:
-		{
-			temp.emplace_back(1, px, py - 0.1, 1, 0, Projectile::Dir::UP, true);
-			break;
-		}
-		case DOWN:
-		{
-			temp.emplace_back(1, px, py + 0.1, 1, 0, Projectile::Dir::DOWN, true);
-			break;
-		}
-		case LEFT:
-		{
-			temp.emplace_back(1, px - 0.1, py, 1, 0, Projectile::Dir::LEFT, true);
-			break;
-		}
-		case RIGHT:
-		{
-			temp.emplace_back(1, px + 0.1, py - 0.1, 1, 0, Projectile::Dir::RIGHT, true);
-			break;
-		}
-
-	}
-
-
-
-}
-
-void GameEngine::Update()
-{
-	// Update pociskow
-	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
-	double deltaTime = t.getDelta();
-	for (int i = 0; i < temp.size(); i++)
-	{
-		Projectile::Dir pdir = temp[i].getSide();
-		double tempV = temp[i].Velocity;
-		
-		if (temp[i].getElapdedDistance() < _characters[0].getRange() / 10)
-		{
-
-			switch (pdir)
-			{
-				case UP:
-				{
-					temp[i].posY -= deltaTime * tempV;
-					break;
-				}
-				case DOWN:
-				{
-					temp[i].posY += deltaTime * tempV;
-					break;
-				}
-				case LEFT:
-				{
-					temp[i].posX -= deltaTime * tempV;
-					break;
-				}
-				case RIGHT:
-				{
-					temp[i].posX += deltaTime * tempV;
-					break;
-				}
-				
-			}
-
-		}
-		else
-		{
-			temp[i].setExistance(false);
-		}
 	}
 }
 
