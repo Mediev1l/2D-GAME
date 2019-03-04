@@ -132,7 +132,6 @@ void GameEngine::processInput()
 		std::cout << "PlayerY: " << _characters[0].getY() << '\n';
 		std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
 		//std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
-		std::cout << "counter: "<< counter << '\n';
 	}
 	//Closing Window
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
