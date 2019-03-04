@@ -186,8 +186,6 @@
     <Image Include="res\Sprites\Map1\7.jpg" />
     <Image Include="res\Sprites\Map1\8.jpg" />
     <Image Include="res\Sprites\Map1\9.jpg" />
-    <Image Include="res\Sprites\Objects\closed.png" />
-    <Image Include="res\Sprites\Objects\opened.png" />
     <Image Include="res\Sprites\Player\awesome.png" />
     <Image Include="res\Sprites\Player\issac.png" />
     <Image Include="res\Sprites\wooden.jpg" />

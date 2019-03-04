@@ -70,9 +70,6 @@ protected:
 	void Update();
 
 	void ProcessEnemiesMove(double deltaTime);
-	void OpenDoors();
-	void CloseDoors();
-	void closeDoors();
 
 public:
 

@@ -29,7 +29,7 @@ Map::Map(std::string TileIdsPath, std::string BitmapsPath)
 
 	//Initialize All Textures
 	for (GLuint i = 0; i < _nTextures; ++i)
-		_textures.emplace_back(BitmapsPath + to_string(i) + (i != _nTextures - 1 ? ".jpg":".png"), i!=_nTextures-1?false:true);
+		_textures.emplace_back(BitmapsPath + to_string(i) + ".jpg", false);
 }
 Map::~Map()
 {
