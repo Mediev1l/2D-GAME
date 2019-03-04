@@ -111,6 +111,32 @@ void Renderer::RenderCharacter(std::vector<Character>& characters)
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 
+	for (int i = (int)characters[0].getPifPafSize() - 1; i > -1; --i)
+	{
+		if (characters[0].getOnepiFpaF(i).getExistance() == true)
+		{
+			//Eksperymentalnie udowodniono ze dziala xD
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
+			model = glm::translate(model, glm::vec3(TranslateValueX*(characters[0].getOnepiFpaF(i).posX), -TranslateValueY * (characters[0].getOnepiFpaF(i).posY), 0.0f));
+
+
+			//Skalowanko lepiej na koncu xD
+			model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.0f));
+
+
+			_mainShader.setMat4("model", model);
+
+			glActiveTexture(GL_TEXTURE0);
+			//glBindTexture(GL_TEXTURE_2D, );
+
+			_mainShader.use();
+			glBindVertexArray(VAO);
+
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		}
+	}
+
 }
 
 void Renderer::RenderItems(std::vector<Item>& items)

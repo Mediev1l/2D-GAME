@@ -40,6 +40,7 @@ protected:
 	double lastY;
 	bool firstMouse;
 	bool _canPickup;
+	double delay;
 	//================================================================
 	//= Game Objects
 	//================================================================

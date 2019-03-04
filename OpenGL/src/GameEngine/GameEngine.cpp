@@ -11,6 +11,7 @@ GameEngine::GameEngine()
 	, lastY(SCR_HEIGHT / 2.0)
 	, firstMouse(true)
 	, WindowName("Kacp3r3 & Bartek Playground")
+	, delay(1)
 {
 }
 
@@ -76,6 +77,9 @@ void GameEngine::Game_Init()
 	_items[0].setY(7);
 	_map->setTileContent(5, 7, Tile::Content::Item);
 
+	//HARDCODE
+	_characters[0].setRange(50);
+
 }
 
 void GameEngine::Game_Run()
@@ -104,13 +108,14 @@ void GameEngine::Game_Run()
 		// input
 		// -----
 		processInput();
+		Update();
 		ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():1.0);
 
 		//Renderowanie || rozdzielone by gracz byl rysowany na koncu
 		renderer->RenderMap();
 		renderer->RenderItems(_items);
 		renderer->RenderCharacter(_characters);
-
+	
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
@@ -131,6 +136,8 @@ void GameEngine::processInput()
 		std::cout << "PlayerX: " << _characters[0].getX() << '\n';
 		std::cout << "PlayerY: " << _characters[0].getY() << '\n';
 		std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
+		for (int i = 0; i < _characters[0].getPifPafSize(); i++)
+			std::cout << "Bullet:" << i << " X: " << _characters[0].getOnepiFpaF(i).posX << " Y:" << _characters[0].getOnepiFpaF(i).posY << '\n';
 		//std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
 	}
 	//Closing Window
@@ -459,11 +466,15 @@ void GameEngine::ProcessPlayerShoot()
 	
 	Character::Dir  pdir = _characters[0].getSide();
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
-	
 
-
-	switch (pdir)
+	if (delay <= 0.0f)
 	{
+		delay = 1.0;
+	}
+	if (delay == 1.0)
+	{
+		switch (pdir)
+		{
 		case UP:
 		{
 			temp.emplace_back(1, px, py - 0.1, 1, 0, Projectile::Dir::UP, true);
@@ -485,17 +496,22 @@ void GameEngine::ProcessPlayerShoot()
 			break;
 		}
 
+		}
 	}
-
-
-
 }
+
+	
+
 
 void GameEngine::Update()
 {
 	// Update pociskow
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
 	double deltaTime = t.getDelta();
+
+	// Tu mo¿na daæ mniejsz¹ wartosc i mnozyc * att speed 
+	delay -= deltaTime;
+
 	for (int i = 0; i < temp.size(); i++)
 	{
 		Projectile::Dir pdir = temp[i].getSide();
@@ -508,22 +524,26 @@ void GameEngine::Update()
 			{
 				case UP:
 				{
-					temp[i].posY -= deltaTime * tempV;
+					temp[i].posY -= deltaTime * tempV ;
+					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case DOWN:
 				{
-					temp[i].posY += deltaTime * tempV;
+					temp[i].posY += deltaTime * tempV ;
+					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case LEFT:
 				{
 					temp[i].posX -= deltaTime * tempV;
+					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case RIGHT:
 				{
 					temp[i].posX += deltaTime * tempV;
+					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				
@@ -533,6 +553,7 @@ void GameEngine::Update()
 		else
 		{
 			temp[i].setExistance(false);
+			temp.erase(temp.begin() + i);
 		}
 	}
 }

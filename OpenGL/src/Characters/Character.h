@@ -36,12 +36,14 @@ public:
 	double getY() { return posY; };
 	double getVelocity() { return m_speed; };
 	Dir getSide() { return side; };
+	GLuint getPifPafSize() { return _piFpaF.size(); };
 
 	void setY(double y) { posY = y; };
 	void setX(double x) { posX = x; };
 	void setSide(Character::Dir sid) { side = sid; };
 
 	std::vector<Projectile>& getpiFpaF() { return _piFpaF; };
+	Projectile& getOnepiFpaF(GLuint index) { return _piFpaF[index]; };
 	
 
 	void UpdateX(double ux) { posX += ux; };

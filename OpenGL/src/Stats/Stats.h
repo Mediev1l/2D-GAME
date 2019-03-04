@@ -30,6 +30,8 @@ public:
 	double getMovementSpeed() const { return m_speed; };
 	double getDamage() const { return m_damage; };
 
+	void setRange(GLuint range) { m_range = range; };
+
 };
 
 #endif // !_Stats_H

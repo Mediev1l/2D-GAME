@@ -31,7 +31,7 @@ public:
 
 
 	void setSize(double siz) { size = siz; };
-	void setElapsedDistance(double elapDis) { elapsedDistance = elapDis; };
+	void setElapsedDistance(double elapsedDis) { elapsedDistance = elapsedDis; };
 	void setExistance(bool exi) { exist = exi; };
 
 	double getSize() { return size; };
