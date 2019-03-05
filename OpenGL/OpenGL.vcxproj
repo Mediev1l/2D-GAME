@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Characters\Character.cpp" />
     <ClCompile Include="src\Characters\Enemy.cpp" />
     <ClCompile Include="src\GameEngine\GameEngine.cpp" />
@@ -155,6 +156,7 @@
     <None Include="src\Shaders\vs.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\GameEngine\GameEngine.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Maps\Map.h" />

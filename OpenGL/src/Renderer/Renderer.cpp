@@ -35,6 +35,10 @@ Renderer::Renderer()
 	ScaleFactorX = 1.0 / _maps.getWidth();
 	ScaleFactorY = 1.0 / _maps.getHeight();
 
+	//GLuint MapFov = 10;
+	//ScaleFactorX = 1.0 / MapFov;
+	//ScaleFactorY = 1.0 / MapFov;
+
 	StartPosX = 1 - ScaleFactorX;
 	StartPosY = 1 - ScaleFactorY;
 

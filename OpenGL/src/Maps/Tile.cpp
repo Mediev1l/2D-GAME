@@ -11,6 +11,16 @@ Tile::Tile(bool solid, Content con, GLuint x, GLuint y, GLuint texture, double s
 	,_size(size)
 	,_vertexs()
 {
+	//Dla wielok¹tów 
+	/*float fTheta = 3.14159f * 2.0f / 5.0f;
+	s1.pos = { 100, 100 };
+	s1.angle = 0.0f;
+	for (int i = 0; i < 5; i++)
+	{
+		s1.o.push_back({ 30.0f * cosf(fTheta * i), 30.0f * sinf(fTheta * i) });
+
+	}*/
+
 	double half = _size / 2;
 	_vertexs.emplace_back(_position.getX() - half,_position.getY()-half);
 	_vertexs.emplace_back(_position.getX() + half,_position.getY()-half);

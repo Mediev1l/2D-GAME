@@ -67,8 +67,8 @@ void GameEngine::Game_Init()
 
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero(5.0, 6.0, 3.0, 0.8, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
-	_characters.push_back(Hero(1.0, 6.0, 1.0, 0.8, "res/Sprites/Enemies/Skelly/skelly.png", "res/Sprites/Tears/basic_tear.png"));
-	_characters.push_back(Hero(4.0, 3.0, 1.0, 0.8, "res/Sprites/Enemies/Zombie/zombie.png", "res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Enemy(1.0, 6.0, 1.0, 0.8, "res/Sprites/Enemies/Skelly/skelly.png", "res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Enemy(4.0, 3.0, 1.0, 0.8, "res/Sprites/Enemies/Zombie/zombie.png", "res/Sprites/Tears/basic_tear.png"));
 
 	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
 	//Na sztywno ustawianie na mapie ze jest tam item
@@ -254,8 +254,8 @@ void GameEngine::scroll_callback(double xoffset, double yoffset)
 void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 {
 	//Zmienne upraszczaj¹ce kod
-	double px = _characters[0].getTile().getPos().getX();
-	double py = _characters[0].getTile().getPos().getY();
+	double px = _characters[0].getTile().getPos()._x;
+	double py = _characters[0].getTile().getPos()._y;
 	double pv = _characters[0].getVelocity();
 	double newX = px;
 	double newY = py;
@@ -508,11 +508,11 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					double value = mv * deltaTime*HowMuchInY;
 					if (dir[0] == LEFT)
 					{
-						if(value>0.1&& !CheckColissions(_characters[i],i,newX-value,my)) newX -= value;
+						if(value>0.05 && !CheckColissions(_characters[i],i,newX-value,my)) newX -= value;
 					}
 					else
 					{
-						if (value > 0.1&&!CheckColissions(_characters[i], i, newX + value, my)) newX += value;
+						if (value > 0.05 && !CheckColissions(_characters[i], i, newX + value, my)) newX += value;
 					}
 					
 				}
@@ -525,11 +525,11 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					double value = mv * deltaTime*HowMuchInX;
 					if (dir[1] == UP)
 					{
-						if (value > 0.1&&!CheckColissions(_characters[i], i, mx, newY-value)) newY -= value;
+						if (value > 0.05&&!CheckColissions(_characters[i], i, mx, newY-value)) newY -= value;
 					}
 					else
 					{
-						if (value > 0.1&&!CheckColissions(_characters[i], i, mx, newY + value)) newY += value;
+						if (value > 0.05&&!CheckColissions(_characters[i], i, mx, newY + value)) newY += value;
 					}
 				}
 				_characters[i].setY(newY);
@@ -546,7 +546,7 @@ void GameEngine::OpenDoors()
 
 	for (GLuint i = 0; i < 6; i+=2)
 	{
-		_map->setTileContent(id[i], id[i + 1], Tile::Content::Nothing);
+		_map->setTileContent(id[i], id[i + 1], Tile::Content::Doors);
 	}
 	renderer->OpenDoors();
 }
@@ -634,6 +634,11 @@ bool GameEngine::CheckColissions(const Character & obj, GLuint index, double x, 
 			//Tutaj proces przechwycenia itemka
 			if (index == 0)_canPickup = true;
 			break;
+		}
+		case Tile::Content::Doors:
+		{
+			if (index == 0) break;
+			return true;
 		}
 		default:
 			break;
