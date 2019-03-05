@@ -26,8 +26,8 @@ protected:
 public:
 	Item(const std::string& TexturePath,const std::string& ItemPath, GLuint itemID);
 
-	double getX() { return posX; };
-	double getY() { return posY; };
+	double getX() { return _position.getX(); };
+	double getY() { return _position.getY(); };
 	bool getOnMap() { return onMap; };
 	GLuint getID() { return id; };
 	std::string getDescription() { return description; }
@@ -36,8 +36,8 @@ public:
 
 
 
-	void setY(float y) { posY = y; };
-	void setX(float x) { posX = x; };
+	void setY(float y) { _position.setY(y); };
+	void setX(float x) { _position.setX(x); };
 	void setID(GLuint id) { this->id = id; };
 	void setDescription(std::string& desc) { description = desc; };
 	void setOnMap(bool ex) { onMap = ex; };

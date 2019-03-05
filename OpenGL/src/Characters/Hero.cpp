@@ -1,11 +1,9 @@
 #include "Hero.h"
 
-Hero::Hero(double x, double y, double vel, std::string texturepath,std::string PifPafTexturePath)
+Hero::Hero(double x, double y, double vel, double w,  std::string texturepath,std::string PifPafTexturePath)
 	: 
-	Character(texturepath, PifPafTexturePath)
+	 Character(texturepath, PifPafTexturePath,x,y,w)
 {
-	posX = x;
-	posY = y;
 	m_speed = vel;
 	//std::cout << "Id textury hero: " << getTexture() << '\n';
 }

@@ -21,7 +21,15 @@ public:
 	{ return _textures[_Tiles[y*_width + x].getTextureID()].getID(); };
 	Tile::Content getTileContent(GLuint x, GLuint y) 
 	{ return _Tiles[y*_width + x].getContent(); };
+	Tile::Content getTileContent(GLuint i)
+	{
+		return _Tiles[i].getContent();
+	};
 	bool isObstacle(GLuint x, GLuint y) { return _Tiles[y*_width + x].isSolid(); };
+	Vec2d& getTilePos(GLuint x, GLuint y) { return _Tiles[y*_width + x].getPos(); };
+	Vec2d& getTilePos(GLuint i) { return _Tiles[i].getPos(); };
+	Tile& getTile(GLuint i) { return _Tiles[i]; };
+	GLuint getSize() { return (GLuint)_Tiles.size(); };
 
 	//================================================================
 	//= Podstawowe Settery

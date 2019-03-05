@@ -8,8 +8,9 @@ protected:
 
 public:
 	Hero()=delete;
-	Hero(double x, double y, double vel, std::string texturepath, std::string PifPafTexturePath);
+	Hero(double x, double y, double vel, double w, std::string texturepath, std::string PifPafTexturePath);
 	void Bechaviour(const Character& player, double deltaTime) {};
 	~Hero() {};
+protected:
 };
 #endif

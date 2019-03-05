@@ -64,7 +64,8 @@ void Renderer::RenderMap()
 			//Eksperymentalnie udowodniono ze dziala xD
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
-			model = glm::translate(model, glm::vec3(TranslateValueX*x, -TranslateValueY*y, 0.0f));
+			model = glm::translate(model, glm::vec3(TranslateValueX*_maps.getTilePos(x,y).getX()
+													, -TranslateValueY* _maps.getTilePos(x, y).getY(), 0.0f));
 
 
 			//Skalowanko lepiej na koncu xD
@@ -93,7 +94,8 @@ void Renderer::RenderCharacter(std::vector<Character>& characters)
 		//Eksperymentalnie udowodniono ze dziala xD
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
-		model = glm::translate(model, glm::vec3(TranslateValueX*(characters[i].getX()), -TranslateValueY *(characters[i].getY()), 0.0f));
+		model = glm::translate(model, glm::vec3(TranslateValueX*(characters[i].getTile().getPos().getX())
+			, -TranslateValueY *(characters[i].getTile().getPos().getY()), 0.0f));
 
 
 		//Skalowanko lepiej na koncu xD
@@ -118,7 +120,8 @@ void Renderer::RenderCharacter(std::vector<Character>& characters)
 			//Eksperymentalnie udowodniono ze dziala xD
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
-			model = glm::translate(model, glm::vec3(TranslateValueX*(characters[0].getOnepiFpaF(i).posX), -TranslateValueY * (characters[0].getOnepiFpaF(i).posY), 0.0f));
+			model = glm::translate(model, glm::vec3(TranslateValueX*(characters[0].getOnepiFpaF(i)._position.getX())
+													, -TranslateValueY * (characters[0].getOnepiFpaF(i)._position.getY()), 0.0f));
 
 
 			//Skalowanko lepiej na koncu xD

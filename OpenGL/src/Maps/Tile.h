@@ -1,8 +1,9 @@
 #ifndef _TILE_H
 #define _TILE_H
+#include <vector>
 #include "Shaders/Shader.h"
 #include "Renderer/Texture.h"
-
+#include "Utility/Vec2.h"
 
 class Tile
 {
@@ -13,10 +14,13 @@ public:
 		Obstacle = 1,
 		Item = 2,
 		Character = 3,
-		Doors = 4
+		Doors = 4,
+		Player = 5
 	};
 	Tile() = delete;
-	Tile(bool solid,Content con, GLuint x, GLuint y, GLuint texture, GLuint& w);
+	Tile(bool solid,Content con, GLuint x, GLuint y, GLuint texture, double size);
+	//Tile(bool solid,Content con, double x, double y, GLuint texture, double size);
+	Tile(bool solid,Content con, Vec2d pos, GLuint texture, double size);
 	~Tile();
 
 	//================================================================
@@ -24,8 +28,16 @@ public:
 	//================================================================
 	GLuint getTextureID() { return _textureID; };
 	Content getContent() { return _content; };
-	bool isSolid() { return _solid; }
-
+	bool isSolid() { return _solid; };
+	Vec2d& getPos() { return _position; };
+	GLuint getVertexCount() 
+	{ 
+		return (GLuint)_vertexs.size(); 
+	};
+	Vec2d& getVertex(GLuint x) 
+	{ 
+		return _vertexs[x];
+	};
 	//================================================================
 	//= Podstawowe Settery
 	//================================================================
@@ -39,7 +51,9 @@ public:
 
 private:
 	GLuint _textureID;
-	GLuint _tileID;
+	Vec2d _position;
+	std::vector<Vec2d> _vertexs;
+	double _size;
 	bool _solid;
 	Content _content;
 };

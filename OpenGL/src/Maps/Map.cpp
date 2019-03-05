@@ -24,7 +24,7 @@ Map::Map(std::string TileIdsPath, std::string BitmapsPath)
 			TileIds >> solid;
 			_Tiles.emplace_back(solid == 0 ? false : true
 								,solid==0?Tile::Content::Nothing:Tile::Content::Obstacle
-								,x,y, textureID, _width);
+								,x,y, textureID,1.0);
 		}
 
 	//Initialize All Textures

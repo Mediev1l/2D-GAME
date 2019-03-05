@@ -111,6 +111,9 @@
     <ClInclude Include="src\Weapons\Projectile.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utility\Vec2.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Sprites\wooden.jpg">

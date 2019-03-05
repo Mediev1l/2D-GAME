@@ -63,15 +63,15 @@ protected:
 	};
 
 	void ProcessPlayerMove(double deltaTime,Direction dir);
-	bool CheckForColissionX(GLuint index, double newX, Direction dir,GLuint& fx, GLuint& fy);
-	bool CheckForColissionY(GLuint index, double newY, Direction dir, GLuint& fx, GLuint& fy);
 	void ProcessItemPickup();
 	void ProcessPlayerShoot();
 	void Update();
 
-	void ProcessEnemiesMove(double deltaTime);
+	//void ProcessEnemiesMove(double deltaTime);
 	void OpenDoors();
 	void CloseDoors();
+
+	bool ShapeOverlap_DIAGS(Tile &r1, Tile &r2);
 
 public:
 

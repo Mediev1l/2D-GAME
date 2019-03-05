@@ -171,6 +171,7 @@
     <ClInclude Include="src\Maps\Tile.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
     <ClInclude Include="src\Weapons\Projectile.h" />
+    <ClInclude Include="src\Utility\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Sprites\Enemies\Zombie\zombie.png" />

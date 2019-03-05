@@ -66,9 +66,9 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero(5.0, 6.0, 3.0, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
-	_characters.push_back(Enemy(1.0, 6.0, 1.0, "res/Sprites/Enemies/Skelly/skelly.png", "res/Sprites/Tears/basic_tear.png"));
-	_characters.push_back(Enemy(4.0, 3.0, 1.0, "res/Sprites/Enemies/Zombie/zombie.png", "res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Hero(5.0, 6.0, 3.0, 0.8, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Hero(1.0, 6.0, 1.0, 0.8, "res/Sprites/Enemies/Skelly/skelly.png", "res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Hero(4.0, 3.0, 1.0, 0.8, "res/Sprites/Enemies/Zombie/zombie.png", "res/Sprites/Tears/basic_tear.png"));
 
 	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
 	//Na sztywno ustawianie na mapie ze jest tam item
@@ -109,7 +109,7 @@ void GameEngine::Game_Run()
 		// -----
 		processInput();
 		Update();
-		ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():1.0);
+		//ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():1.0);
 
 		//Renderowanie || rozdzielone by gracz byl rysowany na koncu
 		renderer->RenderMap();
@@ -133,11 +133,11 @@ void GameEngine::processInput()
 	//Debug info
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 	{
-		std::cout << "PlayerX: " << _characters[0].getX() << '\n';
-		std::cout << "PlayerY: " << _characters[0].getY() << '\n';
+		std::cout << "PlayerX: " << _characters[0].getPos().getX() << '\n';
+		std::cout << "PlayerY: " << _characters[0].getPos().getX() << '\n';
 		std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
 		for (size_t i = 0; i < _characters[0].getPifPafSize(); i++)
-			std::cout << "Bullet:" << i << " X: " << _characters[0].getOnepiFpaF((GLuint)i).posX << " Y:" << _characters[0].getOnepiFpaF((GLuint)i).posY << '\n';
+			std::cout << "Bullet:" << i << " X: " << _characters[0].getOnepiFpaF((GLuint)i)._position.getX() << " Y:" << _characters[0].getOnepiFpaF((GLuint)i)._position.getY() << '\n';
 		//std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
 	}
 	//Closing Window
@@ -254,8 +254,8 @@ void GameEngine::scroll_callback(double xoffset, double yoffset)
 void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 {
 	//Zmienne upraszczaj¹ce kod
-	double px = _characters[0].getX();
-	double py = _characters[0].getY();
+	double px = _characters[0].getTile().getPos().getX();
+	double py = _characters[0].getTile().getPos().getY();
 	double pv = _characters[0].getVelocity();
 	double newX = px;
 	double newY = py;
@@ -290,159 +290,65 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 	if (newX < 0)newX = 0;
 	if (newY < 0)newY = 0;
 
-	GLuint fixedX= (GLuint)px;
-	GLuint fixedY= (GLuint)py;
+	double fixedX= px;
+	double fixedY= py;
 	//Sprawdz czy pod now¹ pozycj¹ jest kolizja
-	bool collision = CheckForColissionX(0,newX,dir,fixedX,fixedY) || CheckForColissionY(0,newY,dir, fixedX, fixedY);
-	if (collision)
+	
+
+	//Kolizja z otoczeniem
+	//std::vector<GLuint> indexsX;
+	//indexsX.push_back(_characters[0].)
+	//std::vector<GLuint> indexsY;
+	
+	//Sprawdzanko czy jest kolizja jakakolwiek
+
+	Tile tmp(true, Tile::Content::Player, Vec2d(newX, newY), 0, 0.8);
+
+	std::vector<GLuint>indexes;
+	for (GLuint i = 0; i<_map->getSize(); ++i)
+	{
+		if (ShapeOverlap_DIAGS(tmp, _map->getTile(i)))
+		{
+			indexes.push_back(i);
+		}
+	}
+
+	for (GLuint i = 0; i < indexes.size(); ++i)
 	{
 		//std::cout << "Kolizja!" << '\n';
-		switch (_map->getTileContent(fixedX, fixedY))
+		switch (_map->getTileContent(indexes[i]))
 		{
 			//Nigdy sie nie wydarzy ale co tam
-			case Tile::Content::Nothing:
-			{
-				break;
-			}
-			case Tile::Content::Character:
-			case Tile::Content::Obstacle:
-			{
-				//Tutaj return
-				return;
-				break;
-			}
-			case Tile::Content::Item:
-			{
-				//Tutaj proces przechwycenia itemka
-				_canPickup = true;
-				break;
-			}
-			default:
-				break;
+		case Tile::Content::Nothing:
+		{
+			break;
+		}
+		case Tile::Content::Character:
+		case Tile::Content::Obstacle:
+		{
+			//Tutaj return
+			return;
+			break;
+		}
+		case Tile::Content::Item:
+		{
+			//Tutaj proces przechwycenia itemka
+			_canPickup = true;
+			break;
+		}
+		default:
+			break;
 		}
 	}
 	_characters[0].setX(newX);
 	_characters[0].setY(newY);
 }
 
-bool GameEngine::CheckForColissionX(GLuint index, double newX, Direction dir, GLuint& fx, GLuint& fy)
-{
-	bool left = dir == LEFT ? true : false;
-	//Sprawdz czy pod tym X jest obstacle
-	if (dir == LEFT || dir == RIGHT)
-	{
-			if (left)
-			{
-				//Ide w lewo i nachodze na klocek od spodu
-				//  G³az y: 2
-				//  Gracz y: 2.xyz
-				if (_map->isObstacle((GLuint)(newX + 0.1f), (GLuint)(_characters[index].getY() + 0.1f)))
-				{
-					fx = (GLuint)(newX + 0.1f);
-					fy = (GLuint)(_characters[index].getY() + 0.1f);
-					return true;
-				}	
-				//Ide w lewo i nachodze klocek od góry
-				// Gracz 1.89
-				// G³az 2
-				else if (_map->isObstacle((GLuint)(newX + 0.1), (GLuint)round(_characters[index].getY())))
-				{
-					fx = (GLuint)(newX + 0.1f);
-					fy = (GLuint)round(_characters[index].getY());
-					return true;
-				}	
-				//Jakis trzeci Przypadek lol
-				else if (_map->isObstacle((GLuint)(newX + 0.1f), (GLuint)ceil(_characters[index].getY() - 0.1f)))
-				{
-					fx = (GLuint)(newX + 0.1f);
-					fy = (GLuint)ceil(_characters[index].getY() - 0.1f);
-					return true;
-				}
-			}
-			else
-			{
-
-				if (_map->isObstacle((GLuint)(newX + 0.9f), GLuint(_characters[index].getY() + 0.1f)))
-				{
-					fx = (GLuint)(newX + 0.9f);
-					fy = GLuint(_characters[index].getY() + 0.1f);
-					return true;
-				}
-				else if (_map->isObstacle((GLuint)(newX + 0.9f), (GLuint)round(_characters[index].getY())))
-				{
-					fx = (GLuint)(newX + 0.9f);
-					fy = (GLuint)round(_characters[index].getY());
-					return true;
-				}
-				else if (_map->isObstacle((GLuint)(newX + 0.9f), (GLuint)ceil(_characters[index].getY() - 0.1f)))
-				{
-					fx = (GLuint)(newX + 0.9f);
-					fy = (GLuint)ceil(_characters[index].getY() - 0.1f);
-					return true;
-				}
-			}
-			return false;
-		}
-		 return false;
-}
-
-bool GameEngine::CheckForColissionY(GLuint index,double newY, Direction dir, GLuint& fx, GLuint& fy)
-{
-	bool top = dir == UP ? true : false;
-	if (dir == UP || dir == DOWN)
-	{
-		//Sprawdz czy pod tym Y jest obstacle
-		if (top)
-		{
-			if (_map->isObstacle(int(_characters[index].getX() + 0.1f), (GLuint)(newY + 0.1f))  )
-			{
-				fx = GLuint(_characters[index].getX() + 0.1f);
-				fy = (GLuint)(newY + 0.1f);
-				return true;
-			}
-			else if (_map->isObstacle((GLuint)round(_characters[index].getX()), (GLuint)(newY + 0.1f)))
-			{
-				fx = (GLuint)round(_characters[index].getX());
-				fy = (GLuint)(newY + 0.1f);
-				return true;
-			}
-			else if (_map->isObstacle((GLuint)ceil(_characters[index].getX() - 0.1f), (GLuint)(newY + 0.1f)))
-			{
-				fx = (GLuint)ceil(_characters[index].getX() - 0.1f);
-				fy = (GLuint)(newY + 0.1f);
-				return true;
-			}
-		}
-		else
-		{
-			if (_map->isObstacle(GLuint(_characters[index].getX() + 0.1f), (GLuint)(newY + 0.9f)) )
-			{
-				fx = GLuint(_characters[index].getX() + 0.1f);
-				fy = (GLuint)(newY + 0.9f);
-				return true;
-			}
-			else if (_map->isObstacle((GLuint)round(_characters[index].getX()), (GLuint)(newY + 0.9f)) )
-			{
-				fx = (GLuint)round(_characters[index].getX());
-				fy = (GLuint)(newY + 0.9f);
-				return true;
-			}
-			else if (_map->isObstacle((GLuint)ceil(_characters[index].getX() - 0.1f), (GLuint)(newY + 0.9f)) )
-			{
-				fx = (GLuint)ceil(_characters[index].getX() - 0.1f);
-				fy = (GLuint)(newY + 0.9f);
-				return true;
-			}
-		}
-		return false;
-	}
-	return false;
-}
 
 void GameEngine::ProcessItemPickup()
 {
-	double px = _characters[0].getX();
-	double py = _characters[0].getY();
+	double px = _characters[0].getTile().getPos().getX();
+	double py = _characters[0].getTile().getPos().getY();
 
 	GLuint nearestid=-1;
 	double distance=100.0;
@@ -469,8 +375,8 @@ void GameEngine::ProcessItemPickup()
 
 void GameEngine::ProcessPlayerShoot()
 {
-	double px =_characters[0].getX();
-	double py = _characters[0].getY();
+	double px =_characters[0].getTile().getPos().getX();
+	double py = _characters[0].getTile().getPos().getY();
 	
 	Character::Dir  pdir = _characters[0].getSide();
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
@@ -532,25 +438,25 @@ void GameEngine::Update()
 			{
 				case UP:
 				{
-					temp[i].posY -= deltaTime * tempV ;
+					temp[i]._position.setY(temp[i]._position.getY() - deltaTime * tempV) ;
 					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case DOWN:
 				{
-					temp[i].posY += deltaTime * tempV ;
+					temp[i]._position.setY(temp[i]._position.getY ()+deltaTime * tempV) ;
 					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case LEFT:
 				{
-					temp[i].posX -= deltaTime * tempV;
+					temp[i]._position.setX(temp[i]._position.getX()- deltaTime * tempV) ;
 					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case RIGHT:
 				{
-					temp[i].posX += deltaTime * tempV;
+					temp[i]._position.setX(temp[i]._position.getX() + deltaTime * tempV) ;
 					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
@@ -566,196 +472,196 @@ void GameEngine::Update()
 	}
 }
 
-void GameEngine::ProcessEnemiesMove(double deltaTime)
-{
-	//Zmienne upraszczaj¹ce kod
-	double px = _characters[0].getX();
-	double py = _characters[0].getY();
-	for (GLuint i = 1; i < (GLuint)_characters.size(); ++i)
-	{
-		double mx = _characters[i].getX();
-		double my = _characters[i].getY();
-		double mv = _characters[i].getVelocity();
-
-		bool move1 = true;
-		bool move2 = true;
-		double newX = mx;
-		double newY = my;
-
-		//Trochê Matmy
-		double VelLength = sqrt((mx - px)*(mx - px) + (my - py)*(my - py));
-		double HowMuchInX = abs((mx - px) / VelLength);
-		double HowMuchInY = abs((my - py) / VelLength);
-
-		//Wieksze od 0 to Gracz z lewej strony
-		//mx - px;
-		//Wieksze od 0 to Gracz u góry
-		//my - py;
-		double dirx = mx - px;
-		double diry = my - py;
-
-		//Rozpatrzmy os X
-		Direction DirX;
-		if (dirx > 0)DirX = LEFT;
-		else if (dirx < 0)DirX = RIGHT;
-		else DirX = NONE;
-
-		//Rozpatrzmy os Y
-		Direction DirY;
-		if (diry > 0)DirY = UP;
-		else if (diry < 0)DirY = DOWN;
-		else DirY = NONE;
-
-		//reasumujac
-		Direction dir[2];
-			
-		if (DirX != NONE && abs(dirx)>0.1) dir[0] = DirX;
-		else dir[0] = NONE;
-		
-		if (DirY != NONE && abs(diry) > 0.1) dir[1] = DirY;
-		else dir[1] = NONE;
-
-		for(GLuint i=0;i<2;i++)
-		{
-			switch (dir[i])
-			{
-			case UP:
-			{
-				newY -= deltaTime * mv * HowMuchInY;
-				break;
-			}
-			case DOWN:
-			{
-				newY += deltaTime * mv* HowMuchInY;
-				break;
-			}
-			case LEFT:
-			{
-				newX -= deltaTime * mv* HowMuchInX;
-				break;
-			}
-			case RIGHT:
-			{
-				newX += deltaTime * mv* HowMuchInX;
-				break;
-			}
-			case NONE:
-			{
-				break;
-			}
-			}
-		}
-
-		if (newY < 0)newY = 0;
-		if (newX < 0)newX = 0;
-
-		//Move in X
-			GLuint fixedX=0;
-			GLuint fixedY=0;
-			//Sprawdz czy pod now¹ pozycj¹ jest kolizja
-			bool collisionX = CheckForColissionX(i, newX, dir[0], fixedX, fixedY);
-			if (collisionX)
-			{
-				//std::cout << "Kolizja!" << '\n';
-				switch (_map->getTileContent(fixedX, fixedY))
-				{
-					//Nigdy sie nie wydarzy ale co tam
-				case Tile::Content::Nothing:
-				{
-					break;
-				}
-				case Tile::Content::Character:
-				case Tile::Content::Obstacle:
-				{
-					//Tutaj return
-					move1 = false;
-					break;
-				}
-				case Tile::Content::Item:
-				{
-					//Tutaj proces przechwycenia itemka
-					//_canPickup = true;
-					break;
-				}
-				default:
-					break;
-				}
-			}
-			
-
-			//Move in Y
-			fixedX = 0;
-			fixedY = 0;
-			bool collisionY = CheckForColissionY(i, newY, dir[1], fixedX, fixedY);
-			if (collisionY)
-			{
-				//std::cout << "Kolizja!" << '\n';
-				switch (_map->getTileContent(fixedX, fixedY))
-				{
-					//Nigdy sie nie wydarzy ale co tam
-				case Tile::Content::Nothing:
-				{
-					break;
-				}
-				case Tile::Content::Character:
-				case Tile::Content::Obstacle:
-				{
-					//Tutaj return
-					move2 = false;
-					break;
-				}
-				case Tile::Content::Item:
-				{
-					//Tutaj proces przechwycenia itemka
-					//_canPickup = true;
-					break;
-				}
-				default:
-					break;
-				}
-			}
-			if (move1)
-			{
-				//Do poprawy!!
-				if (!move2)
-				{
-					double value = mv * deltaTime*HowMuchInY;
-					if (dir[0] == LEFT)
-					{
-						/*if(abs(newY-value)>0.11)*/ newX -= value;
-					}
-					else
-					{
-						/*if (abs(newY + value) > 0.11)*/ newX += value;
-					}
-					
-				}
-				_characters[i].setX(newX);
-			}
-			if (move2)
-			{
-
-				//DoPoprawy!
-				if (!move1)
-				{
-					double value = mv * deltaTime*HowMuchInX;
-					if (dir[1] == UP)
-					{
-						/*if (abs(newX - value) > 0.11)*/ newY -= value;
-					}
-					else
-					{
-						/*if (abs(newX + value) > 0.11)*/ newY += value;
-					}
-
-				}
-				_characters[i].setY(newY);
-			}
-			//std::cout << "mobX: " << mx << " moby: " << my << '\n';
-			//std::cout << "NewX: " << newX << " newY: " << newY << 'n';
-	}
-	
-}
+//void GameEngine::ProcessEnemiesMove(double deltaTime)
+//{
+//	//Zmienne upraszczaj¹ce kod
+//	double px = _characters[0].getTile().getPos().getX();
+//	double py = _characters[0].getTile().getPos().getY();
+//	for (GLuint i = 1; i < (GLuint)_characters.size(); ++i)
+//	{
+//		double mx = _characters[i].getTile().getPos().getX();
+//		double my = _characters[i].getTile().getPos().getY();
+//		double mv = _characters[i].getVelocity();
+//
+//		bool move1 = true;
+//		bool move2 = true;
+//		double newX = mx;
+//		double newY = my;
+//
+//		//Trochê Matmy
+//		double VelLength = sqrt((mx - px)*(mx - px) + (my - py)*(my - py));
+//		double HowMuchInX = abs((mx - px) / VelLength);
+//		double HowMuchInY = abs((my - py) / VelLength);
+//
+//		//Wieksze od 0 to Gracz z lewej strony
+//		//mx - px;
+//		//Wieksze od 0 to Gracz u góry
+//		//my - py;
+//		double dirx = mx - px;
+//		double diry = my - py;
+//
+//		//Rozpatrzmy os X
+//		Direction DirX;
+//		if (dirx > 0)DirX = LEFT;
+//		else if (dirx < 0)DirX = RIGHT;
+//		else DirX = NONE;
+//
+//		//Rozpatrzmy os Y
+//		Direction DirY;
+//		if (diry > 0)DirY = UP;
+//		else if (diry < 0)DirY = DOWN;
+//		else DirY = NONE;
+//
+//		//reasumujac
+//		Direction dir[2];
+//			
+//		if (DirX != NONE && abs(dirx)>0.1) dir[0] = DirX;
+//		else dir[0] = NONE;
+//		
+//		if (DirY != NONE && abs(diry) > 0.1) dir[1] = DirY;
+//		else dir[1] = NONE;
+//
+//		for(GLuint i=0;i<2;i++)
+//		{
+//			switch (dir[i])
+//			{
+//			case UP:
+//			{
+//				newY -= deltaTime * mv * HowMuchInY;
+//				break;
+//			}
+//			case DOWN:
+//			{
+//				newY += deltaTime * mv* HowMuchInY;
+//				break;
+//			}
+//			case LEFT:
+//			{
+//				newX -= deltaTime * mv* HowMuchInX;
+//				break;
+//			}
+//			case RIGHT:
+//			{
+//				newX += deltaTime * mv* HowMuchInX;
+//				break;
+//			}
+//			case NONE:
+//			{
+//				break;
+//			}
+//			}
+//		}
+//
+//		if (newY < 0)newY = 0;
+//		if (newX < 0)newX = 0;
+//
+//		//Move in X
+//			GLuint fixedX=0;
+//			GLuint fixedY=0;
+//			//Sprawdz czy pod now¹ pozycj¹ jest kolizja
+//			bool collisionX = CheckForColissionX(i, newX, dir[0], fixedX, fixedY);
+//			if (collisionX)
+//			{
+//				//std::cout << "Kolizja!" << '\n';
+//				switch (_map->getTileContent(fixedX, fixedY))
+//				{
+//					//Nigdy sie nie wydarzy ale co tam
+//				case Tile::Content::Nothing:
+//				{
+//					break;
+//				}
+//				case Tile::Content::Character:
+//				case Tile::Content::Obstacle:
+//				{
+//					//Tutaj return
+//					move1 = false;
+//					break;
+//				}
+//				case Tile::Content::Item:
+//				{
+//					//Tutaj proces przechwycenia itemka
+//					//_canPickup = true;
+//					break;
+//				}
+//				default:
+//					break;
+//				}
+//			}
+//			
+//
+//			//Move in Y
+//			fixedX = 0;
+//			fixedY = 0;
+//			bool collisionY = CheckForColissionY(i, newY, dir[1], fixedX, fixedY);
+//			if (collisionY)
+//			{
+//				//std::cout << "Kolizja!" << '\n';
+//				switch (_map->getTileContent(fixedX, fixedY))
+//				{
+//					//Nigdy sie nie wydarzy ale co tam
+//				case Tile::Content::Nothing:
+//				{
+//					break;
+//				}
+//				case Tile::Content::Character:
+//				case Tile::Content::Obstacle:
+//				{
+//					//Tutaj return
+//					move2 = false;
+//					break;
+//				}
+//				case Tile::Content::Item:
+//				{
+//					//Tutaj proces przechwycenia itemka
+//					//_canPickup = true;
+//					break;
+//				}
+//				default:
+//					break;
+//				}
+//			}
+//			if (move1)
+//			{
+//				//Do poprawy!!
+//				if (!move2)
+//				{
+//					double value = mv * deltaTime*HowMuchInY;
+//					if (dir[0] == LEFT)
+//					{
+//						/*if(abs(newY-value)>0.11)*/ newX -= value;
+//					}
+//					else
+//					{
+//						/*if (abs(newY + value) > 0.11)*/ newX += value;
+//					}
+//					
+//				}
+//				_characters[i].setX(newX);
+//			}
+//			if (move2)
+//			{
+//
+//				//DoPoprawy!
+//				if (!move1)
+//				{
+//					double value = mv * deltaTime*HowMuchInX;
+//					if (dir[1] == UP)
+//					{
+//						/*if (abs(newX - value) > 0.11)*/ newY -= value;
+//					}
+//					else
+//					{
+//						/*if (abs(newX + value) > 0.11)*/ newY += value;
+//					}
+//
+//				}
+//				_characters[i].setY(newY);
+//			}
+//			//std::cout << "mobX: " << mx << " moby: " << my << '\n';
+//			//std::cout << "NewX: " << newX << " newY: " << newY << 'n';
+//	}
+//	
+//}
 
 void GameEngine::OpenDoors()
 {
@@ -781,4 +687,45 @@ void GameEngine::CloseDoors()
 		_map->setTileContent(id[i], id[i + 1], Tile::Content::Obstacle);
 	}
 	renderer->CloseDoors();
+}
+
+//One Lone Coder Overlapping Algorithm
+bool GameEngine::ShapeOverlap_DIAGS(Tile &r1, Tile &r2)
+{
+	Tile *poly1 = &r1;
+	Tile *poly2 = &r2;
+
+	for (int shape = 0; shape < 2; shape++)
+	{
+		if (shape == 1)
+		{
+			poly1 = &r2;
+			poly2 = &r1;
+		}
+
+		// Check diagonals of polygon...
+		for (GLuint p = 0; p < poly1->getVertexCount(); p++)
+		{
+			Vec2d line_r1s = poly1->getPos();
+			Vec2d line_r1e = poly1->getVertex(p);
+
+			// ...against edges of the other
+			for (GLuint q = 0; q < poly2->getVertexCount(); q++)
+			{
+				Vec2d line_r2s = poly2->getVertex(q);
+				Vec2d line_r2e = poly2->getVertex((q + 1) % poly2->getVertexCount());
+
+				// Standard "off the shelf" line segment intersection
+				double h = (line_r2e.getX() - line_r2s.getX()) * (line_r1s.getY() - line_r1e.getY()) - (line_r1s.getX() - line_r1e.getX()) * (line_r2e.getY() - line_r2s.getY());
+				double t1 = ((line_r2s.getY() - line_r2e.getY()) * (line_r1s.getX() - line_r2s.getX()) + (line_r2e.getX() - line_r2s.getX()) * (line_r1s.getY() - line_r2s.getY())) / h;
+				double t2 = ((line_r1s.getY() - line_r1e.getY()) * (line_r1s.getX() - line_r2s.getX()) + (line_r1e.getX() - line_r1s.getX()) * (line_r1s.getY() - line_r2s.getY())) / h;
+
+				if (t1 >= 0.0f && t1 < 1.0f && t2 >= 0.0f && t2 < 1.0f)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
