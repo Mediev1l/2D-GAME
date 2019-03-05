@@ -66,9 +66,9 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero(5.0, 6.0, 3.0, "res/Sprites/Player/issac.png"));
-	_characters.push_back(Enemy(1.0, 6.0, 1.0, "res/Sprites/Enemies/Skelly/skelly.png"));
-	_characters.push_back(Enemy(4.0, 3.0, 1.0, "res/Sprites/Enemies/Zombie/zombie.png"));
+	_characters.push_back(Hero(5.0, 6.0, 3.0, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Enemy(1.0, 6.0, 1.0, "res/Sprites/Enemies/Skelly/skelly.png", "res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Enemy(4.0, 3.0, 1.0, "res/Sprites/Enemies/Zombie/zombie.png", "res/Sprites/Tears/basic_tear.png"));
 
 	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
 	//Na sztywno ustawianie na mapie ze jest tam item
@@ -136,8 +136,8 @@ void GameEngine::processInput()
 		std::cout << "PlayerX: " << _characters[0].getX() << '\n';
 		std::cout << "PlayerY: " << _characters[0].getY() << '\n';
 		std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
-		for (int i = 0; i < _characters[0].getPifPafSize(); i++)
-			std::cout << "Bullet:" << i << " X: " << _characters[0].getOnepiFpaF(i).posX << " Y:" << _characters[0].getOnepiFpaF(i).posY << '\n';
+		for (size_t i = 0; i < _characters[0].getPifPafSize(); i++)
+			std::cout << "Bullet:" << i << " X: " << _characters[0].getOnepiFpaF((GLuint)i).posX << " Y:" << _characters[0].getOnepiFpaF((GLuint)i).posY << '\n';
 		//std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
 	}
 	//Closing Window
@@ -145,7 +145,7 @@ void GameEngine::processInput()
 		glfwSetWindowShouldClose(window, true);
 
 	//PickupItems
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
 		if (_canPickup)
 		{
@@ -153,30 +153,38 @@ void GameEngine::processInput()
 		}
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+
+	}
 
 	//MovementProcessor
 	double deltaTime = t.getDelta();
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS
-		||
-		glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	if ( glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::UP);
 	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS
-		||
-		glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::DOWN);
 	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS
-		||
-		glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::LEFT);
 	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS
-		||
-		glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::RIGHT);
 	}
@@ -751,8 +759,8 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 
 void GameEngine::OpenDoors()
 {
-	GLuint x = ceil(_map->getWidth() / 2.0) - 1;
-	GLuint y = ceil(_map->getHeight() / 2.0) - 1;
+	GLuint x = (GLuint)ceil(_map->getWidth() / 2.0) - 1;
+	GLuint y = (GLuint)ceil(_map->getHeight() / 2.0) - 1;
 	GLuint id[] = { x,0,0,y,_map->getWidth() - 1,y };
 
 	for (GLuint i = 0; i < 6; i+=2)
@@ -764,8 +772,8 @@ void GameEngine::OpenDoors()
 
 void GameEngine::CloseDoors()
 {
-	GLuint x = ceil(_map->getWidth() / 2.0) - 1;
-	GLuint y = ceil(_map->getHeight() / 2.0) - 1;
+	GLuint x = (GLuint)ceil(_map->getWidth() / 2.0) - 1;
+	GLuint y = (GLuint)ceil(_map->getHeight() / 2.0) - 1;
 	GLuint id[] = { x,0,0,y,_map->getWidth() - 1,y };
 
 	for (GLuint i = 0; i < 6; i += 2)

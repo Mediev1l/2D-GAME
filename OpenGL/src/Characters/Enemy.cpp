@@ -1,6 +1,8 @@
 #include "Enemy.h"
 
-Enemy::Enemy(double x, double y, double vel, std::string texturepath): Character(texturepath)
+Enemy::Enemy(double x, double y, double vel, std::string texturepath, std::string PifPafTexturePath)
+	:
+	Character(texturepath, PifPafTexturePath)
 {
 	posX = x;
 	posY = y;

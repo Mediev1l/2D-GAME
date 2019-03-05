@@ -128,7 +128,7 @@ void Renderer::RenderCharacter(std::vector<Character>& characters)
 			_mainShader.setMat4("model", model);
 
 			glActiveTexture(GL_TEXTURE0);
-			//glBindTexture(GL_TEXTURE_2D, );
+			glBindTexture(GL_TEXTURE_2D, characters[0].getPifPafTexture());
 
 			_mainShader.use();
 			glBindVertexArray(VAO);
@@ -171,8 +171,8 @@ void Renderer::RenderItems(std::vector<Item>& items)
 
 void Renderer::DrawDoors(Object & obj)
 {
-	GLuint x = ceil(_maps.getWidth() / 2.0) - 1;
-	GLuint y = ceil(_maps.getHeight() / 2.0) - 1;
+	GLuint x = (GLuint)ceil(_maps.getWidth() / 2.0) - 1;
+	GLuint y = (GLuint)ceil(_maps.getHeight() / 2.0) - 1;
 	GLuint id[] = { x,0,0,y,_maps.getWidth() - 1,y };
 	//RenderDoors
 	for (GLuint i = 0; i < 6; i += 2)

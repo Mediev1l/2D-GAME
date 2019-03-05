@@ -1,8 +1,8 @@
 #include "Hero.h"
 
-Hero::Hero(double x, double y, double vel, std::string texturepath)
+Hero::Hero(double x, double y, double vel, std::string texturepath,std::string PifPafTexturePath)
 	: 
-	Character(texturepath)
+	Character(texturepath, PifPafTexturePath)
 {
 	posX = x;
 	posY = y;

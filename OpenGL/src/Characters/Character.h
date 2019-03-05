@@ -31,12 +31,17 @@ public:
 
 	};
 
-	Character(std::string TexturePath) : _texture(TexturePath,true), Stats(), Coords() {};
+	Character(std::string TexturePath, std::string PifPafTexturePath) 
+		: 
+		_texture(TexturePath,true)
+		,_PifPafTexture(PifPafTexturePath,true)
+		, Stats()
+		, Coords() {};
 	double getX() { return posX; };
 	double getY() { return posY; };
 	double getVelocity() { return m_speed; };
 	Dir getSide() { return side; };
-	GLuint getPifPafSize() { return _piFpaF.size(); };
+	GLuint getPifPafSize() { return (GLuint)_piFpaF.size(); };
 
 	void setY(double y) { posY = y; };
 	void setX(double x) { posX = x; };
@@ -44,7 +49,7 @@ public:
 
 	std::vector<Projectile>& getpiFpaF() { return _piFpaF; };
 	Projectile& getOnepiFpaF(GLuint index) { return _piFpaF[index]; };
-	
+	GLuint getPifPafTexture() { return _PifPafTexture.getID(); };
 
 	void UpdateX(double ux) { posX += ux; };
 	void UpdateY(double uy) { posY += uy; };
@@ -67,6 +72,7 @@ protected:
 
 	//Coords
 	Texture _texture;
+	Texture _PifPafTexture;
 
 	//Weapons
 	std::vector<Projectile> _piFpaF;
