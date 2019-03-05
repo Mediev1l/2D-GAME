@@ -67,10 +67,11 @@ protected:
 	void ProcessPlayerShoot();
 	void Update();
 
-	//void ProcessEnemiesMove(double deltaTime);
+	void ProcessEnemiesMove(double deltaTime);
 	void OpenDoors();
 	void CloseDoors();
-
+	GameEngine::Direction CalculateDirection(double x, bool pionowo, double margin);
+	bool CheckColissions(const Character& obj, GLuint index, double x, double y);
 	bool ShapeOverlap_DIAGS(Tile &r1, Tile &r2);
 
 public:

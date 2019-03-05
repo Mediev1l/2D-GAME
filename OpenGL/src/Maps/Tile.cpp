@@ -37,3 +37,21 @@ Tile::Tile(bool solid, Content con, Vec2d pos, GLuint texture, double size)
 Tile::~Tile()
 {
 }
+
+void Tile::UpdateVertexs(bool ox)
+{
+	if (ox)
+	{
+		_vertexs[0].setX(_position.getX() - _size / 2.0);
+		_vertexs[1].setX(_position.getX() + _size / 2.0);
+		_vertexs[2].setX(_position.getX() + _size / 2.0);
+		_vertexs[3].setX(_position.getX() - _size / 2.0);
+	}
+	else
+	{
+		_vertexs[0].setY(_position.getY() - _size / 2.0);
+		_vertexs[1].setY(_position.getY() - _size / 2.0);
+		_vertexs[2].setY(_position.getY() + _size / 2.0);
+		_vertexs[3].setY(_position.getY() + _size / 2.0);
+	}
+}

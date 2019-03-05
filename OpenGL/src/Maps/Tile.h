@@ -48,7 +48,11 @@ public:
 		if (content == Obstacle)_solid = true; 
 		if (content == Nothing)_solid = false;
 	};
-
+	//================================================================
+	//= Utility
+	//================================================================
+	void UpdateVertexs(bool ox);
+	double getOrigin()const { return _size; };
 private:
 	GLuint _textureID;
 	Vec2d _position;

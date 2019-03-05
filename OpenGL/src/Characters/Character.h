@@ -59,9 +59,19 @@ public:
 
 
 	Vec2d getPos() { return _tile.getPos(); };
-	void setY(double y) { _tile.getPos().setY(y); };
-	void setX(double x) { _tile.getPos().setX(x); };
+	void setY(double y) 
+	{ 
+		_tile.getPos().setY(y); 
+		_tile.UpdateVertexs(false);
+	};
+	void setX(double x) 
+	{ 
+		_tile.getPos().setX(x);
+		_tile.UpdateVertexs(true);
+	};
 	Tile& getTile() { return _tile; };
+
+	double getOrigin()const { return _tile.getOrigin(); };
 
 	//virtual void Bechaviour(const Character& player, double deltaTime) = 0;
 
