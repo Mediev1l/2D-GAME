@@ -5,13 +5,14 @@ GameEngine::GameEngine()
 	  window(nullptr)
 	, renderer(nullptr)
 	, t()
-	, SCR_WIDTH(1000)
-	, SCR_HEIGHT(1000)
+	, SCR_WIDTH(800)
+	, SCR_HEIGHT(800)
 	, lastX(SCR_WIDTH / 2.0)
 	, lastY(SCR_HEIGHT / 2.0)
 	, firstMouse(true)
 	, WindowName("Kacp3r3 & Bartek Playground")
 	, delay(1)
+	, camera(6,6)
 {
 }
 
@@ -55,7 +56,7 @@ void GameEngine::Game_Init()
 
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
-		renderer = new Renderer();
+		renderer = new Renderer(camera);
 		_map = &renderer->getMap();
 	}
 	catch (std::runtime_error &e)
@@ -66,10 +67,10 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero(5.0, 6.0, 3.0, 0.8, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Hero(7.0, 7.0, 3.0, 0.8, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
 	_characters.push_back(Enemy(1.0, 6.0, 1.0, 0.8, "res/Sprites/Enemies/Skelly/skelly.png", "res/Sprites/Tears/basic_tear.png"));
 	_characters.push_back(Enemy(4.0, 3.0, 1.0, 0.8, "res/Sprites/Enemies/Zombie/zombie.png", "res/Sprites/Tears/basic_tear.png"));
-
+	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
 	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
 	//Na sztywno ustawianie na mapie ze jest tam item
 	_items.emplace_back("res/Sprites/Items/", "res/Items/", 0);
@@ -108,13 +109,14 @@ void GameEngine::Game_Run()
 		// input
 		// -----
 		processInput();
+		camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin()/2.0);
 		Update();
 		ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
 
 		//Renderowanie || rozdzielone by gracz byl rysowany na koncu
-		renderer->RenderMap();
-		renderer->RenderItems(_items);
-		renderer->RenderCharacter(_characters);
+		renderer->RenderMap(camera);
+		renderer->RenderItems(_items, camera);
+		renderer->RenderCharacter(_characters, camera);
 	
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -135,9 +137,11 @@ void GameEngine::processInput()
 	{
 		std::cout << "PlayerX: " << _characters[0].getPos().getX() << '\n';
 		std::cout << "PlayerY: " << _characters[0].getPos().getX() << '\n';
-		std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
-		for (size_t i = 0; i < _characters[0].getPifPafSize(); i++)
-			std::cout << "Bullet:" << i << " X: " << _characters[0].getOnepiFpaF((GLuint)i)._position.getX() << " Y:" << _characters[0].getOnepiFpaF((GLuint)i)._position.getY() << '\n';
+		//std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
+		std::cout << "VectorX: " << camera.getTranslate()._x << '\n';
+		std::cout << "VectorY: " << camera.getTranslate()._y << '\n';
+		//for (size_t i = 0; i < _characters[0].getPifPafSize(); i++)
+			//std::cout << "Bullet:" << i << " X: " << _characters[0].getOnepiFpaF((GLuint)i)._position.getX() << " Y:" << _characters[0].getOnepiFpaF((GLuint)i)._position.getY() << '\n';
 		//std::cout << "boots: " << _items[0].getMovementSpeed() << '\n';
 	}
 	//Closing Window
@@ -153,22 +157,22 @@ void GameEngine::processInput()
 		}
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
 		_characters[0].setSide(Character::UP);
 		ProcessPlayerShoot();
 	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
 		_characters[0].setSide(Character::DOWN);
 		ProcessPlayerShoot();
 	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
 		_characters[0].setSide(Character::LEFT);
 		ProcessPlayerShoot();
 	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
 		_characters[0].setSide(Character::RIGHT);
 		ProcessPlayerShoot();
@@ -176,19 +180,19 @@ void GameEngine::processInput()
 
 	//MovementProcessor
 	double deltaTime = t.getDelta();
-	if ( glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	if ( glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::UP);
 	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::DOWN);
 	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::LEFT);
 	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
 		ProcessPlayerMove(deltaTime, Direction::RIGHT);
 	}
@@ -414,6 +418,12 @@ void GameEngine::Update()
 					break;
 				}
 				
+			}
+			if (CheckCollisionsBullet(temp[i], 0, temp[i].getX(), temp[i].getY()))
+			{
+				temp[i].setExistance(false);
+				temp.erase(temp.begin() + i);
+				i -= 1;
 			}
 
 		}
@@ -692,5 +702,78 @@ bool GameEngine::ShapeOverlap_DIAGS(Tile &r1, Tile &r2)
 			}
 		}
 	}
+	return false;
+}
+
+bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, double x, double y)
+{
+	//Some utility variables
+	auto getIndex = [&](GLuint x, GLuint y) { return y * _map->getWidth() + x; };
+	GLuint xx = (GLuint)floor(x);
+	GLuint yy = (GLuint)floor(y);
+	//Safety checks
+	if (xx < 1)xx = 1;
+	if (yy < 1)yy = 1;
+	//if (xx + 2 > _map->getWidth())xx = _map->getWidth() - 1;
+	//if (yy + 2 > _map->getHeight())yy = _map->getHeight() - 1;
+
+	//Check map Around Character
+	std::vector<GLuint>indexesToCheck = { getIndex(xx - 1,yy - 1),getIndex(xx,yy - 1),getIndex(xx + 1,yy - 1),
+								  getIndex(xx - 1,yy),getIndex(xx,yy),getIndex(xx + 1,yy),
+								  getIndex(xx - 1,yy + 1),getIndex(xx,yy + 1),getIndex(xx + 1,yy + 1) };
+	std::vector<GLuint>indexes;
+	Tile tmp(true, Tile::Content::Player, Vec2d(x, y), 0, bullet.getOrigin());
+	for (GLuint i = 0; i < indexesToCheck.size(); ++i)
+	{
+		if (ShapeOverlap_DIAGS(tmp, _map->getTile((GLuint)indexesToCheck[i])))
+		{
+			indexes.push_back(indexesToCheck[i]);
+		}
+	}
+
+	for (GLuint i = 0; i < indexes.size(); ++i)
+	{
+		//std::cout << "Kolizja!" << '\n';
+		switch (_map->getTileContent(indexes[i]))
+		{
+			//Nigdy sie nie wydarzy ale co tam
+		case Tile::Content::Nothing:
+		{
+			break;
+		}
+		case Tile::Content::Obstacle:
+		{
+			//Tutaj return
+			return true;
+			break;
+		}
+		case Tile::Content::Item:
+		{
+			//Tutaj proces przechwycenia itemka
+			break;
+		}
+		case Tile::Content::Doors:
+		{
+			return true;
+		}
+		default:
+			break;
+		}
+	}
+
+	//a teraz kolizje z innymi characterami
+	for (GLuint j = 1; j < _characters.size(); ++j)
+	{
+		if (ShapeOverlap_DIAGS(tmp, _characters[j].getTile()))
+		{
+			if (_characters[j].TakeDamage(bullet))
+			{
+				_characters.erase(_characters.begin() + j);
+				j -= 1;
+			}
+			return true;
+		}
+	}
+
 	return false;
 }

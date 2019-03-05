@@ -57,6 +57,11 @@ public:
 	void consumeItem(const Item& item);
 
 
+	bool TakeDamage(const Projectile& bullet)
+	{
+		m_health -= 20;
+		return !(m_health > 0);
+	};
 
 	Vec2d getPos() { return _tile.getPos(); };
 	void setY(double y) 

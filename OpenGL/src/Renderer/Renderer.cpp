@@ -2,7 +2,7 @@
 
 
 
-Renderer::Renderer()
+Renderer::Renderer(const Camera& cam)
 	:
 	_mainShader("src/Shaders/vs.vs","src/Shaders/fs.fs")
 	,_maps{ "res/Sprites/Map1/map1.txt","res/Sprites/Map1/" }
@@ -32,15 +32,14 @@ Renderer::Renderer()
 	_mainShader.setInt("texture1", 0);
 
 	//Setup Drawin Values
-	ScaleFactorX = 1.0 / _maps.getWidth();
-	ScaleFactorY = 1.0 / _maps.getHeight();
+	//ScaleFactorX = 1.0 / _maps.getWidth();
+	//ScaleFactorY = 1.0 / _maps.getHeight();
 
-	//GLuint MapFov = 10;
-	//ScaleFactorX = 1.0 / MapFov;
-	//ScaleFactorY = 1.0 / MapFov;
+	ScaleFactorX = 1.0 / cam.getFov()._x;
+	ScaleFactorY = 1.0 / cam.getFov()._y;
 
-	StartPosX = 1 - ScaleFactorX;
-	StartPosY = 1 - ScaleFactorY;
+	StartPosX = 1 -ScaleFactorX;
+	StartPosY = 1 -ScaleFactorY;
 
 	TranslateValueX = 2 * ScaleFactorX;
 	TranslateValueY = 2 * ScaleFactorY;
@@ -55,25 +54,29 @@ Renderer::~Renderer()
 
 
 
-void Renderer::RenderMap()
+void Renderer::RenderMap(const Camera& cam)
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (GLuint y = 0; y < (GLuint)_maps.getHeight(); y++)
+	//for (GLuint y = 0; y <= _maps.getHeight(); y++)
 	{
 		for (GLuint x = 0; x < (GLuint)_maps.getWidth(); x++)
+		//for (GLuint x = 0; x <= _maps.getWidth(); x++)
 		{
 
 			//Eksperymentalnie udowodniono ze dziala xD
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
-			model = glm::translate(model, glm::vec3(TranslateValueX*_maps.getTilePos(x,y).getX()
-													, -TranslateValueY* _maps.getTilePos(x, y).getY(), 0.0f));
-
+			model = glm::translate(model, glm::vec3(TranslateValueX*_maps.getTilePos(x, y)._x
+				, -TranslateValueY *_maps.getTilePos(x,y)._y, 0.0f));
+			model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
 
 			//Skalowanko lepiej na koncu xD
 			model = glm::scale(model, glm::vec3(ScaleFactorX, ScaleFactorY, 0.0f));
+
+			
 
 
 			_mainShader.setMat4("model", model);
@@ -87,10 +90,10 @@ void Renderer::RenderMap()
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 	}
-	DrawDoors(DoorState);
+	DrawDoors(DoorState,cam);
 }
 
-void Renderer::RenderCharacter(std::vector<Character>& characters)
+void Renderer::RenderCharacter(std::vector<Character>& characters, const Camera& cam)
 {
 	//Rysowanie od ty³u = gracz zawsze na wierzchu
 	for(int i = (int)characters.size()-1; i>-1;--i)
@@ -101,11 +104,13 @@ void Renderer::RenderCharacter(std::vector<Character>& characters)
 		model = glm::translate(model, glm::vec3(TranslateValueX*(characters[i].getTile().getPos().getX())
 			, -TranslateValueY *(characters[i].getTile().getPos().getY()), 0.0f));
 
+		model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
 
 		//Skalowanko lepiej na koncu xD
 		model = glm::scale(model, glm::vec3(ScaleFactorX-0.02, ScaleFactorY-0.02, 0.0f));
 
-
+		//model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
+		
 		_mainShader.setMat4("model", model);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -126,11 +131,13 @@ void Renderer::RenderCharacter(std::vector<Character>& characters)
 			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
 			model = glm::translate(model, glm::vec3(TranslateValueX*(characters[0].getOnepiFpaF(i)._position.getX())
 													, -TranslateValueY * (characters[0].getOnepiFpaF(i)._position.getY()), 0.0f));
+			model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
 
 
 			//Skalowanko lepiej na koncu xD
 			model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.0f));
 
+			//model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
 
 			_mainShader.setMat4("model", model);
 
@@ -146,7 +153,7 @@ void Renderer::RenderCharacter(std::vector<Character>& characters)
 
 }
 
-void Renderer::RenderItems(std::vector<Item>& items)
+void Renderer::RenderItems(std::vector<Item>& items, const Camera& cam)
 {
 	//Od ty³u bo sobie skopiowa³em z characters kappa
 	for (int i = (int)items.size()-1; i > -1; --i)
@@ -157,6 +164,7 @@ void Renderer::RenderItems(std::vector<Item>& items)
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
 			model = glm::translate(model, glm::vec3(TranslateValueX*(items[i].getX()), -TranslateValueY *(items[i].getY()), 0.0f));
+			model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
 
 
 			//Skalowanko lepiej na koncu xD
@@ -176,7 +184,7 @@ void Renderer::RenderItems(std::vector<Item>& items)
 	}
 }
 
-void Renderer::DrawDoors(Object & obj)
+void Renderer::DrawDoors(Object & obj, const Camera& cam)
 {
 	GLuint x = (GLuint)ceil(_maps.getWidth() / 2.0) - 1;
 	GLuint y = (GLuint)ceil(_maps.getHeight() / 2.0) - 1;
@@ -189,6 +197,7 @@ void Renderer::DrawDoors(Object & obj)
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
 		model = glm::translate(model, glm::vec3(TranslateValueX*id[i], -TranslateValueY * id[i + 1], 0.0f));
+		model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
 		//Obracanie drzwi he he
 		if (i == 2)
 		{
@@ -198,6 +207,7 @@ void Renderer::DrawDoors(Object & obj)
 		{
 			model = glm::rotate(model, (float)glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		}
+		
 
 		//Skalowanko lepiej na koncu xD
 		model = glm::scale(model, glm::vec3(ScaleFactorX, ScaleFactorY, 0.0f));

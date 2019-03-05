@@ -9,6 +9,7 @@
 #include "Utility/Timer.h"
 #include "Characters/Hero.h"
 #include "Characters/Enemy.h"
+#include "Renderer/Camera.h"
 
 
 //================================================================
@@ -29,6 +30,7 @@ protected:
 
 	GLFWwindow* window;
 	Timer t;
+	Camera camera;
 	Renderer* renderer;
 
 	//================================================================
@@ -73,6 +75,8 @@ protected:
 	GameEngine::Direction CalculateDirection(double x, bool pionowo, double margin);
 	bool CheckColissions(const Character& obj, GLuint index, double x, double y);
 	bool ShapeOverlap_DIAGS(Tile &r1, Tile &r2);
+
+	bool CheckCollisionsBullet(const Projectile& bullet, GLuint index, double x, double y);
 
 public:
 

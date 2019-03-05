@@ -23,12 +23,12 @@ protected:
 	double elapsedDistance;
 	bool exist;
 	Dir side;
+	double origin = 0.2;
 public:
 
 
 	Projectile();
 	Projectile(double size, double x, double y, double vel, double  distance, Projectile::Dir side, bool exist);
-
 
 	void setSize(double siz) { size = siz; };
 	void setElapsedDistance(double elapsedDis) { elapsedDistance = elapsedDis; };
@@ -38,6 +38,9 @@ public:
 	double getElapdedDistance() { return elapsedDistance; };
 	bool getExistance() { return exist; };
 
+	double getX()const { return _position._x; };
+	double getY()const { return _position._y; };
+	double getOrigin()const { return origin; };
 	Projectile::Dir getSide() { return side; };
 
 

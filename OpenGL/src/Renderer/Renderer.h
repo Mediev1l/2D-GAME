@@ -3,18 +3,19 @@
 #include "Maps/Map.h"
 #include "Characters/Character.h"
 #include "Items/Item.h"
+#include "Renderer/Camera.h"
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 class Renderer
 {
 public:
-	Renderer();
+	Renderer(const Camera& cam);
 	~Renderer();
 
-	void RenderMap();
-	void RenderCharacter(std::vector<Character>& _characters);
-	void RenderItems(std::vector<Item>& items);
+	void RenderMap(const Camera& cam);
+	void RenderCharacter(std::vector<Character>& _characters, const Camera& cam);
+	void RenderItems(std::vector<Item>& items, const Camera& cam);
 	Map& getMap() { return _maps; };
 
 	void CloseDoors() { DoorState = Object::DoorClosed; };
@@ -27,7 +28,7 @@ private:
 		DoorClosed = 1
 	};
 
-	void DrawDoors(Object& obj);
+	void DrawDoors(Object& obj, const Camera& cam);
 	//Drawing values
 	double ScaleFactorX;
 	double ScaleFactorY;
