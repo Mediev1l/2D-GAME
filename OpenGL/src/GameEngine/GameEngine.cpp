@@ -155,19 +155,23 @@ void GameEngine::processInput()
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-
+		_characters[0].setSide(Character::UP);
+		ProcessPlayerShoot();
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-
+		_characters[0].setSide(Character::DOWN);
+		ProcessPlayerShoot();
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-
+		_characters[0].setSide(Character::LEFT);
+		ProcessPlayerShoot();
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-
+		_characters[0].setSide(Character::RIGHT);
+		ProcessPlayerShoot();
 	}
 
 	//MovementProcessor
@@ -191,7 +195,7 @@ void GameEngine::processInput()
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-		ProcessPlayerShoot();
+
 	}
 
 	//Fun
@@ -264,25 +268,21 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 		case UP:
 		{
 			newY -= deltaTime * pv;
-			_characters[0].setSide(Character::UP);
 			break;
 		}
 		case DOWN:
 		{
 			newY += deltaTime * pv;
-			_characters[0].setSide(Character::DOWN);
 			break;
 		}
 		case LEFT:
 		{
 			newX -= deltaTime * pv;
-			_characters[0].setSide(Character::LEFT);
 			break;
 		}
 		case RIGHT:
 		{
 			newX += deltaTime * pv;
-			_characters[0].setSide(Character::RIGHT);
 			break;
 		}
 	}
@@ -485,22 +485,22 @@ void GameEngine::ProcessPlayerShoot()
 		{
 		case UP:
 		{
-			temp.emplace_back(1, px, py - 0.1, 1, 0, Projectile::Dir::UP, true);
+			temp.emplace_back(1, px, py - 0.1, 2, 0, Projectile::Dir::UP, true);
 			break;
 		}
 		case DOWN:
 		{
-			temp.emplace_back(1, px, py + 0.1, 1, 0, Projectile::Dir::DOWN, true);
+			temp.emplace_back(1, px, py + 0.1, 2, 0, Projectile::Dir::DOWN, true);
 			break;
 		}
 		case LEFT:
 		{
-			temp.emplace_back(1, px - 0.1, py, 1, 0, Projectile::Dir::LEFT, true);
+			temp.emplace_back(1, px - 0.1, py, 2, 0, Projectile::Dir::LEFT, true);
 			break;
 		}
 		case RIGHT:
 		{
-			temp.emplace_back(1, px + 0.1, py - 0.1, 1, 0, Projectile::Dir::RIGHT, true);
+			temp.emplace_back(1, px + 0.1, py - 0.1, 2, 0, Projectile::Dir::RIGHT, true);
 			break;
 		}
 
