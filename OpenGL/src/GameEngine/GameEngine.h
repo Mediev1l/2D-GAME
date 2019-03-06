@@ -43,6 +43,7 @@ protected:
 	bool firstMouse;
 	bool _canPickup;
 	double delay;
+	bool lvlWin;
 	//================================================================
 	//= Game Objects
 	//================================================================
@@ -70,8 +71,7 @@ protected:
 	void Update();
 
 	void ProcessEnemiesMove(double deltaTime);
-	void OpenDoors();
-	void CloseDoors();
+	void Doors();
 	GameEngine::Direction CalculateDirection(double x, bool pionowo, double margin);
 	bool CheckColissions(const Character& obj, GLuint index, double x, double y);
 	bool ShapeOverlap_DIAGS(Tile &r1, Tile &r2);

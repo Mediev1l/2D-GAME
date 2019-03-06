@@ -13,6 +13,7 @@ GameEngine::GameEngine()
 	, WindowName("Kacp3r3 & Bartek Playground")
 	, delay(1)
 	, camera(6,6)
+	, lvlWin(false)
 {
 }
 
@@ -162,17 +163,17 @@ void GameEngine::processInput()
 		_characters[0].setSide(Character::UP);
 		ProcessPlayerShoot();
 	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
 		_characters[0].setSide(Character::DOWN);
 		ProcessPlayerShoot();
 	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
 		_characters[0].setSide(Character::LEFT);
 		ProcessPlayerShoot();
 	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
 		_characters[0].setSide(Character::RIGHT);
 		ProcessPlayerShoot();
@@ -210,11 +211,9 @@ void GameEngine::processInput()
 
 	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
 	{
-		CloseDoors();
 	}
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
-		OpenDoors();
 	}
 }
 
@@ -548,20 +547,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 	
 }
 
-void GameEngine::OpenDoors()
-{
-	GLuint x = (GLuint)ceil(_map->getWidth() / 2.0) - 1;
-	GLuint y = (GLuint)ceil(_map->getHeight() / 2.0) - 1;
-	GLuint id[] = { x,0,0,y,_map->getWidth() - 1,y };
-
-	for (GLuint i = 0; i < 6; i+=2)
-	{
-		_map->setTileContent(id[i], id[i + 1], Tile::Content::Doors);
-	}
-	renderer->OpenDoors();
-}
-
-void GameEngine::CloseDoors()
+void GameEngine::Doors()
 {
 	GLuint x = (GLuint)ceil(_map->getWidth() / 2.0) - 1;
 	GLuint y = (GLuint)ceil(_map->getHeight() / 2.0) - 1;
@@ -569,9 +555,10 @@ void GameEngine::CloseDoors()
 
 	for (GLuint i = 0; i < 6; i += 2)
 	{
-		_map->setTileContent(id[i], id[i + 1], Tile::Content::Obstacle);
+		_map->setTileContent(id[i], id[i + 1], lvlWin ? Tile::Content::Nothing : Tile::Content::Obstacle);
 	}
-	renderer->CloseDoors();
+	if (lvlWin) renderer->OpenDoors();
+	else renderer->CloseDoors();
 }
 
 GameEngine::Direction GameEngine::CalculateDirection(double x, bool pionowo, double margin)
@@ -770,6 +757,12 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 			{
 				_characters.erase(_characters.begin() + j);
 				j -= 1;
+				if (_characters.size() == 1)
+				{
+					lvlWin = true;
+					Doors();
+				}
+				
 			}
 			return true;
 		}
