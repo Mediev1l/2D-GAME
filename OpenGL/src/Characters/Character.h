@@ -37,12 +37,12 @@ public:
 		{};
 	double getVelocity() { return m_speed; };
 	Dir getSide() { return side; };
-	GLuint getPifPafSize() { return (GLuint)_piFpaF.size(); };
+	GLuint getPifPafSize() const { return (GLuint)_piFpaF.size(); };
 
 	void setSide(Character::Dir sid) { side = sid; };
 
 	std::vector<Projectile>& getpiFpaF() { return _piFpaF; };
-	Projectile& getOnepiFpaF(GLuint index) { return _piFpaF[index]; };
+	Projectile& getOnepiFpaF (GLuint index) { return _piFpaF[index]; };
 	GLuint getPifPafTexture() { return _PifPafTexture.getID(); };
 
 	//void UpdateX(double ux) { posX += ux; };
@@ -92,5 +92,9 @@ protected:
 	std::vector<Projectile> _piFpaF;
 	//W ktora strone jest zwrocony
 	Dir side;
+
+	//Do akceleracji strza³ów
+	Dir CurrentDirX;
+	Dir CurrentDirY;
 };
 #endif

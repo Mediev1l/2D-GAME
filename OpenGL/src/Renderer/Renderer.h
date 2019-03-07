@@ -13,22 +13,24 @@ public:
 	Renderer(const Camera& cam);
 	~Renderer();
 
-	void RenderMap(const Camera& cam);
-	void RenderCharacter(std::vector<Character>& _characters, const Camera& cam);
-	void RenderItems(std::vector<Item>& items, const Camera& cam);
+	void Render( std::vector<Character>&characters, std::vector<Item>&items);
 	Map& getMap() { return _maps; };
 
 	void CloseDoors() { DoorState = Object::DoorClosed; };
 	void OpenDoors() { DoorState = Object::DoorOpened; };
 private:
 
+	void draw(double x, double y, GLuint IdTexture, double scale=0.0);
+	void RenderMap();
+	void RenderCharacters(std::vector<Character>& _characters);
+	void RenderItems(std::vector<Item>& items);
 	enum Object
 	{
 		DoorOpened = 0,
 		DoorClosed = 1
 	};
 
-	void DrawDoors(Object& obj, const Camera& cam);
+	void DrawDoors(Object& obj);
 	//Drawing values
 	double ScaleFactorX;
 	double ScaleFactorY;
@@ -39,11 +41,13 @@ private:
 
 	//Main renderShader
 	Shader _mainShader;
-
+	
 
 	//Current and next map
 	Map _maps;
 
+	//Reference to camera
+	const Camera& cam;
 
 
 

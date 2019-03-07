@@ -2,11 +2,12 @@
 
 
 
-Renderer::Renderer(const Camera& cam)
+Renderer::Renderer(const Camera& camera)
 	:
 	_mainShader("src/Shaders/vs.vs","src/Shaders/fs.fs")
 	,_maps{ "res/Sprites/Map1/map1.txt","res/Sprites/Map1/" }
 	, _objects{ {"res/Sprites/Objects/opened.png",true} ,{"res/Sprites/Objects/closed.png",true} }
+	,cam(camera)
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -52,139 +53,89 @@ Renderer::~Renderer()
 {
 }
 
-
-
-void Renderer::RenderMap(const Camera& cam)
+void Renderer::Render( std::vector<Character>&characters, std::vector<Item>&items)
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	for (GLuint y = 0; y < (GLuint)_maps.getHeight(); y++)
-	//for (GLuint y = 0; y <= _maps.getHeight(); y++)
-	{
-		for (GLuint x = 0; x < (GLuint)_maps.getWidth(); x++)
-		//for (GLuint x = 0; x <= _maps.getWidth(); x++)
-		{
-
-			//Eksperymentalnie udowodniono ze dziala xD
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
-			model = glm::translate(model, glm::vec3(TranslateValueX*_maps.getTilePos(x, y)._x
-				, -TranslateValueY *_maps.getTilePos(x,y)._y, 0.0f));
-			model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
-
-			//Skalowanko lepiej na koncu xD
-			model = glm::scale(model, glm::vec3(ScaleFactorX, ScaleFactorY, 0.0f));
-
-			
-
-
-			_mainShader.setMat4("model", model);
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D,_maps.getTexture(x,y));
-
-			_mainShader.use();
-			glBindVertexArray(VAO);
-
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		}
-	}
-	DrawDoors(DoorState,cam);
+	RenderMap();
+	RenderItems(items);
+	RenderCharacters(characters);
 }
 
-void Renderer::RenderCharacter(std::vector<Character>& characters, const Camera& cam)
+
+
+void Renderer::RenderMap()
+{
+	for (GLuint y = 0; y < (GLuint)_maps.getHeight(); y++)
+	{
+		for (GLuint x = 0; x < (GLuint)_maps.getWidth(); x++)
+		{
+			draw(_maps.getTilePos(x, y)._x, _maps.getTilePos(x, y)._y, _maps.getTexture(x, y));
+		}
+	}
+	DrawDoors(DoorState);
+}
+
+void Renderer::RenderCharacters( std::vector<Character>& characters)
 {
 	//Rysowanie od ty³u = gracz zawsze na wierzchu
 	for(int i = (int)characters.size()-1; i>-1;--i)
 	{
-		//Eksperymentalnie udowodniono ze dziala xD
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
-		model = glm::translate(model, glm::vec3(TranslateValueX*(characters[i].getTile().getPos().getX())
-			, -TranslateValueY *(characters[i].getTile().getPos().getY()), 0.0f));
-
-		model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
-
-		//Skalowanko lepiej na koncu xD
-		model = glm::scale(model, glm::vec3(ScaleFactorX-0.02, ScaleFactorY-0.02, 0.0f));
-
-		//model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
-		
-		_mainShader.setMat4("model", model);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, characters[i].getTexture());
-
-		_mainShader.use();
-		glBindVertexArray(VAO);
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	}
-
-	for (int i = (int)characters[0].getPifPafSize() - 1; i > -1; --i)
-	{
-		if (characters[0].getOnepiFpaF(i).getExistance() == true)
+		if (i == 0)
 		{
-			//Eksperymentalnie udowodniono ze dziala xD
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
-			model = glm::translate(model, glm::vec3(TranslateValueX*(characters[0].getOnepiFpaF(i)._position.getX())
-													, -TranslateValueY * (characters[0].getOnepiFpaF(i)._position.getY()), 0.0f));
-			model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
-
-
-			//Skalowanko lepiej na koncu xD
-			model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.0f));
-
-			//model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
-
-			_mainShader.setMat4("model", model);
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, characters[0].getPifPafTexture());
-
-			_mainShader.use();
-			glBindVertexArray(VAO);
-
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			for (int i = (int)characters[0].getPifPafSize() - 1; i > -1; --i)
+			{
+				if (characters[0].getOnepiFpaF(i).getExistance() == true)
+				{
+					draw(characters[0].getOnepiFpaF(i)._position.getX(), characters[0].getOnepiFpaF(i)._position.getY(), characters[0].getPifPafTexture(),0.05);
+				}
+			}
+			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),ScaleFactorX-0.02);
+			break;
 		}
+		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture());
 	}
-
 }
 
-void Renderer::RenderItems(std::vector<Item>& items, const Camera& cam)
+void Renderer::RenderItems( std::vector<Item>& items)
 {
 	//Od ty³u bo sobie skopiowa³em z characters kappa
 	for (int i = (int)items.size()-1; i > -1; --i)
 	{
 		if (items[i].getOnMap() == true)
 		{
-			//Eksperymentalnie udowodniono ze dziala xD
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
-			model = glm::translate(model, glm::vec3(TranslateValueX*(items[i].getX()), -TranslateValueY *(items[i].getY()), 0.0f));
-			model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
-
-
-			//Skalowanko lepiej na koncu xD
-			model = glm::scale(model, glm::vec3(ScaleFactorX, ScaleFactorY, 0.0f));
-
-
-			_mainShader.setMat4("model", model);
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, items[i].getTexture());
-
-			_mainShader.use();
-			glBindVertexArray(VAO);
-
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			draw(items[i].getX(), items[i].getY(), items[i].getTexture());
 		}
 	}
 }
 
-void Renderer::DrawDoors(Object & obj, const Camera& cam)
+void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
+{
+
+	//Eksperymentalnie udowodniono ze dziala xD
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
+	model = glm::translate(model, glm::vec3(TranslateValueX*x, -TranslateValueY * y, 0.0f));
+	model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
+
+
+	//Skalowanko lepiej na koncu xD
+	model = glm::scale(model, glm::vec3(scale > 0 ? scale:ScaleFactorX, scale > 0 ? scale : ScaleFactorY, 0.0f));
+
+
+	_mainShader.setMat4("model", model);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, IdTexture);
+
+	_mainShader.use();
+	glBindVertexArray(VAO);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+}
+
+void Renderer::DrawDoors(Object & obj)
 {
 	GLuint x = (GLuint)ceil(_maps.getWidth() / 2.0) - 1;
 	GLuint y = (GLuint)ceil(_maps.getHeight() / 2.0) - 1;

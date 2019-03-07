@@ -38,7 +38,7 @@ void GameEngine::Game_Init()
 		if (!window)
 		{
 			glfwTerminate();
-			//return -1; void nie zwraca
+			return; //void nie zwraca
 		}
 
 		/* Make the window's context current */
@@ -114,10 +114,8 @@ void GameEngine::Game_Run()
 		Update();
 		ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
 
-		//Renderowanie || rozdzielone by gracz byl rysowany na koncu
-		renderer->RenderMap(camera);
-		renderer->RenderItems(_items, camera);
-		renderer->RenderCharacter(_characters, camera);
+		//Renderowanie ³adnie w jednej funkcji
+		renderer->Render(_characters, _items);
 	
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -514,14 +512,14 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 				if (!move2)
 				{
 					//Policz czy jest sens i dodaj do pierwotnego kierunku
-					double value = mv * deltaTime*HowMuchInY;
+					double value = mv * deltaTime;
 					if (dir[0] == LEFT)
 					{
-						if(value>0.05 && !CheckColissions(_characters[i],i,newX-value,my)) newX -= value;
+						if(!CheckColissions(_characters[i],i,mx-value,my)) newX = mx-value;
 					}
 					else
 					{
-						if (value > 0.05 && !CheckColissions(_characters[i], i, newX + value, my)) newX += value;
+						if (!CheckColissions(_characters[i], i, mx + value, my)) newX = mx+ value;
 					}
 					
 				}
@@ -531,14 +529,14 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 			{
 				if (!move1)
 				{
-					double value = mv * deltaTime*HowMuchInX;
+					double value = mv * deltaTime;
 					if (dir[1] == UP)
 					{
-						if (value > 0.05&&!CheckColissions(_characters[i], i, mx, newY-value)) newY -= value;
+						if (!CheckColissions(_characters[i], i, mx, my-value)) newY = my-value;
 					}
 					else
 					{
-						if (value > 0.05&&!CheckColissions(_characters[i], i, mx, newY + value)) newY += value;
+						if (!CheckColissions(_characters[i], i, mx, my+value)) newY = my+value;
 					}
 				}
 				_characters[i].setY(newY);
@@ -555,7 +553,7 @@ void GameEngine::Doors()
 
 	for (GLuint i = 0; i < 6; i += 2)
 	{
-		_map->setTileContent(id[i], id[i + 1], lvlWin ? Tile::Content::Nothing : Tile::Content::Obstacle);
+		_map->setTileContent(id[i], id[i + 1], lvlWin ? Tile::Content::Doors : Tile::Content::Obstacle);
 	}
 	if (lvlWin) renderer->OpenDoors();
 	else renderer->CloseDoors();
@@ -695,9 +693,9 @@ bool GameEngine::ShapeOverlap_DIAGS(Tile &r1, Tile &r2)
 bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, double x, double y)
 {
 	//Some utility variables
-	auto getIndex = [&](GLuint x, GLuint y) { return y * _map->getWidth() + x; };
-	GLuint xx = (GLuint)floor(x);
-	GLuint yy = (GLuint)floor(y);
+	auto getIndex = [&](int x, int y) -> int { return y * _map->getWidth() + x; };
+	int xx = (int)floor(x);
+	int yy = (int)floor(y);
 	//Safety checks
 	if (xx < 1)xx = 1;
 	if (yy < 1)yy = 1;
@@ -705,14 +703,14 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 	//if (yy + 2 > _map->getHeight())yy = _map->getHeight() - 1;
 
 	//Check map Around Character
-	std::vector<GLuint>indexesToCheck = { getIndex(xx - 1,yy - 1),getIndex(xx,yy - 1),getIndex(xx + 1,yy - 1),
+	std::vector<int>indexesToCheck = { getIndex(xx - 1,yy - 1),getIndex(xx,yy - 1),getIndex(xx + 1,yy - 1),
 								  getIndex(xx - 1,yy),getIndex(xx,yy),getIndex(xx + 1,yy),
 								  getIndex(xx - 1,yy + 1),getIndex(xx,yy + 1),getIndex(xx + 1,yy + 1) };
 	std::vector<GLuint>indexes;
 	Tile tmp(true, Tile::Content::Player, Vec2d(x, y), 0, bullet.getOrigin());
 	for (GLuint i = 0; i < indexesToCheck.size(); ++i)
 	{
-		if (ShapeOverlap_DIAGS(tmp, _map->getTile((GLuint)indexesToCheck[i])))
+		if (ShapeOverlap_DIAGS(tmp, _map->getTile(indexesToCheck[i]>0?indexesToCheck[i]:0)))
 		{
 			indexes.push_back(indexesToCheck[i]);
 		}
@@ -723,25 +721,18 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 		//std::cout << "Kolizja!" << '\n';
 		switch (_map->getTileContent(indexes[i]))
 		{
-			//Nigdy sie nie wydarzy ale co tam
-		case Tile::Content::Nothing:
-		{
-			break;
-		}
+		case Tile::Content::Doors:
 		case Tile::Content::Obstacle:
 		{
 			//Tutaj return
 			return true;
 			break;
 		}
+		case Tile::Content::Nothing:
 		case Tile::Content::Item:
 		{
 			//Tutaj proces przechwycenia itemka
 			break;
-		}
-		case Tile::Content::Doors:
-		{
-			return true;
 		}
 		default:
 			break;
@@ -757,6 +748,8 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 			{
 				_characters.erase(_characters.begin() + j);
 				j -= 1;
+
+				//Win condition check
 				if (_characters.size() == 1)
 				{
 					lvlWin = true;
