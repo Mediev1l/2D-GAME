@@ -48,6 +48,14 @@ public:
 		if (content == Obstacle)_solid = true; 
 		if (content == Nothing)_solid = false;
 	};
+
+	void setTextureIDandSolid(GLuint x, bool sol) 
+	{ 
+		_textureID = x;
+		_solid = sol;
+		_content = sol ? Content::Obstacle : Content::Nothing;
+	};
+
 	//================================================================
 	//= Utility
 	//================================================================

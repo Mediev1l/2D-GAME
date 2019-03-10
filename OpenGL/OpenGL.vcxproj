@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Maps\LvlGenerator.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Characters\Character.cpp" />
     <ClCompile Include="src\Characters\Enemy.cpp" />
@@ -156,6 +157,7 @@
     <None Include="src\Shaders\vs.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Maps\LvlGenerator.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\GameEngine\GameEngine.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
@@ -197,6 +199,7 @@
     <Image Include="res\Sprites\wooden.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="res\Data\map.txt" />
     <Text Include="res\Items\item_0.txt" />
     <Text Include="res\Sprites\Map1\map1.txt" />
   </ItemGroup>

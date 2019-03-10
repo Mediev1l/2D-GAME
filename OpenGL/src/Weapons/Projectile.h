@@ -24,11 +24,12 @@ protected:
 	bool exist;
 	Dir side;
 	double origin = 0.2;
+	Vec2d objVel;
 public:
 
 
 	Projectile();
-	Projectile(double size, double x, double y, double vel, double  distance, Projectile::Dir side, bool exist);
+	Projectile(double size, double x, double y, double vel, double  distance, Projectile::Dir side, bool exist, Vec2d& objVel);
 
 	void setSize(double siz) { size = siz; };
 	void setElapsedDistance(double elapsedDis) { elapsedDistance = elapsedDis; };
@@ -42,6 +43,8 @@ public:
 	double getY()const { return _position._y; };
 	double getOrigin()const { return origin; };
 	Projectile::Dir getSide() { return side; };
+
+	Vec2d& getObjVel() { return objVel; };
 
 
 };

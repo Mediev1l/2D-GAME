@@ -10,6 +10,7 @@
 #include "Characters/Hero.h"
 #include "Characters/Enemy.h"
 #include "Renderer/Camera.h"
+#include "Maps/LvlGenerator.h"
 
 
 //================================================================
@@ -51,7 +52,7 @@ protected:
 	std::vector<Character> _characters;
 	Map* _map;
 	std::vector<Item> _items;
-
+	LvlGenerator _lvlgen;
 
 	//================================================================
 	//= Game Processor

@@ -39,3 +39,14 @@ void Map::setTileContent(GLuint x, GLuint y, Tile::Content content)
 {
 	_Tiles[y*_width + x].setContent(content);
 }
+
+void Map::LoadLevel(std::vector<std::pair<int, bool>> lvl)
+{
+	//Sprawdzic to
+	for(GLuint y=1;y<_height-1;++y)
+		for (GLuint x = 1; x < _width - 1; ++x)
+		{
+			GLuint index = (y - 1)*(_width - 2) + (x - 1);
+			_Tiles[y*_width + x].setTextureIDandSolid(lvl[index].first,lvl[index].second);
+		}
+}

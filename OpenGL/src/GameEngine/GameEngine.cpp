@@ -14,6 +14,7 @@ GameEngine::GameEngine()
 	, delay(1)
 	, camera(6,6)
 	, lvlWin(false)
+	,_lvlgen("res/Data/map.txt")
 {
 }
 
@@ -59,6 +60,7 @@ void GameEngine::Game_Init()
 
 		renderer = new Renderer(camera);
 		_map = &renderer->getMap();
+		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
 	catch (std::runtime_error &e)
 	{
@@ -68,7 +70,7 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero(7.0, 7.0, 3.0, 0.8, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Hero(5.0, 5.0, 3.0, 0.8, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
 	_characters.push_back(Enemy(1.0, 6.0, 1.0, 0.8, "res/Sprites/Enemies/Skelly/skelly.png", "res/Sprites/Tears/basic_tear.png"));
 	_characters.push_back(Enemy(4.0, 3.0, 1.0, 0.8, "res/Sprites/Enemies/Zombie/zombie.png", "res/Sprites/Tears/basic_tear.png"));
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
@@ -269,21 +271,25 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 		case UP:
 		{
 			newY -= deltaTime * pv;
+			_characters[0].setCurrVelocity(0, -pv);
 			break;
 		}
 		case DOWN:
 		{
 			newY += deltaTime * pv;
+			_characters[0].setCurrVelocity(0,  pv);
 			break;
 		}
 		case LEFT:
 		{
 			newX -= deltaTime * pv;
+			_characters[0].setCurrVelocity( -pv,0);
 			break;
 		}
 		case RIGHT:
 		{
 			newX += deltaTime * pv;
+			_characters[0].setCurrVelocity( pv,0);
 			break;
 		}
 	}
@@ -291,7 +297,7 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 	if (newX < 0)newX = 0;
 	if (newY < 0)newY = 0;
 
-	CheckColissions(_characters[0], 0, newX, newY);
+	//CheckColissions(_characters[0], 0, newX, newY);
 
 	if (!CheckColissions(_characters[0], 0, newX, newY))
 	{
@@ -339,30 +345,30 @@ void GameEngine::ProcessPlayerShoot()
 
 	if (delay <= 0.0f)
 	{
-		delay = 1.0;
+		delay = 0.5;
 	}
-	if (delay == 1.0)
+	if (delay == 0.5)
 	{
 		switch (pdir)
 		{
 		case UP:
 		{
-			temp.emplace_back(1, px, py - 0.1, 2, 0, Projectile::Dir::UP, true);
+			temp.emplace_back(1, px, py - 0.1, 2, 0, Projectile::Dir::UP, true, _characters[0].getCurrVelocity());
 			break;
 		}
 		case DOWN:
 		{
-			temp.emplace_back(1, px, py + 0.1, 2, 0, Projectile::Dir::DOWN, true);
+			temp.emplace_back(1, px, py + 0.1, 2, 0, Projectile::Dir::DOWN, true, _characters[0].getCurrVelocity());
 			break;
 		}
 		case LEFT:
 		{
-			temp.emplace_back(1, px - 0.1, py, 2, 0, Projectile::Dir::LEFT, true);
+			temp.emplace_back(1, px - 0.1, py-0.1, 2, 0, Projectile::Dir::LEFT, true, _characters[0].getCurrVelocity());
 			break;
 		}
 		case RIGHT:
 		{
-			temp.emplace_back(1, px + 0.1, py - 0.1, 2, 0, Projectile::Dir::RIGHT, true);
+			temp.emplace_back(1, px + 0.1, py-0.1, 2, 0, Projectile::Dir::RIGHT, true, _characters[0].getCurrVelocity());
 			break;
 		}
 
@@ -383,7 +389,34 @@ void GameEngine::Update()
 	for (int i = 0; i < temp.size(); i++)
 	{
 		Projectile::Dir pdir = temp[i].getSide();
+		
 		double tempV = temp[i].Velocity;
+		Vec2d pvel = temp[i].getObjVel();
+
+		Direction p[2];
+		p[0] = pvel._y > 0 ? Direction::DOWN : Direction::UP;
+		p[1] = pvel._x > 0 ? Direction::RIGHT : Direction::LEFT;
+
+		pvel._x = abs(pvel._x);
+		pvel._y = abs(pvel._y);
+
+		for (GLuint i = 0; i < 2; ++i)
+		{
+			if (p[i] == Direction::NONE) continue;
+
+			if (pdir == LEFT && p[i] == LEFT) tempV += pvel._x;
+			else if (pdir == LEFT && p[i] == RIGHT) tempV -= pvel._x / 4;
+
+			else if (pdir == RIGHT && p[i] == LEFT) tempV -= pvel._x/4 ;
+			else if (pdir == RIGHT && p[i] == RIGHT) tempV += pvel._x;
+
+			else if (pdir == UP && p[i] == UP) tempV += pvel._y;
+			else if (pdir == UP && p[i] == DOWN) tempV -= pvel._y/4;
+
+			else if (pdir == DOWN && p[i] == UP) tempV -= pvel._y / 4;
+			else if (pdir == DOWN && p[i] == DOWN) tempV += pvel._y;
+		}
+
 		
 		if (temp[i].getElapdedDistance() < _characters[0].getRange() / 10)
 		{

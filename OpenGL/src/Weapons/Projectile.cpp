@@ -5,7 +5,7 @@ Projectile::Projectile()
 {
 }
 
-Projectile::Projectile(double size, double x, double y, double vel, double  distance, Projectile::Dir side, bool exist)
-	: size(size), Coords{ x, y, vel }, side (side), elapsedDistance(distance), exist(exist)
+Projectile::Projectile(double size, double x, double y, double vel, double  distance, Projectile::Dir side, bool exist, Vec2d &objVel)
+	: size(size), Coords{ x, y, vel }, side (side), elapsedDistance(distance), exist(exist), objVel(objVel)
 {
 }

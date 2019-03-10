@@ -60,6 +60,9 @@
     <ClCompile Include="src\Renderer\Camera.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="src\Maps\LvlGenerator.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\vs.vs" />
@@ -118,6 +121,9 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Camera.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Maps\LvlGenerator.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
@@ -183,5 +189,6 @@
   <ItemGroup>
     <Text Include="res\Sprites\Map1\map1.txt" />
     <Text Include="res\Items\item_0.txt" />
+    <Text Include="res\Data\map.txt" />
   </ItemGroup>
 </Project>

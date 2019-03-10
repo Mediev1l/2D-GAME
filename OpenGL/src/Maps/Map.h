@@ -36,6 +36,11 @@ public:
 	//================================================================
 	void setTileContent(GLuint x, GLuint y, Tile::Content content);
 	
+
+
+	void LoadLevel(std::vector<std::pair<int, bool>> lvl);
+
+
 private:
 	std::vector<Tile> _Tiles;		//Przechowuje wszystkie kafelki
 	std::vector<Texture> _textures; //Przechwouje wszystkie textury (indeks wektora = idTextury)

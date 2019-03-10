@@ -71,6 +71,19 @@ public:
 		_tile.getPos().setX(x);
 		_tile.UpdateVertexs(true);
 	};
+
+	void setCurrVelocity(Vec2d& vel)
+	{
+		_curVelocity = vel;
+	}
+	void setCurrVelocity(double x, double y)
+	{
+		_curVelocity._x = x;
+		_curVelocity._y = y;
+	}
+
+	Vec2d& getCurrVelocity() { return _curVelocity; }
+
 	Tile& getTile() { return _tile; };
 
 	double getOrigin()const { return _tile.getOrigin(); };
@@ -94,7 +107,6 @@ protected:
 	Dir side;
 
 	//Do akceleracji strza³ów
-	Dir CurrentDirX;
-	Dir CurrentDirY;
+	Vec2d _curVelocity;
 };
 #endif
