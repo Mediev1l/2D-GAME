@@ -1,7 +1,6 @@
 #include "AssetManager.h"
 
 
-
 void AssetManager::LoadSprites()
 {
 	auto load = [&](std::string sName, std::string sFileName, bool transparent)
@@ -11,7 +10,7 @@ void AssetManager::LoadSprites()
 	};
 
 	load("player", "res/Sprites/Player/issac.png",true);
-	load("Basement", "res/Sprites/Map/Basement", false);
+	load("Basement", "res/Sprites/Map/Basement/Basement.jpg", false);
 }
 
 void AssetManager::LoadMaps()

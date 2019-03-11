@@ -59,8 +59,8 @@ void GameEngine::Game_Init()
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
 		renderer = new Renderer(camera);
-		_map = &renderer->getMap();
-		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
+		_map = renderer->getMap();
+		//_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
 	catch (std::runtime_error &e)
 	{
@@ -79,7 +79,6 @@ void GameEngine::Game_Init()
 	_items.emplace_back("res/Sprites/Items/", "res/Items/", 0);
 	_items[0].setX(5);
 	_items[0].setY(7);
-	_map->setTileContent(5, 7, Tile::Content::Item);
 
 	//HARDCODE
 	_characters[0].setRange(50);
@@ -112,7 +111,7 @@ void GameEngine::Game_Run()
 		// input
 		// -----
 		processInput();
-		camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin()/2.0);
+		camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
 		Update();
 		ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
 
@@ -309,8 +308,8 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 
 void GameEngine::ProcessItemPickup()
 {
-	double px = _characters[0].getTile().getPos().getX();
-	double py = _characters[0].getTile().getPos().getY();
+	double px = _characters[0]._position._x;
+	double py = _characters[0]._position._y;
 
 	GLuint nearestid=-1;
 	double distance=100.0;
@@ -331,14 +330,13 @@ void GameEngine::ProcessItemPickup()
 	{
 		_characters[0].consumeItem(_items[nearestid]);
 		_items[nearestid].setOnMap(false);
-		_map->setTileContent((GLuint)_items[nearestid].getX(), (GLuint)_items[nearestid].getY(), Tile::Content::Nothing);
 	}
 }
 
 void GameEngine::ProcessPlayerShoot()
 {
-	double px =_characters[0].getTile().getPos().getX();
-	double py = _characters[0].getTile().getPos().getY();
+	double px = _characters[0]._position._x;
+	double py = _characters[0]._position._y;
 	
 	Character::Dir  pdir = _characters[0].getSide();
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
@@ -468,14 +466,14 @@ void GameEngine::Update()
 void GameEngine::ProcessEnemiesMove(double deltaTime)
 {
 	//Zmienne upraszczaj¹ce kod
-	double px = _characters[0].getTile().getPos().getX();
-	double py = _characters[0].getTile().getPos().getY();
+	double px = _characters[0]._position._x;
+	double py = _characters[0]._position._y;
 	for (GLuint i = 1; i < (GLuint)_characters.size(); ++i)
 	{
-		double mx = _characters[i].getTile().getPos().getX();
-		double my = _characters[i].getTile().getPos().getY();
+		double mx = _characters[i]._position._x;
+		double my = _characters[i]._position._y;
 		double mv = _characters[i].getVelocity();
-		Vec2d Move(_characters[i].getTile().getPos().getX() - px, _characters[i].getTile().getPos().getY() - py);
+		Vec2d Move(mx - px, my - py);
 		
 		//Potrzebne zmienne
 		bool move1 = true;
@@ -583,11 +581,6 @@ void GameEngine::Doors()
 	GLuint x = (GLuint)ceil(_map->getWidth() / 2.0) - 1;
 	GLuint y = (GLuint)ceil(_map->getHeight() / 2.0) - 1;
 	GLuint id[] = { x,0,0,y,_map->getWidth() - 1,y };
-
-	for (GLuint i = 0; i < 6; i += 2)
-	{
-		_map->setTileContent(id[i], id[i + 1], lvlWin ? Tile::Content::Doors : Tile::Content::Obstacle);
-	}
 	if (lvlWin) renderer->OpenDoors();
 	else renderer->CloseDoors();
 }
@@ -614,7 +607,7 @@ GameEngine::Direction GameEngine::CalculateDirection(double x, bool pionowo, dou
 	}
 }
 
-bool GameEngine::CheckColissions(const Character & obj, GLuint index, double x, double y)
+bool GameEngine::CheckColissions(Character & obj, GLuint index, double x, double y)
 {
 	//Some utility variables
 	auto getIndex = [&](GLuint x, GLuint y) { return y * _map->getWidth() + x; };
@@ -631,10 +624,10 @@ bool GameEngine::CheckColissions(const Character & obj, GLuint index, double x, 
 								  getIndex(xx - 1,yy),getIndex(xx,yy),getIndex(xx + 1,yy),
 								  getIndex(xx - 1,yy + 1),getIndex(xx,yy + 1),getIndex(xx + 1,yy + 1) };
 	std::vector<GLuint>indexes;
-	Tile tmp(true, Tile::Content::Player, Vec2d(x, y), 0, obj.getOrigin());
+	Origin &tmp = obj.getOrigin();
 	for (GLuint i = 0; i < indexesToCheck.size(); ++i)
 	{
-		if (ShapeOverlap_DIAGS(tmp, _map->getTile((GLuint)indexesToCheck[i])))
+		if (ShapeOverlap_DIAGS(tmp, _map->getTile((GLuint)indexesToCheck[i]).getOrigin()))
 		{
 			indexes.push_back(indexesToCheck[i]);
 		}
@@ -643,40 +636,13 @@ bool GameEngine::CheckColissions(const Character & obj, GLuint index, double x, 
 	for (GLuint i = 0; i < indexes.size(); ++i)
 	{
 		//std::cout << "Kolizja!" << '\n';
-		switch (_map->getTileContent(indexes[i]))
-		{
-			//Nigdy sie nie wydarzy ale co tam
-		case Tile::Content::Nothing:
-		{
-			break;
-		}
-		case Tile::Content::Character:
-		case Tile::Content::Obstacle:
-		{
-			//Tutaj return
-			return true;
-			break;
-		}
-		case Tile::Content::Item:
-		{
-			//Tutaj proces przechwycenia itemka
-			if (index == 0)_canPickup = true;
-			break;
-		}
-		case Tile::Content::Doors:
-		{
-			if (index == 0) break;
-			return true;
-		}
-		default:
-			break;
-		}
+		if (_map->getTile(indexes[i]).GetSolid()) return true;
 	}
 
 	//a teraz kolizje z innymi characterami
 	for (GLuint j = 0; j < _characters.size(); ++j)
 	{
-		if (j != index) if (ShapeOverlap_DIAGS(tmp, _characters[j].getTile())) return true;
+		if (j != index) if (ShapeOverlap_DIAGS(tmp, _characters[j].getOrigin())) return true;
 	}
 
 	return false;
@@ -740,10 +706,10 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 								  getIndex(xx - 1,yy),getIndex(xx,yy),getIndex(xx + 1,yy),
 								  getIndex(xx - 1,yy + 1),getIndex(xx,yy + 1),getIndex(xx + 1,yy + 1) };
 	std::vector<GLuint>indexes;
-	Tile tmp(true, Tile::Content::Player, Vec2d(x, y), 0, bullet.getOrigin());
+	Origin tmp((GLuint)4,1.0, Vec2d(x, y));
 	for (GLuint i = 0; i < indexesToCheck.size(); ++i)
 	{
-		if (ShapeOverlap_DIAGS(tmp, _map->getTile(indexesToCheck[i]>0?indexesToCheck[i]:0)))
+		if (ShapeOverlap_DIAGS(tmp, _map->getTile(indexesToCheck[i]>0?indexesToCheck[i]:0).getOrigin()))
 		{
 			indexes.push_back(indexesToCheck[i]);
 		}
@@ -752,24 +718,7 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 	for (GLuint i = 0; i < indexes.size(); ++i)
 	{
 		//std::cout << "Kolizja!" << '\n';
-		switch (_map->getTileContent(indexes[i]))
-		{
-		case Tile::Content::Doors:
-		case Tile::Content::Obstacle:
-		{
-			//Tutaj return
-			return true;
-			break;
-		}
-		case Tile::Content::Nothing:
-		case Tile::Content::Item:
-		{
-			//Tutaj proces przechwycenia itemka
-			break;
-		}
-		default:
-			break;
-		}
+		if (_map->getTile(indexes[i]).GetSolid()) return true;
 	}
 
 	//a teraz kolizje z innymi characterami

@@ -7,19 +7,21 @@
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+#include "AssetManager/AssetManager.h"
 class Renderer
 {
 public:
 	Renderer(const Camera& cam);
-	~Renderer();
+	~Renderer() { delete _maps; };
 
 	void Render( std::vector<Character>&characters, std::vector<Item>&items);
-	Map& getMap() { return _maps; };
+	Map* getMap() { return _maps; };
 
 	void CloseDoors() { DoorState = Object::DoorClosed; };
 	void OpenDoors() { DoorState = Object::DoorOpened; };
 private:
 
+	void setTextureCoords(Tile& tile, GLuint width, GLuint Height, GLuint nText);
 	void draw(double x, double y, GLuint IdTexture, double scale=0.0);
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
@@ -44,7 +46,7 @@ private:
 	
 
 	//Current and next map
-	Map _maps;
+	Map* _maps;
 
 	//Reference to camera
 	const Camera& cam;
@@ -57,15 +59,26 @@ private:
 	std::vector<Texture> _objects;
 
 	//Vbo vao ebo itp
-	unsigned int VBO, VAO, EBO;
+	unsigned int VBO[2], VAO[2], EBO[2];
 
 	float vertices[20] = {
+		// positions          // textures coords
+		1.0f,  1.0f, 0.0f,   0.011f, 1.0f,  // top right
+		1.0f, -1.0f, 0.0f,   0.011f, 0.0f,  // bottom right
+		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // bottom left
+		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
+	};
+
+	float vertices2[20] = {
 		// positions          // textures coords
 		1.0f,  1.0f, 0.0f,   1.0f, 1.0f,  // top right
 		1.0f, -1.0f, 0.0f,   1.0f, 0.0f,  // bottom right
 		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // bottom left
 		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
 	};
+
+
+
 
 	//float vertices[20] = {
 	//	// positions          // textures coords

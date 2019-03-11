@@ -5,7 +5,6 @@
 #ifndef _Coords_H
 #define _Coords_H
 #include "Utility/Vec2.h"
-
 class Coords
 {
 public:
@@ -20,7 +19,5 @@ public:
 	//================================================================
 public:
 	Vec2d _position;
-	double x;
-	double y;
 };
 #endif

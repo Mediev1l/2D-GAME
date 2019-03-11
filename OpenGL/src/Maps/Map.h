@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 #include "Tile.h"
-#include "AssetManager/AssetManager.h"
+//#include "AssetManager/AssetManager.h"
+class AssetManager;
 class Map
 {
 public:
@@ -13,7 +14,7 @@ public:
 	~Map();
 
 	void Create(std::string name, std::string lvldatapath, Texture * text);
-	const std::string sName;
+	std::string sName;
 	//================================================================
 	//= Podstawowe Gettery
 	//================================================================
@@ -23,7 +24,9 @@ public:
 	Vec2d& getTilePos(GLuint x, GLuint y) { return _Tiles[y*_width + x].GetPos(); };
 	Vec2d& getTilePos(GLuint i) { return _Tiles[i].GetPos(); };
 	Tile& getTile(GLuint i) { return _Tiles[i]; };
+	Tile& getTile(GLuint x, GLuint y) { return _Tiles[y*_width+x]; };
 	GLuint getSize() { return (GLuint)_Tiles.size(); };
+	Texture* getTexture() { return _texture; };
 
 	//================================================================
 	//= Podstawowe Settery
@@ -41,10 +44,9 @@ private:
 private:
 };
 
-
 class Map_Basement : public Map
 {
 public:
 	Map_Basement();
-}
+};
 #endif

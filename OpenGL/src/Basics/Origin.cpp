@@ -6,7 +6,7 @@ Origin::Origin()
 {
 }
 
-Origin::Origin(GLuint nVertex, double Size, Vec2d& _position)
+Origin::Origin(unsigned int nVertex, double Size, Vec2d _position)
 	:
 	_size(Size)
 	,_center(_position)

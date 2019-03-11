@@ -25,9 +25,9 @@ protected:
 	Dir side;
 	double origin = 0.2;
 	Vec2d objVel;
-	double Velocity;
+	
 public:
-
+	double Velocity;
 
 	Projectile();
 	Projectile(double size, double x, double y, double vel, double  distance, Projectile::Dir side, bool exist, Vec2d& objVel);

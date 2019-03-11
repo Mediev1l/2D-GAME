@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "AssetManager/AssetManager.h"
 using namespace std;
 Map::Map()
 {
@@ -9,6 +10,7 @@ Map::~Map()
 
 void Map::Create(std::string name, std::string lvldatapath, Texture* text)
 {
+	sName = name;
 	//Otwarcie pliku z Map¹
 	std::ifstream TileIds(lvldatapath);
 	if (TileIds.good() == false)
@@ -23,6 +25,8 @@ void Map::Create(std::string name, std::string lvldatapath, Texture* text)
 	TileIds >> _width;
 	TileIds >> _height;
 	TileIds >> nTextures;
+	TileIds >> textwidth;
+	TileIds >> textheight;
 	
 	GLuint solid;
 	GLuint textureNumber;

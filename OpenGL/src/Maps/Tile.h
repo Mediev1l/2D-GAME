@@ -32,7 +32,7 @@ public:
 	Vec2d& GetPos() { return _position; };
 	GLuint GetVertexCount() 
 	{ 
-		return _ori.GetVertexCount();
+		return _ori.getVertexCount();
 	};
 	Vec2d& getVertex(GLuint x) 
 	{ 

@@ -5,18 +5,17 @@
 Renderer::Renderer(const Camera& camera)
 	:
 	_mainShader("src/Shaders/vs.vs","src/Shaders/fs.fs")
-	,_maps{ "res/Sprites/Map1/map1.txt","res/Sprites/Map1/" }
 	, _objects{ {"res/Sprites/Objects/opened.png",true} ,{"res/Sprites/Objects/closed.png",true} }
 	,cam(camera)
 {
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-	glBindVertexArray(VAO);
+	glGenVertexArrays(2, VAO);
+	glGenBuffers(2, VBO);
+	glGenBuffers(2, EBO);
+	glBindVertexArray(VAO[0]);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// position attribute
@@ -27,6 +26,22 @@ Renderer::Renderer(const Camera& camera)
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	glBindVertexArray(VAO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// texture coord attribute
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
 
 	//To ma byæ wywo³ane przed u¿yciem jakiejkolwiek tekstury
 	_mainShader.use();
@@ -46,12 +61,12 @@ Renderer::Renderer(const Camera& camera)
 	TranslateValueY = 2 * ScaleFactorY;
 
 	DoorState = Object::DoorClosed;
+	AssetManager::Get();
+	AssetManager::Get().LoadSprites();
+	AssetManager::Get().LoadMaps();
+	_maps = AssetManager::Get().getMap("Basement");
 }
 
-
-Renderer::~Renderer()
-{
-}
 
 void Renderer::Render( std::vector<Character>&characters, std::vector<Item>&items)
 {
@@ -66,11 +81,12 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item>&item
 
 void Renderer::RenderMap()
 {
-	for (GLuint y = 0; y < (GLuint)_maps.getHeight(); y++)
+	for (GLuint y = 0; y < (GLuint)_maps->getHeight(); y++)
 	{
-		for (GLuint x = 0; x < (GLuint)_maps.getWidth(); x++)
+		for (GLuint x = 0; x < (GLuint)_maps->getWidth(); x++)
 		{
-			draw(_maps.getTilePos(x, y)._x, _maps.getTilePos(x, y)._y, _maps.getTexture(x, y));
+			setTextureCoords(_maps->getTile(x,y),(GLuint)_maps->getTexture()->getWidth(), (GLuint)_maps->getTexture()->getHeight(), _maps->getTexture()->getnSprites());
+			draw(_maps->getTilePos(x, y)._x, _maps->getTilePos(x, y)._y, _maps->getTexture()->getID());
 		}
 	}
 	DrawDoors(DoorState);
@@ -109,6 +125,13 @@ void Renderer::RenderItems( std::vector<Item>& items)
 	}
 }
 
+void Renderer::setTextureCoords(Tile & tile, GLuint width, GLuint Height, GLuint nText)
+{
+	GLuint nr = tile.getTextureNumber();
+	float offset = (float)nr;
+	_mainShader.setFloat("offsetX",offset);
+}
+
 void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 {
 
@@ -129,7 +152,7 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 	glBindTexture(GL_TEXTURE_2D, IdTexture);
 
 	_mainShader.use();
-	glBindVertexArray(VAO);
+	glBindVertexArray(VAO[1]);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -137,9 +160,9 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 
 void Renderer::DrawDoors(Object & obj)
 {
-	GLuint x = (GLuint)ceil(_maps.getWidth() / 2.0) - 1;
-	GLuint y = (GLuint)ceil(_maps.getHeight() / 2.0) - 1;
-	GLuint id[] = { x,0,0,y,_maps.getWidth() - 1,y };
+	GLuint x = (GLuint)ceil(_maps->getWidth() / 2.0) - 1;
+	GLuint y = (GLuint)ceil(_maps->getHeight() / 2.0) - 1;
+	GLuint id[] = { x,0,0,y,_maps->getWidth() - 1,y };
 	//RenderDoors
 	for (GLuint i = 0; i < 6; i += 2)
 	{
@@ -170,7 +193,7 @@ void Renderer::DrawDoors(Object & obj)
 		glBindTexture(GL_TEXTURE_2D, _objects[obj].getID());
 
 		_mainShader.use();
-		glBindVertexArray(VAO);
+		glBindVertexArray(VAO[1]);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}

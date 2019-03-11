@@ -1,21 +1,21 @@
 #ifndef ORIGIN_H
 #define ORIGIN_H
-#include "GL/glew.h"
+//#include "GL/glew.h"
 #include <vector>
 #include "Utility/Vec2.h"
 class Origin
 {
 public:
 	Origin();
-	Origin(GLuint nVertex, double Size, Vec2d& _position);
+	Origin(unsigned int nVertex, double Size, Vec2d _position);
 	~Origin();
 
 	//Gettery
-	GLuint getVertexCount() const
+	unsigned int getVertexCount() const
 	{
-		return (GLuint)_vertexs.size();
+		return (unsigned int)_vertexs.size();
 	};
-	Vec2d& getVertex(GLuint x)
+	Vec2d& getVertex(unsigned int x)
 	{
 		return _vertexs[x];
 	};

@@ -74,7 +74,7 @@ protected:
 	void ProcessEnemiesMove(double deltaTime);
 	void Doors();
 	GameEngine::Direction CalculateDirection(double x, bool pionowo, double margin);
-	bool CheckColissions(const Character& obj, GLuint index, double x, double y);
+	bool CheckColissions(Character& obj, GLuint index, double x, double y);
 	bool ShapeOverlap_DIAGS(Origin &r1, Origin &r2);
 
 	bool CheckCollisionsBullet(const Projectile& bullet, GLuint index, double x, double y);

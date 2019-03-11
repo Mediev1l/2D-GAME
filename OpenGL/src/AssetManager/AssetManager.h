@@ -4,6 +4,7 @@
 #include "Maps/Map.h"
 #include "Items/Item.h"
 #include "Characters/Character.h"
+
 class AssetManager
 {
 public:
@@ -19,17 +20,17 @@ public:
 	Map* getMap(std::string name)
 	{
 		return _mapMaps[name];
-	}
+	};
 
 	Item* getItem(std::string name)
 	{
 		return _mapItems[name];
-	}
+	};
 
 	Texture* getSprite(std::string name)
 	{
 		return _mapSprites[name];
-	}
+	};
 
 	void LoadSprites();
 	void LoadMaps();
