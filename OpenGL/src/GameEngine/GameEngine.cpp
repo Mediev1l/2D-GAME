@@ -491,8 +491,8 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 		//Rozpatrzmy kierunki
 		Direction dir[2];
 		const double margin = 0.1;
-		dir[0] = CalculateDirection(Move.getX(),false, margin);
-		dir[1] = CalculateDirection(Move.getY(),true, margin);
+		dir[0] = CalculateDirection(Move._x,false, margin);
+		dir[1] = CalculateDirection(Move._y,true, margin);
 
 		for(GLuint i=0;i<2;i++)
 		{
@@ -537,7 +537,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 
 
 		//Wykonaj ruch
-			if (move1)
+			if (move1 && newX!=mx)
 			{
 				//Je¿eli w drug¹ stronie nie ma ruchu
 				if (!move2)
@@ -556,7 +556,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 				}
 				_characters[i].setX(newX);
 			}
-			if (move2)
+			if (move2&&newY!=my)
 			{
 				if (!move1)
 				{
@@ -706,7 +706,7 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 								  getIndex(xx - 1,yy),getIndex(xx,yy),getIndex(xx + 1,yy),
 								  getIndex(xx - 1,yy + 1),getIndex(xx,yy + 1),getIndex(xx + 1,yy + 1) };
 	std::vector<GLuint>indexes;
-	Origin tmp((GLuint)4,1.0, Vec2d(x, y));
+	Origin tmp((GLuint)4,0.2, Vec2d(x, y));
 	for (GLuint i = 0; i < indexesToCheck.size(); ++i)
 	{
 		if (ShapeOverlap_DIAGS(tmp, _map->getTile(indexesToCheck[i]>0?indexesToCheck[i]:0).getOrigin()))

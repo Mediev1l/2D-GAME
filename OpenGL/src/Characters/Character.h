@@ -30,7 +30,7 @@ public:
 		_texture(TexturePath,true)
 		,_PifPafTexture(PifPafTexturePath,true)
 		, Stats()
-		, Coords(5,5)
+		, Coords(x,y)
 		, _ori(4,0.8,_position)
 		{};
 	double getVelocity() { return m_speed; };
