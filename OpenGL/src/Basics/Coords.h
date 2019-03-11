@@ -1,29 +1,26 @@
-/*
-Coords
-
-Prosty obiekt z koordynatami
-
-*/
-
-
+//================================================================
+//= Klasa Odpowiadaj¹ca za pozycje na mapie
+//= Prosty typ danych
+//================================================================
 #ifndef _Coords_H
 #define _Coords_H
-#include"Utility/Vec2.h"
-struct Coords
+#include "Utility/Vec2.h"
+
+class Coords
 {
-	Coords()
-		:
-		_position()
-		, Velocity(0)
-	{};
-	Coords(double x, double y, double vel)
-		:
-		_position(x, y)
-		, Velocity(vel) 
-	{};
+public:
+	//================================================================
+	//= Konstruktory
+	//================================================================
+	Coords() : _position(0.0, 0.0) {};
+	Coords(double x, double y) : _position(x, y) {};
+	Coords(const Vec2d& pos) : _position(pos) {};
+	//================================================================
+	//= Sk³adowe
+	//================================================================
 public:
 	Vec2d _position;
-	double Velocity;
+	double x;
+	double y;
 };
-
 #endif

@@ -257,8 +257,8 @@ void GameEngine::scroll_callback(double xoffset, double yoffset)
 void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 {
 	//Zmienne upraszczaj¹ce kod
-	double px = _characters[0].getTile().getPos()._x;
-	double py = _characters[0].getTile().getPos()._y;
+	double px = _characters[0]._position._x;
+	double py = _characters[0]._position._y;
 	double pv = _characters[0].getVelocity();
 	double newX = px;
 	double newY = py;
@@ -683,10 +683,10 @@ bool GameEngine::CheckColissions(const Character & obj, GLuint index, double x, 
 }
 
 //One Lone Coder Overlapping Algorithm
-bool GameEngine::ShapeOverlap_DIAGS(Tile &r1, Tile &r2)
+bool GameEngine::ShapeOverlap_DIAGS(Origin &r1, Origin &r2)
 {
-	Tile *poly1 = &r1;
-	Tile *poly2 = &r2;
+	Origin *poly1 = &r1;
+	Origin *poly2 = &r2;
 
 	for (int shape = 0; shape < 2; shape++)
 	{
@@ -699,7 +699,7 @@ bool GameEngine::ShapeOverlap_DIAGS(Tile &r1, Tile &r2)
 		// Check diagonals of polygon...
 		for (GLuint p = 0; p < poly1->getVertexCount(); p++)
 		{
-			Vec2d line_r1s = poly1->getPos();
+			Vec2d line_r1s = poly1->getCenter();
 			Vec2d line_r1e = poly1->getVertex(p);
 
 			// ...against edges of the other
@@ -775,7 +775,7 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 	//a teraz kolizje z innymi characterami
 	for (GLuint j = 1; j < _characters.size(); ++j)
 	{
-		if (ShapeOverlap_DIAGS(tmp, _characters[j].getTile()))
+		if (ShapeOverlap_DIAGS(tmp, _characters[j].getOrigin()))
 		{
 			if (_characters[j].TakeDamage(bullet))
 			{

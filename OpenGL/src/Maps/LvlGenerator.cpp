@@ -28,7 +28,7 @@ LvlGenerator::~LvlGenerator()
 
 std::vector<std::pair<int,bool>> LvlGenerator::generateLevel(GLuint width, GLuint height)
 {
-	srand(time(NULL));
+	srand((GLuint)time(NULL));
 
 	GLuint x = (GLuint)ceil(width / 2.0) - 1;
 	GLuint y = (GLuint)ceil(height / 2.0) - 1;

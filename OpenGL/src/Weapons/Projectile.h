@@ -25,6 +25,7 @@ protected:
 	Dir side;
 	double origin = 0.2;
 	Vec2d objVel;
+	double Velocity;
 public:
 
 

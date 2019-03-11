@@ -75,7 +75,7 @@ protected:
 	void Doors();
 	GameEngine::Direction CalculateDirection(double x, bool pionowo, double margin);
 	bool CheckColissions(const Character& obj, GLuint index, double x, double y);
-	bool ShapeOverlap_DIAGS(Tile &r1, Tile &r2);
+	bool ShapeOverlap_DIAGS(Origin &r1, Origin &r2);
 
 	bool CheckCollisionsBullet(const Projectile& bullet, GLuint index, double x, double y);
 

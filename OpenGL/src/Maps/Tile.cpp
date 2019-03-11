@@ -2,13 +2,12 @@
 
 
 
-Tile::Tile(bool solid, Content con, GLuint x, GLuint y, GLuint texture, double size)
+Tile::Tile(bool solid, GLuint x, GLuint y, GLuint texture, double origin)
 	:
 	 _solid(solid)
-	,_content(con)
-	,_position(x,y)
-	,_textureID(texture)
-	,_size(size)
+	,_position((double)x,(double)y)
+	,_textureNumber(texture)
+	,_ori(4, origin,_position)
 	,_vertexs()
 {
 	//Dla wielok¹tów 
@@ -20,29 +19,12 @@ Tile::Tile(bool solid, Content con, GLuint x, GLuint y, GLuint texture, double s
 		s1.o.push_back({ 30.0f * cosf(fTheta * i), 30.0f * sinf(fTheta * i) });
 
 	}*/
-
-	double half = _size / 2;
-	_vertexs.emplace_back(_position.getX() - half,_position.getY()-half);
-	_vertexs.emplace_back(_position.getX() + half,_position.getY()-half);
-	_vertexs.emplace_back(_position.getX() + half,_position.getY()+half);
-	_vertexs.emplace_back(_position.getX() - half,_position.getY()+half);
 }
 
-Tile::Tile(bool solid, Content con, Vec2d pos, GLuint texture, double size)
+Tile::Tile(bool solid, Vec2d pos, GLuint texture, double origin)
 	:
-	 _solid(solid)
-	, _content(con)
-	, _position(pos)
-	, _textureID(texture)
-	, _size(size)
-	, _vertexs()
-{
-	double half = _size / 2;
-	_vertexs.emplace_back(_position.getX() - half, _position.getY() - half);
-	_vertexs.emplace_back(_position.getX() + half, _position.getY() - half);
-	_vertexs.emplace_back(_position.getX() + half, _position.getY() + half);
-	_vertexs.emplace_back(_position.getX() - half, _position.getY() + half);
-}
+	 Tile(solid,pos._x,pos._y,texture,origin)
+	{}
 
 Tile::~Tile()
 {
@@ -50,18 +32,5 @@ Tile::~Tile()
 
 void Tile::UpdateVertexs(bool ox)
 {
-	if (ox)
-	{
-		_vertexs[0].setX(_position.getX() - _size / 2.0);
-		_vertexs[1].setX(_position.getX() + _size / 2.0);
-		_vertexs[2].setX(_position.getX() + _size / 2.0);
-		_vertexs[3].setX(_position.getX() - _size / 2.0);
-	}
-	else
-	{
-		_vertexs[0].setY(_position.getY() - _size / 2.0);
-		_vertexs[1].setY(_position.getY() - _size / 2.0);
-		_vertexs[2].setY(_position.getY() + _size / 2.0);
-		_vertexs[3].setY(_position.getY() + _size / 2.0);
-	}
+	_ori.Update(ox, _position);
 }

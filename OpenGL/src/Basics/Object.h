@@ -9,7 +9,6 @@ Klasa odpowiedzialna  za wszystkie obiekty ktore bedziemy wyswietlali na ekran
 #define _Object_H
 
 #include <string>
-
 #include "Coords.h"
 
 class Object : public Coords

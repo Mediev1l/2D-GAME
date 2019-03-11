@@ -31,10 +31,8 @@ public:
 	bool getOnMap() { return onMap; };
 	GLuint getID() { return id; };
 	std::string getDescription() { return description; }
-	double getVelocity() { return Velocity; };
 
-
-
+	const std::string sName;
 
 	void setY(float y) { _position.setY(y); };
 	void setX(float x) { _position.setX(x); };

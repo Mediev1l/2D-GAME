@@ -4,49 +4,47 @@
 #include <string>
 #include <vector>
 #include "Tile.h"
+#include "AssetManager/AssetManager.h"
 class Map
 {
 public:
-	Map()= delete;
 	Map(const Map&) = delete;
-	Map(std::string FilePath, std::string BitmapsPath);
+	Map();
 	~Map();
 
+	void Create(std::string name, std::string lvldatapath, Texture * text);
+	const std::string sName;
 	//================================================================
 	//= Podstawowe Gettery
 	//================================================================
 	GLuint getWidth() { return _width; };
 	GLuint getHeight() { return _height; };
-	GLuint getTexture(GLuint x, GLuint y) 
-	{ return _textures[_Tiles[y*_width + x].getTextureID()].getID(); };
-	Tile::Content getTileContent(GLuint x, GLuint y) 
-	{ return _Tiles[y*_width + x].getContent(); };
-	Tile::Content getTileContent(GLuint i)
-	{
-		return _Tiles[i].getContent();
-	};
-	bool isObstacle(GLuint x, GLuint y) { return _Tiles[y*_width + x].isSolid(); };
-	Vec2d& getTilePos(GLuint x, GLuint y) { return _Tiles[y*_width + x].getPos(); };
-	Vec2d& getTilePos(GLuint i) { return _Tiles[i].getPos(); };
+	bool GetSolid(GLuint x, GLuint y) { return _Tiles[y*_width + x].GetSolid(); };
+	Vec2d& getTilePos(GLuint x, GLuint y) { return _Tiles[y*_width + x].GetPos(); };
+	Vec2d& getTilePos(GLuint i) { return _Tiles[i].GetPos(); };
 	Tile& getTile(GLuint i) { return _Tiles[i]; };
 	GLuint getSize() { return (GLuint)_Tiles.size(); };
 
 	//================================================================
 	//= Podstawowe Settery
 	//================================================================
-	void setTileContent(GLuint x, GLuint y, Tile::Content content);
-	
-
-
 	void LoadLevel(std::vector<std::pair<int, bool>> lvl);
 
 
 private:
 	std::vector<Tile> _Tiles;		//Przechowuje wszystkie kafelki
-	std::vector<Texture> _textures; //Przechwouje wszystkie textury (indeks wektora = idTextury)
+	Texture* _texture;
+	//std::vector<Texture> _textures; //Przechwouje wszystkie textury (indeks wektora = idTextury)
 	GLuint _width;					//Szerokoœæ Mapy
 	GLuint _height;					//Wysokoœæ mapy
-	GLuint _nTextures;				//Liczba wszystkich textur
+	//GLuint _nTextures;				//Liczba wszystkich textur
 private:
 };
+
+
+class Map_Basement : public Map
+{
+public:
+	Map_Basement();
+}
 #endif

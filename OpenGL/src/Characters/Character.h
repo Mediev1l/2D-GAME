@@ -1,9 +1,6 @@
-/*
-Character
-
-Obiekt odpowiadajacy za Postac (Glowny Bohater)
-
-*/
+//================================================================
+//= Postaæ, baza dla gracza i NPC
+//================================================================
 #ifndef _Character_H
 #define _Character_H
 
@@ -14,7 +11,7 @@ Obiekt odpowiadajacy za Postac (Glowny Bohater)
 #include "Weapons/Projectile.h"
 #include <vector>
 
-class Character: public Stats
+class Character: public Stats, public Coords
 {
 public:
 
@@ -33,7 +30,8 @@ public:
 		_texture(TexturePath,true)
 		,_PifPafTexture(PifPafTexturePath,true)
 		, Stats()
-		,_tile(true, Tile::Content::Player, Vec2d(x, y), 0, w)
+		, Coords(5,5)
+		, _ori(4,0.8,_position)
 		{};
 	double getVelocity() { return m_speed; };
 	Dir getSide() { return side; };
@@ -60,16 +58,16 @@ public:
 		return !(m_health > 0);
 	};
 
-	Vec2d getPos() { return _tile.getPos(); };
+	Vec2d getPos() { return _position; };
 	void setY(double y) 
 	{ 
-		_tile.getPos().setY(y); 
-		_tile.UpdateVertexs(false);
+		_position._y = y;
+		_ori.Update(false, _position);
 	};
 	void setX(double x) 
 	{ 
-		_tile.getPos().setX(x);
-		_tile.UpdateVertexs(true);
+		_position._x=x;
+		_ori.Update(true, _position);
 	};
 
 	void setCurrVelocity(Vec2d& vel)
@@ -84,14 +82,11 @@ public:
 
 	Vec2d& getCurrVelocity() { return _curVelocity; }
 
-	Tile& getTile() { return _tile; };
-
-	double getOrigin()const { return _tile.getOrigin(); };
+	Origin& getOrigin() { return _ori; };
 
 	//virtual void Bechaviour(const Character& player, double deltaTime) = 0;
 
 protected:
-	Tile _tile;
 	//Mozna skopiowaæ do Hero kwestia przekminy
 	std::vector<Item> _items;
 	//Koniec do przekminiania
@@ -100,7 +95,7 @@ protected:
 	Texture _texture;
 	Texture _PifPafTexture;
 
-
+	Origin _ori;
 	//Weapons
 	std::vector<Projectile> _piFpaF;
 	//W ktora strone jest zwrocony
