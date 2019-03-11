@@ -59,11 +59,11 @@ protected:
 	//================================================================
 	enum Direction
 	{
-		UP=0,
-		DOWN=1,
+		NONE = -1,
+		DOWN=0,
+		UP=1,
 		LEFT=2,
-		RIGHT=3,
-		NONE=4
+		RIGHT=3,	
 	};
 
 	void ProcessPlayerMove(double deltaTime,Direction dir);

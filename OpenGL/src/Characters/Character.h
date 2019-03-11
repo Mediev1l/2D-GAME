@@ -9,6 +9,7 @@
 #include "Maps/Tile.h"
 #include "Items/Item.h"
 #include "Weapons/Projectile.h"
+#include "Basics/Animation.h"
 #include <vector>
 
 class AssetManager;
@@ -16,43 +17,39 @@ class Character: public Stats, public Dynamic
 {
 public:
 
-	enum Dir
-	{
-		NONE = -1,
-		UP = 0,
-		DOWN = 1,
-		LEFT = 2,
-		RIGHT = 3
-
-	};
-
-	Character(std::string name, double x, double y, double w);
+//================================================================
+//= Konstruktory
+//================================================================
+	Character(std::string name, double x, double y, double w, GLuint nFrames);
+	
+//================================================================
+//= Gettery
+//================================================================
 	double getVelocity() { return m_speed; };
-	Dir getSide() { return side; };
+	Animation::Dir getSide() { return side; };
 	GLuint getPifPafSize() const { return (GLuint)_piFpaF.size(); };
-
-	void setSide(Character::Dir sid) { side = sid; };
-
+	void setSide(Animation::Dir sid) { side = sid; };
 	std::vector<Projectile>& getpiFpaF() { return _piFpaF; };
 	Projectile& getOnepiFpaF (GLuint index) { return _piFpaF[index]; };
 	GLuint getPifPafTexture() { return _PifPafTexture->getID(); };
-
-	//void UpdateX(double ux) { posX += ux; };
-	//void UpdateY(double uy) { posY += uy; };
-
 	GLuint getTexture() { return _texture->getID(); };
-
-	//Mozna skopiowaæ do Hero kwestia przekminy
+	Vec2d getPos() { return _position; };
+	Vec2d& getCurrVelocity() { return _curVelocity; }
+	Origin& getOrigin() { return _ori; };
+	Vec2i getFrameIndex();
+//================================================================
+// Interakcja
+//================================================================
 	void consumeItem(const Item* item);
-
-
 	bool TakeDamage(const Projectile& bullet)
 	{
 		m_health -= 20;
 		return !(m_health > 0);
 	};
-
-	Vec2d getPos() { return _position; };
+	void updateAnimation(Animation::Dir dir, double deltaTime);
+//================================================================
+// Settery
+//================================================================
 	void setY(double y) 
 	{ 
 		_position._y = y;
@@ -63,7 +60,6 @@ public:
 		_position._x=x;
 		_ori.Update(true, _position);
 	};
-
 	void setCurrVelocity(Vec2d& vel)
 	{
 		_curVelocity = vel;
@@ -73,10 +69,6 @@ public:
 		_curVelocity._x = x;
 		_curVelocity._y = y;
 	}
-
-	Vec2d& getCurrVelocity() { return _curVelocity; }
-
-	Origin& getOrigin() { return _ori; };
 
 	//virtual void Bechaviour(const Character& player, double deltaTime) = 0;
 
@@ -93,8 +85,8 @@ protected:
 	//Weapons
 	std::vector<Projectile> _piFpaF;
 	//W ktora strone jest zwrocony
-	Dir side;
-
+	Animation::Dir side;
+	Animation _animation;
 	//Do akceleracji strza³ów
 	Vec2d _curVelocity;
 };

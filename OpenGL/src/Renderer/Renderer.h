@@ -21,7 +21,8 @@ public:
 	void OpenDoors() { DoorState = Object::DoorOpened; };
 private:
 
-	void setTextureCoords(Tile& tile, GLuint width, GLuint Height, GLuint nText);
+	void setTextureCoords(Tile& tile);
+	void setTextureCoords(Character& obj);
 	void draw(double x, double y, GLuint IdTexture, bool map, double scale=0.0 );
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
@@ -65,8 +66,8 @@ private:
 	float vertices[20] = {
 		// positions          // textures coords
 		1.0f,  1.0f, 0.0f,   0.1f, 1.0f,  // top right
-		1.0f, -1.0f, 0.0f,   0.1f, 0.0f,  // bottom right
-		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // bottom left
+		1.0f, -1.0f, 0.0f,   0.1f, 0.75f,  // bottom right
+		-1.0f, -1.0f, 0.0f,   0.0f, 0.75f,  // bottom left
 		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
 	};
 

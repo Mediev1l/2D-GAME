@@ -88,7 +88,7 @@ void Renderer::RenderMap()
 	{
 		for (GLuint x = 0; x < (GLuint)_maps->getWidth(); x++)
 		{
-			setTextureCoords(_maps->getTile(x,y),(GLuint)_maps->getTexture()->getWidth(), (GLuint)_maps->getTexture()->getHeight(), _maps->getTexture()->getnSprites());
+			setTextureCoords(_maps->getTile(x,y));
 			draw(_maps->getTilePos(x, y)._x, _maps->getTilePos(x, y)._y, _maps->getTexture()->getID(),true);
 		}
 	}
@@ -109,10 +109,12 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 					draw(characters[0].getOnepiFpaF(i)._position.getX(), characters[0].getOnepiFpaF(i)._position.getY(), characters[0].getPifPafTexture(),false,0.05);
 				}
 			}
-			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),false,ScaleFactorX-0.02);
+			setTextureCoords(characters[i]);
+			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),true,ScaleFactorX-0.02);
 			break;
 		}
-		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),false);
+		setTextureCoords(characters[i]);
+		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),true);
 	}
 }
 
@@ -129,11 +131,24 @@ void Renderer::RenderItems( std::vector<Item*>* items)
 	}
 }
 
-void Renderer::setTextureCoords(Tile & tile, GLuint width, GLuint Height, GLuint nText)
+void Renderer::setTextureCoords(Tile & tile)
 {
 	GLuint nr = tile.getTextureNumber();
-	float offset = (float)nr*0.1f;
-	_SpriteSheetShader.setFloat("offsetX", offset);
+	float offsetx = (float)nr*0.1f;
+	_SpriteSheetShader.setFloat("offsetX", offsetx);
+	_SpriteSheetShader.setFloat("offsetY", 0);
+}
+
+void Renderer::setTextureCoords(Character & obj)
+{
+	Vec2i pos = obj.getFrameIndex();
+	float offsetx = (float)pos._x*0.1f;
+	float offsety = (float)pos._y*0.25f;
+	_SpriteSheetShader.setFloat("offsetX", offsetx);
+	_SpriteSheetShader.setFloat("offsetY", offsety);
+
+	std::cout << "OffsetX: " << offsetx << '\n';
+	std::cout << "OffsetY: " << offsety << '\n';
 }
 
 void Renderer::draw(double x, double y,GLuint IdTexture, bool map, double scale)

@@ -70,9 +70,9 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero("player",5.0, 5.0, 3.0, 0.8));
-	_characters.push_back(Enemy("skelly",1.0, 6.0, 1.0, 0.9));
-	_characters.push_back(Enemy("zombie",4.0, 3.0, 1.0, 0.9));
+	_characters.push_back(Hero("player2",5.0, 5.0, 3.0, 0.8,8));
+	_characters.push_back(Enemy("skelly2",1.0, 6.0, 1.0, 0.9,9));
+	//_characters.push_back(Enemy("zombie",4.0, 3.0, 1.0, 0.9));
 	_items.emplace_back(AssetManager::Get().getItem("SpeedBoots"));
 	_items[0]->setX(5);
 	_items[0]->setY(7);
@@ -159,22 +159,22 @@ void GameEngine::processInput()
 
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		_characters[0].setSide(Character::UP);
+		_characters[0].setSide(Animation::UP);
 		ProcessPlayerShoot();
 	}
 	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		_characters[0].setSide(Character::DOWN);
+		_characters[0].setSide(Animation::DOWN);
 		ProcessPlayerShoot();
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
-		_characters[0].setSide(Character::LEFT);
+		_characters[0].setSide(Animation::LEFT);
 		ProcessPlayerShoot();
 	}
 	else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
-		_characters[0].setSide(Character::RIGHT);
+		_characters[0].setSide(Animation::RIGHT);
 		ProcessPlayerShoot();
 	}
 
@@ -298,6 +298,8 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 
 	//CheckColissions(_characters[0], 0, newX, newY);
 
+	_characters[0].updateAnimation((Animation::Dir)dir,deltaTime);
+
 	if (!CheckColissions(_characters[0], 0, newX, newY))
 	{
 		_characters[0].setX(newX);
@@ -338,7 +340,7 @@ void GameEngine::ProcessPlayerShoot()
 	double px = _characters[0]._position._x;
 	double py = _characters[0]._position._y;
 	
-	Character::Dir  pdir = _characters[0].getSide();
+	Animation::Dir  pdir = _characters[0].getSide();
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
 
 	if (delay <= 0.0f)
@@ -555,6 +557,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					
 				}
 				_characters[i].setX(newX);
+				_characters[i].updateAnimation((Animation::Dir)dir[0], deltaTime);
 			}
 			if (move2&&newY!=my)
 			{
@@ -571,6 +574,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					}
 				}
 				_characters[i].setY(newY);
+				//_characters[i].updateAnimation((Animation::Dir)dir[1], deltaTime);
 			}
 	}
 	

@@ -13,8 +13,8 @@ public:
 	enum Dir
 	{
 		NONE = -1,
-		UP = 0,
-		DOWN = 1,
+		DOWN = 0,
+		UP = 1,
 		LEFT = 2,
 		RIGHT = 3
 	};
