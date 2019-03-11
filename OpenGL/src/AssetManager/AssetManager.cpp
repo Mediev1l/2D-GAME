@@ -9,8 +9,14 @@ void AssetManager::LoadSprites()
 		_mapSprites[sName] = s;
 	};
 
+	//Dynamics
 	load("player", "res/Sprites/Player/issac.png",true);
-	load("projectiles", "res/Sprites/Tears/basic_tear.png", true);
+	load("pifpaf", "res/Sprites/Tears/basic_tear.png", true);
+	load("skelly", "res/Sprites/Enemies/Skelly/skelly.png", true);
+	load("zombie", "res/Sprites/Enemies/Zombie/zombie.png", true);
+	load("SpeedBoots", "res/Sprites/Items/SpeedBoots.png", true);
+
+	//Map
 	load("Basement", "res/Sprites/Map/Basement/Basement.jpg", false);
 }
 
@@ -30,6 +36,8 @@ void AssetManager::LoadItems()
 	{
 		_mapItems[i->sName] = i;
 	};
+
+	load(new SpeedBoots());
 }
 
 AssetManager::AssetManager()

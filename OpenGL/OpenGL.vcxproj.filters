@@ -118,9 +118,6 @@
     <ClInclude Include="src\Basics\Coords.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\Basics\Object.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="src\Weapons\Projectile.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -139,6 +136,9 @@
     <ClInclude Include="src\Basics\Origin.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\Basics\Dynamic.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Sprites\wooden.jpg">
@@ -148,9 +148,6 @@
       <Filter>Pliki zasobów</Filter>
     </Image>
     <Image Include="res\Sprites\Player\issac.png">
-      <Filter>Pliki zasobów</Filter>
-    </Image>
-    <Image Include="res\Sprites\Items\item_0.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
     <Image Include="res\Sprites\Objects\closed.png">
@@ -201,10 +198,16 @@
     <Image Include="res\Sprites\Tears\basic_tear.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="res\Sprites\Enemies\Skelly\skelly.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\Items\SpeedBoots.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="res\Items\item_0.txt" />
     <Text Include="res\Data\map.txt" />
     <Text Include="res\Data\Map\Basement.txt" />
+    <Text Include="res\Items\SpeedBoots.txt" />
   </ItemGroup>
 </Project>

@@ -14,7 +14,7 @@ public:
 	Renderer(const Camera& cam);
 	~Renderer() { delete _maps; };
 
-	void Render( std::vector<Character>&characters, std::vector<Item>&items);
+	void Render( std::vector<Character>&characters, std::vector<Item*>*items);
 	Map* getMap() { return _maps; };
 
 	void CloseDoors() { DoorState = Object::DoorClosed; };
@@ -25,7 +25,7 @@ private:
 	void draw(double x, double y, GLuint IdTexture, bool map, double scale=0.0 );
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
-	void RenderItems(std::vector<Item>& items);
+	void RenderItems(std::vector<Item*>* items);
 	enum Object
 	{
 		DoorOpened = 0,

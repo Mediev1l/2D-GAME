@@ -70,16 +70,16 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero(5.0, 5.0, 3.0, 0.8, "res/Sprites/Player/issac.png","res/Sprites/Tears/basic_tear.png"));
-	_characters.push_back(Enemy(1.0, 6.0, 1.0, 0.8, "res/Sprites/Enemies/Skelly/skelly.png", "res/Sprites/Tears/basic_tear.png"));
-	_characters.push_back(Enemy(4.0, 3.0, 1.0, 0.8, "res/Sprites/Enemies/Zombie/zombie.png", "res/Sprites/Tears/basic_tear.png"));
+	_characters.push_back(Hero("player",5.0, 5.0, 3.0, 0.8));
+	_characters.push_back(Enemy("skelly",1.0, 6.0, 1.0, 0.9));
+	_characters.push_back(Enemy("zombie",4.0, 3.0, 1.0, 0.9));
+	_items.emplace_back(AssetManager::Get().getItem("SpeedBoots"));
+	_items[0]->setX(5);
+	_items[0]->setY(7);
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
 	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
 	//Na sztywno ustawianie na mapie ze jest tam item
-	_items.emplace_back("res/Sprites/Items/", "res/Items/", 0);
-	_items[0].setX(5);
-	_items[0].setY(7);
-
+	
 	//HARDCODE
 	_characters[0].setRange(50);
 
@@ -116,7 +116,7 @@ void GameEngine::Game_Run()
 		ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
 
 		//Renderowanie ³adnie w jednej funkcji
-		renderer->Render(_characters, _items);
+		renderer->Render(_characters, &_items);
 	
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -315,9 +315,9 @@ void GameEngine::ProcessItemPickup()
 	double distance=100.0;
 	for (GLuint i = 0; i < _items.size(); ++i)
 	{
-		if (_items[i].getOnMap())
+		if (_items[i]->getOnMap())
 		{
-			double localdist = abs(_items[i].getX() - px) + abs(_items[i].getY() - py);
+			double localdist = abs(_items[i]->getX() - px) + abs(_items[i]->getY() - py);
 			if (localdist < distance)
 			{
 				distance = localdist;
@@ -329,7 +329,7 @@ void GameEngine::ProcessItemPickup()
 	if (nearestid != -1)
 	{
 		_characters[0].consumeItem(_items[nearestid]);
-		_items[nearestid].setOnMap(false);
+		_items[nearestid]->setOnMap(false);
 	}
 }
 
@@ -624,7 +624,7 @@ bool GameEngine::CheckColissions(Character & obj, GLuint index, double x, double
 								  getIndex(xx - 1,yy),getIndex(xx,yy),getIndex(xx + 1,yy),
 								  getIndex(xx - 1,yy + 1),getIndex(xx,yy + 1),getIndex(xx + 1,yy + 1) };
 	std::vector<GLuint>indexes;
-	Origin tmp = Origin(4, 0.8, Vec2d(x, y));
+	Origin tmp = Origin(4, obj.getOrigin().getSize(), Vec2d(x, y));
 	for (GLuint i = 0; i < indexesToCheck.size(); ++i)
 	{
 		if (ShapeOverlap_DIAGS(tmp, _map->getTile((GLuint)indexesToCheck[i]).getOrigin()))
@@ -706,7 +706,7 @@ bool GameEngine::CheckCollisionsBullet(const Projectile & bullet, GLuint index, 
 								  getIndex(xx - 1,yy),getIndex(xx,yy),getIndex(xx + 1,yy),
 								  getIndex(xx - 1,yy + 1),getIndex(xx,yy + 1),getIndex(xx + 1,yy + 1) };
 	std::vector<GLuint>indexes;
-	Origin tmp((GLuint)4,0.2, Vec2d(x, y));
+	Origin tmp((GLuint)4,bullet.getOrigin(), Vec2d(x, y));
 	for (GLuint i = 0; i < indexesToCheck.size(); ++i)
 	{
 		if (ShapeOverlap_DIAGS(tmp, _map->getTile(indexesToCheck[i]>0?indexesToCheck[i]:0).getOrigin()))

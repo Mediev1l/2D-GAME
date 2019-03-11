@@ -51,7 +51,7 @@ protected:
 	std::string WindowName;
 	std::vector<Character> _characters;
 	Map* _map;
-	std::vector<Item> _items;
+	std::vector<Item*> _items;
 	LvlGenerator _lvlgen;
 
 	//================================================================

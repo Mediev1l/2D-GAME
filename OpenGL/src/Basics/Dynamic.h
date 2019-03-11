@@ -11,13 +11,14 @@ Klasa odpowiedzialna  za wszystkie obiekty ktore bedziemy wyswietlali na ekran
 #include <string>
 #include "Coords.h"
 
-class Object : public Coords
+class Dynamic : public Coords
 {
-protected:
-	std::string m_name;
+public:
+	std::string sName;
 	int m_size;
 public:
-	Object() {};
+	Dynamic() {};
+	Dynamic(std::string name, double x, double y) : Coords(x, y), sName(name) {};
 
 
 };

@@ -5,13 +5,14 @@
 #define _Character_H
 
 #include "Stats/Stats.h"
-#include "Basics/Coords.h"
+#include "Basics/Dynamic.h"
 #include "Maps/Tile.h"
 #include "Items/Item.h"
 #include "Weapons/Projectile.h"
 #include <vector>
 
-class Character: public Stats, public Coords
+class AssetManager;
+class Character: public Stats, public Dynamic
 {
 public:
 
@@ -25,14 +26,7 @@ public:
 
 	};
 
-	Character(std::string TexturePath, std::string PifPafTexturePath, double x, double y, double w) 
-		: 
-		_texture(TexturePath,true)
-		,_PifPafTexture(PifPafTexturePath,true)
-		, Stats()
-		, Coords(x,y)
-		, _ori(4,0.8,_position)
-		{};
+	Character(std::string name, double x, double y, double w);
 	double getVelocity() { return m_speed; };
 	Dir getSide() { return side; };
 	GLuint getPifPafSize() const { return (GLuint)_piFpaF.size(); };
@@ -41,15 +35,15 @@ public:
 
 	std::vector<Projectile>& getpiFpaF() { return _piFpaF; };
 	Projectile& getOnepiFpaF (GLuint index) { return _piFpaF[index]; };
-	GLuint getPifPafTexture() { return _PifPafTexture.getID(); };
+	GLuint getPifPafTexture() { return _PifPafTexture->getID(); };
 
 	//void UpdateX(double ux) { posX += ux; };
 	//void UpdateY(double uy) { posY += uy; };
 
-	GLuint getTexture() { return _texture.getID(); };
+	GLuint getTexture() { return _texture->getID(); };
 
 	//Mozna skopiowaæ do Hero kwestia przekminy
-	void consumeItem(const Item& item);
+	void consumeItem(const Item* item);
 
 
 	bool TakeDamage(const Projectile& bullet)
@@ -88,12 +82,12 @@ public:
 
 protected:
 	//Mozna skopiowaæ do Hero kwestia przekminy
-	std::vector<Item> _items;
+	std::vector<Item*> _items;
 	//Koniec do przekminiania
 
 	//Coords
-	Texture _texture;
-	Texture _PifPafTexture;
+	Texture* _texture;
+	Texture* _PifPafTexture;
 
 	Origin _ori;
 	//Weapons

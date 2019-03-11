@@ -172,7 +172,7 @@
     <ClInclude Include="src\Basics\Coords.h" />
     <ClInclude Include="src\Characters\Enemy.h" />
     <ClInclude Include="src\Items\Item.h" />
-    <ClInclude Include="src\Basics\Object.h" />
+    <ClInclude Include="src\Basics\Dynamic.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
     <ClInclude Include="src\Stats\Skill.h" />
     <ClInclude Include="src\Stats\Stats.h" />
@@ -183,8 +183,9 @@
     <ClInclude Include="src\Utility\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\Sprites\Enemies\Skelly\skelly.png" />
     <Image Include="res\Sprites\Enemies\Zombie\zombie.png" />
-    <Image Include="res\Sprites\Items\item_0.png" />
+    <Image Include="res\Sprites\Items\SpeedBoots.png" />
     <Image Include="res\Sprites\Map\Basement\0.jpg" />
     <Image Include="res\Sprites\Map\Basement\1.jpg" />
     <Image Include="res\Sprites\Map\Basement\10.jpg" />
@@ -206,7 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\Data\map.txt" />
-    <Text Include="res\Items\item_0.txt" />
+    <Text Include="res\Items\SpeedBoots.txt" />
     <Text Include="res\Data\Map\Basement.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -66,11 +66,12 @@ Renderer::Renderer(const Camera& camera)
 	AssetManager::Get();
 	AssetManager::Get().LoadSprites();
 	AssetManager::Get().LoadMaps();
+	AssetManager::Get().LoadItems();
 	_maps = AssetManager::Get().getMap("Basement");
 }
 
 
-void Renderer::Render( std::vector<Character>&characters, std::vector<Item>&items)
+void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*items)
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -115,15 +116,15 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 	}
 }
 
-void Renderer::RenderItems( std::vector<Item>& items)
+void Renderer::RenderItems( std::vector<Item*>* items)
 {
 	_SpriteSheetShader.use();
 	//Od ty³u bo sobie skopiowa³em z characters kappa
-	for (int i = (int)items.size()-1; i > -1; --i)
+	for (int i = (int)items->size()-1; i > -1; --i)
 	{
-		if (items[i].getOnMap() == true)
+		if ((*items)[i]->getOnMap() == true)
 		{
-			draw(items[i].getX(), items[i].getY(), items[i].getTexture(),false);
+			draw((*items)[i]->getX(), (*items)[i]->getY(), (*items)[i]->getTexture(),false);
 		}
 	}
 }

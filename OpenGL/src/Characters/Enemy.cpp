@@ -1,8 +1,8 @@
 #include "Enemy.h"
 
-Enemy::Enemy(double x, double y, double vel,double size, std::string texturepath, std::string PifPafTexturePath)
+Enemy::Enemy(std::string name, double x, double y, double vel,double size)
 	:
-	Character(texturepath, PifPafTexturePath,x,y,size)
+	Character(name,x,y,size)
 {
 	m_speed = vel;
 }

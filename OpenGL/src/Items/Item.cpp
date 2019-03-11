@@ -1,47 +1,54 @@
 #include "Item.h"
-
-Item::Item(const std::string& TexturePath,const std::string& ItemPath, GLuint itemID)
+#include "AssetManager/AssetManager.h"
+Item::Item()
 	: 
-	   id(itemID)
-	 , Stats() 
+	  Stats() 
 	 , onMap(true)
-	 , _texture(TexturePath + "item_" + std::to_string(itemID) + ".png",true)
+	{}
+
+void Item::Create(std::string itemdatapath, Texture * text)
 {
-
-
 	std::fstream itemFile;
-	std::string text;
+	std::string line;
 
-	itemFile.open(ItemPath + "item_" + std::to_string(itemID) + ".txt");
+	itemFile.open(itemdatapath);
 
 	if (!itemFile.good())
 		std::cerr << "Couldnt load the file";
-	
+
 
 	// Na razie na sztywno || do zmiany
-	std::getline(itemFile, text);
-	id = stoi(text);
+	std::getline(itemFile, line);
+	id = stoi(line);
 
-	std::getline(itemFile, text);
-	m_name = text;
+	std::getline(itemFile, line);
+	sName = line;
 
-	std::getline(itemFile, text);
-	description = text;
+	std::getline(itemFile, line);
+	description = line;
 
-	std::getline(itemFile, text);
-	m_health = stoi(text);
+	std::getline(itemFile, line);
+	m_health = stoi(line);
 
-	std::getline(itemFile, text);
-	m_shield = stoi(text);
+	std::getline(itemFile, line);
+	m_shield = stoi(line);
 
-	std::getline(itemFile, text);
-	m_speed = stod(text);
+	std::getline(itemFile, line);
+	m_speed = stod(line);
 
-	std::getline(itemFile, text);
-	m_att_speed = stod(text);
+	std::getline(itemFile, line);
+	m_att_speed = stod(line);
 
-	std::getline(itemFile, text);
-	m_damage = stod(text);
+	std::getline(itemFile, line);
+	m_damage = stod(line);
 
 	itemFile.close();
+
+	_texture = text;
+
+}
+
+SpeedBoots::SpeedBoots()
+{
+	Create("res/Items/SpeedBoots.txt", AssetManager::Get().getSprite("SpeedBoots"));
 }

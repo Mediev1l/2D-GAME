@@ -10,7 +10,7 @@ Enemy
 class Enemy: public Character
 {
 public:
-	Enemy(double x, double y, double vel, double size, std::string texturepath, std::string PifPafTexturePath);
+	Enemy(std::string name, double x, double y, double vel, double size);
 	void Bechaviour(const Character& player, double deltaTime);
 private:
 };
