@@ -73,6 +73,7 @@
   <ItemGroup>
     <None Include="src\Shaders\vs.vs" />
     <None Include="src\Shaders\fs.fs" />
+    <None Include="src\Shaders\fs2.fs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Maps\Map.h">
@@ -195,6 +196,9 @@
       <Filter>Pliki zasobów</Filter>
     </Image>
     <Image Include="res\Sprites\Map\Basement\10-white.jpg">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\Tears\basic_tear.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
   </ItemGroup>

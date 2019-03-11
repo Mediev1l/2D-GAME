@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\fs.fs" />
+    <None Include="src\Shaders\fs2.fs" />
     <None Include="src\Shaders\vs.vs" />
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +201,7 @@
     <Image Include="res\Sprites\Objects\opened.png" />
     <Image Include="res\Sprites\Player\awesome.png" />
     <Image Include="res\Sprites\Player\issac.png" />
+    <Image Include="res\Sprites\Tears\basic_tear.png" />
     <Image Include="res\Sprites\wooden.jpg" />
   </ItemGroup>
   <ItemGroup>

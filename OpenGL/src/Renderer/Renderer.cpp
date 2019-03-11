@@ -4,7 +4,8 @@
 
 Renderer::Renderer(const Camera& camera)
 	:
-	_mainShader("src/Shaders/vs.vs","src/Shaders/fs.fs")
+	_mainShader("src/Shaders/vs.vs","src/Shaders/fs2.fs")
+	,_SpriteSheetShader("src/Shaders/vs.vs", "src/Shaders/fs.fs")
 	, _objects{ {"res/Sprites/Objects/opened.png",true} ,{"res/Sprites/Objects/closed.png",true} }
 	,cam(camera)
 {
@@ -25,7 +26,7 @@ Renderer::Renderer(const Camera& camera)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 
 	glBindVertexArray(VAO[1]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
@@ -40,13 +41,14 @@ Renderer::Renderer(const Camera& camera)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 
 
 	//To ma byæ wywo³ane przed u¿yciem jakiejkolwiek tekstury
 	_mainShader.use();
 	_mainShader.setInt("texture1", 0);
-
+	_SpriteSheetShader.use();
+	_SpriteSheetShader.setInt("texture1", 0);
 	//Setup Drawin Values
 	//ScaleFactorX = 1.0 / _maps.getWidth();
 	//ScaleFactorY = 1.0 / _maps.getHeight();
@@ -86,7 +88,7 @@ void Renderer::RenderMap()
 		for (GLuint x = 0; x < (GLuint)_maps->getWidth(); x++)
 		{
 			setTextureCoords(_maps->getTile(x,y),(GLuint)_maps->getTexture()->getWidth(), (GLuint)_maps->getTexture()->getHeight(), _maps->getTexture()->getnSprites());
-			draw(_maps->getTilePos(x, y)._x, _maps->getTilePos(x, y)._y, _maps->getTexture()->getID());
+			draw(_maps->getTilePos(x, y)._x, _maps->getTilePos(x, y)._y, _maps->getTexture()->getID(),true);
 		}
 	}
 	DrawDoors(DoorState);
@@ -103,24 +105,25 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 			{
 				if (characters[0].getOnepiFpaF(i).getExistance() == true)
 				{
-					draw(characters[0].getOnepiFpaF(i)._position.getX(), characters[0].getOnepiFpaF(i)._position.getY(), characters[0].getPifPafTexture(),0.05);
+					draw(characters[0].getOnepiFpaF(i)._position.getX(), characters[0].getOnepiFpaF(i)._position.getY(), characters[0].getPifPafTexture(),false,0.05);
 				}
 			}
-			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),ScaleFactorX-0.02);
+			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),false,ScaleFactorX-0.02);
 			break;
 		}
-		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture());
+		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),false);
 	}
 }
 
 void Renderer::RenderItems( std::vector<Item>& items)
 {
+	_SpriteSheetShader.use();
 	//Od ty³u bo sobie skopiowa³em z characters kappa
 	for (int i = (int)items.size()-1; i > -1; --i)
 	{
 		if (items[i].getOnMap() == true)
 		{
-			draw(items[i].getX(), items[i].getY(), items[i].getTexture());
+			draw(items[i].getX(), items[i].getY(), items[i].getTexture(),false);
 		}
 	}
 }
@@ -128,11 +131,11 @@ void Renderer::RenderItems( std::vector<Item>& items)
 void Renderer::setTextureCoords(Tile & tile, GLuint width, GLuint Height, GLuint nText)
 {
 	GLuint nr = tile.getTextureNumber();
-	float offset = (float)nr;
-	_mainShader.setFloat("offsetX",offset);
+	float offset = (float)nr*0.1f;
+	_SpriteSheetShader.setFloat("offsetX", offset);
 }
 
-void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
+void Renderer::draw(double x, double y,GLuint IdTexture, bool map, double scale)
 {
 
 	//Eksperymentalnie udowodniono ze dziala xD
@@ -146,13 +149,22 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 	model = glm::scale(model, glm::vec3(scale > 0 ? scale:ScaleFactorX, scale > 0 ? scale : ScaleFactorY, 0.0f));
 
 
-	_mainShader.setMat4("model", model);
-
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, IdTexture);
 
-	_mainShader.use();
-	glBindVertexArray(VAO[1]);
+	if (map==false)
+	{
+		_mainShader.use();
+		_mainShader.setMat4("model", model);
+		glBindVertexArray(VAO[1]);
+	}
+	else
+	{
+		_SpriteSheetShader.use();
+		_SpriteSheetShader.setMat4("model", model);
+		glBindVertexArray(VAO[0]);
+	}
+	
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -187,12 +199,13 @@ void Renderer::DrawDoors(Object & obj)
 		model = glm::scale(model, glm::vec3(ScaleFactorX, ScaleFactorY, 0.0f));
 
 
-		_mainShader.setMat4("model", model);
+		
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, _objects[obj].getID());
 
 		_mainShader.use();
+		_mainShader.setMat4("model", model);
 		glBindVertexArray(VAO[1]);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

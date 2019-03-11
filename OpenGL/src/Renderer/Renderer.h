@@ -22,7 +22,7 @@ public:
 private:
 
 	void setTextureCoords(Tile& tile, GLuint width, GLuint Height, GLuint nText);
-	void draw(double x, double y, GLuint IdTexture, double scale=0.0);
+	void draw(double x, double y, GLuint IdTexture, bool map, double scale=0.0 );
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item>& items);
@@ -43,7 +43,7 @@ private:
 
 	//Main renderShader
 	Shader _mainShader;
-	
+	Shader _SpriteSheetShader;
 
 	//Current and next map
 	Map* _maps;
@@ -61,14 +61,16 @@ private:
 	//Vbo vao ebo itp
 	unsigned int VBO[2], VAO[2], EBO[2];
 
+	//Dla mapy
 	float vertices[20] = {
 		// positions          // textures coords
-		1.0f,  1.0f, 0.0f,   0.011f, 1.0f,  // top right
-		1.0f, -1.0f, 0.0f,   0.011f, 0.0f,  // bottom right
+		1.0f,  1.0f, 0.0f,   0.1f, 1.0f,  // top right
+		1.0f, -1.0f, 0.0f,   0.1f, 0.0f,  // bottom right
 		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // bottom left
 		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
 	};
 
+	//Tymczasowo dla reszty ferajny
 	float vertices2[20] = {
 		// positions          // textures coords
 		1.0f,  1.0f, 0.0f,   1.0f, 1.0f,  // top right

@@ -10,6 +10,7 @@ void AssetManager::LoadSprites()
 	};
 
 	load("player", "res/Sprites/Player/issac.png",true);
+	load("projectiles", "res/Sprites/Tears/basic_tear.png", true);
 	load("Basement", "res/Sprites/Map/Basement/Basement.jpg", false);
 }
 
