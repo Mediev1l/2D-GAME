@@ -199,7 +199,7 @@ void GameEngine::processInput()
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-
+		ProcessItemPickup();
 	}
 
 	//Fun
@@ -403,15 +403,15 @@ void GameEngine::Update()
 			if (p[i] == Direction::NONE) continue;
 
 			if (pdir == LEFT && p[i] == LEFT) tempV += pvel._x;
-			else if (pdir == LEFT && p[i] == RIGHT) tempV -= pvel._x / 4;
+			else if (pdir == LEFT && p[i] == RIGHT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
 
-			else if (pdir == RIGHT && p[i] == LEFT) tempV -= pvel._x/4 ;
+			else if (pdir == RIGHT && p[i] == LEFT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
 			else if (pdir == RIGHT && p[i] == RIGHT) tempV += pvel._x;
 
 			else if (pdir == UP && p[i] == UP) tempV += pvel._y;
-			else if (pdir == UP && p[i] == DOWN) tempV -= pvel._y/4;
+			else if (pdir == UP && p[i] == DOWN) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
 
-			else if (pdir == DOWN && p[i] == UP) tempV -= pvel._y / 4;
+			else if (pdir == DOWN && p[i] == UP) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
 			else if (pdir == DOWN && p[i] == DOWN) tempV += pvel._y;
 		}
 
