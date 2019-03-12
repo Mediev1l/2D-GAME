@@ -60,7 +60,7 @@ void GameEngine::Game_Init()
 
 		renderer = new Renderer(camera);
 		_map = renderer->getMap();
-		//_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
+		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
 	catch (std::runtime_error &e)
 	{
@@ -71,8 +71,8 @@ void GameEngine::Game_Init()
 
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero("player2",5.0, 5.0, 3.0, 0.8,8));
-	_characters.push_back(Enemy("skelly2",1.0, 6.0, 1.0, 0.9,9));
-	//_characters.push_back(Enemy("zombie",4.0, 3.0, 1.0, 0.9));
+	_characters.push_back(Enemy("skelly2",5.0, 6.0, 1.0, 0.9,9));
+	_characters.push_back(Enemy("skelly2",4.0, 5.0, 1.0, 0.9,9));
 	_items.emplace_back(AssetManager::Get().getItem("SpeedBoots"));
 	_items[0]->setX(5);
 	_items[0]->setY(7);
@@ -554,7 +554,6 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					{
 						if (!CheckColissions(_characters[i], i, mx + value, my)) newX = mx+ value;
 					}
-					
 				}
 				_characters[i].setX(newX);
 				_characters[i].updateAnimation((Animation::Dir)dir[0], deltaTime);
@@ -572,6 +571,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					{
 						if (!CheckColissions(_characters[i], i, mx, my+value)) newY = my+value;
 					}
+					//_characters[i].updateAnimation((Animation::Dir)dir[1], deltaTime);
 				}
 				_characters[i].setY(newY);
 				//_characters[i].updateAnimation((Animation::Dir)dir[1], deltaTime);
@@ -585,6 +585,12 @@ void GameEngine::Doors()
 	GLuint x = (GLuint)ceil(_map->getWidth() / 2.0) - 1;
 	GLuint y = (GLuint)ceil(_map->getHeight() / 2.0) - 1;
 	GLuint id[] = { x,0,0,y,_map->getWidth() - 1,y };
+
+	for(GLuint i=0;i<6;i+=2)
+	{
+		_map->getTile(id[i], id[i + 1]).setSolid(false);
+	}
+
 	if (lvlWin) renderer->OpenDoors();
 	else renderer->CloseDoors();
 }

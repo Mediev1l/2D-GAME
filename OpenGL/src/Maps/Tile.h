@@ -49,6 +49,7 @@ public:
 		if (content == Nothing)_solid = false;
 	};*/
 
+	void setSolid(bool x) { _solid = x; };
 	void setTextureIDandSolid(GLuint x, bool sol) 
 	{ 
 		_textureNumber = x;

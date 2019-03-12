@@ -110,7 +110,7 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 				}
 			}
 			setTextureCoords(characters[i]);
-			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),true,ScaleFactorX-0.02);
+			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),true);
 			break;
 		}
 		setTextureCoords(characters[i]);
@@ -147,8 +147,8 @@ void Renderer::setTextureCoords(Character & obj)
 	_SpriteSheetShader.setFloat("offsetX", offsetx);
 	_SpriteSheetShader.setFloat("offsetY", offsety);
 
-	std::cout << "OffsetX: " << offsetx << '\n';
-	std::cout << "OffsetY: " << offsety << '\n';
+	//std::cout << "OffsetX: " << offsetx << '\n';
+	//std::cout << "OffsetY: " << offsety << '\n';
 }
 
 void Renderer::draw(double x, double y,GLuint IdTexture, bool map, double scale)

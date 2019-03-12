@@ -209,7 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\Data\map.txt" />
-    <Text Include="res\Items\SpeedBoots.txt" />
+    <Text Include="res\Data\Items\SpeedBoots.txt" />
     <Text Include="res\Data\Map\Basement.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

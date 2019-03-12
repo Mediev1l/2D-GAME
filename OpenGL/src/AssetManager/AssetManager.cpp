@@ -16,6 +16,7 @@ void AssetManager::LoadSprites()
 	load("skelly", "res/Sprites/Enemies/Skelly/skelly.png", true);
 	load("skelly2", "res/Sprites/Enemies/Skelly/skeleton.png", true);
 	load("zombie", "res/Sprites/Enemies/Zombie/zombie.png", true);
+	load("zombie2", "res/Sprites/Enemies/Zombie/zombie2.png", true);
 	load("SpeedBoots", "res/Sprites/Items/SpeedBoots.png", true);
 
 	//Map

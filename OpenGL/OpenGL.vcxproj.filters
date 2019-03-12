@@ -214,6 +214,6 @@
   <ItemGroup>
     <Text Include="res\Data\map.txt" />
     <Text Include="res\Data\Map\Basement.txt" />
-    <Text Include="res\Items\SpeedBoots.txt" />
+    <Text Include="res\Data\Items\SpeedBoots.txt" />
   </ItemGroup>
 </Project>

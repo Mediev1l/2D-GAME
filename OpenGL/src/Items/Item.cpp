@@ -18,8 +18,8 @@ void Item::Create(std::string itemdatapath, Texture * text)
 
 
 	// Na razie na sztywno || do zmiany
-	std::getline(itemFile, line);
-	id = stoi(line);
+	//std::getline(itemFile, line);
+	//id = stoi(line);
 
 	std::getline(itemFile, line);
 	sName = line;

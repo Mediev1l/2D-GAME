@@ -19,8 +19,6 @@ public:
 public:
 	Dynamic() {};
 	Dynamic(std::string name, double x, double y) : Coords(x, y), sName(name) {};
-
-
 };
 
 #endif 
