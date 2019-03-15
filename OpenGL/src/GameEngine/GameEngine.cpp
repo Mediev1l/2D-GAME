@@ -11,10 +11,12 @@ GameEngine::GameEngine()
 	, lastY(SCR_HEIGHT / 2.0)
 	, firstMouse(true)
 	, WindowName("Kacp3r3 & Bartek Playground")
-	, delay(1)
+	, _gamedelay(1)
+	, _delay(0)
 	, camera(6,6)
 	, lvlWin(false)
 	,_lvlgen("res/Data/map.txt")
+	, _gameState(State::INIT)
 {
 }
 
@@ -83,20 +85,24 @@ void GameEngine::Game_Init()
 	//HARDCODE
 	_characters[0].setRange(50);
 
+	_gameState = State::GAME;
+
 }
 
 void GameEngine::Game_Run()
 {
 
 	// Game  Initialization
+
 	Game_Init();
 
-	
 
 
 	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window) && _gameState != State::EXIT)
 	{
+		//Delay For menu
+		_delay += 0.05;
 
 		//Providing delta Time
 		t.Mark();
@@ -111,9 +117,19 @@ void GameEngine::Game_Run()
 		// input
 		// -----
 		processInput();
-		camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
-		Update();
-		ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
+
+
+		//Game Update
+		if (_gameState != State::MENU && _gameState != State::INIT)
+		{
+			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
+			Update();
+			ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
+		}
+
+		//Gdy przejdziemy poziom i wejdziemy w drzwi
+		if(_gameState == State::INIT)
+			renderer->ScreenDimm();
 
 		//Renderowanie ³adnie w jednej funkcji
 		renderer->Render(_characters, &_items);
@@ -136,7 +152,7 @@ void GameEngine::processInput()
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 	{
 		std::cout << "PlayerX: " << _characters[0].getPos().getX() << '\n';
-		std::cout << "PlayerY: " << _characters[0].getPos().getX() << '\n';
+		std::cout << "PlayerY: " << _characters[0].getPos().getY() << '\n';
 		//std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
 		std::cout << "VectorX: " << camera.getTranslate()._x << '\n';
 		std::cout << "VectorY: " << camera.getTranslate()._y << '\n';
@@ -148,58 +164,12 @@ void GameEngine::processInput()
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	//PickupItems
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 	{
-		if (_canPickup)
-		{
-			ProcessItemPickup();
-		}
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		_characters[0].setSide(Animation::UP);
-		ProcessPlayerShoot();
-	}
-	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		_characters[0].setSide(Animation::DOWN);
-		ProcessPlayerShoot();
-	}
-	else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-	{
-		_characters[0].setSide(Animation::LEFT);
-		ProcessPlayerShoot();
-	}
-	else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-	{
-		_characters[0].setSide(Animation::RIGHT);
-		ProcessPlayerShoot();
-	}
-
-	//MovementProcessor
-	double deltaTime = t.getDelta();
-	if ( glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	{
-		ProcessPlayerMove(deltaTime, Direction::UP);
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	{
-		ProcessPlayerMove(deltaTime, Direction::DOWN);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	{
-		ProcessPlayerMove(deltaTime, Direction::LEFT);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	{
-		ProcessPlayerMove(deltaTime, Direction::RIGHT);
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-	{
-		ProcessItemPickup();
+		if (_delay >= 2.0f)
+			_delay = 0.0;
+		if(_delay == 0)
+			_gameState != State::MENU ? _gameState = State::MENU : _gameState = State::GAME;
 	}
 
 	//Fun
@@ -208,12 +178,71 @@ void GameEngine::processInput()
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+	//if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+	//{
+	//}
+	//if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+	//{
+	//}
+
+	if (_gameState != State::MENU && _gameState != State::INIT)
 	{
+
+		//PickupItems
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		{
+			if (_canPickup)
+			{
+				ProcessItemPickup();
+			}
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			_characters[0].setSide(Animation::UP);
+			ProcessPlayerShoot();
+		}
+		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			_characters[0].setSide(Animation::DOWN);
+			ProcessPlayerShoot();
+		}
+		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		{
+			_characters[0].setSide(Animation::LEFT);
+			ProcessPlayerShoot();
+		}
+		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{
+			_characters[0].setSide(Animation::RIGHT);
+			ProcessPlayerShoot();
+		}
+
+		//MovementProcessor
+		double deltaTime = t.getDelta();
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			ProcessPlayerMove(deltaTime, Direction::UP);
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			ProcessPlayerMove(deltaTime, Direction::DOWN);
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		{
+			ProcessPlayerMove(deltaTime, Direction::LEFT);
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		{
+			ProcessPlayerMove(deltaTime, Direction::RIGHT);
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		{
+			ProcessItemPickup();
+		}
 	}
-	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-	{
-	}
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -305,6 +334,26 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 		_characters[0].setX(newX);
 		_characters[0].setY(newY);
 	}
+
+	//Czy pozycja gracza == pozycja drzwi
+
+	GLuint x = (GLuint)floor(_map->getWidth() / 2.0);
+	GLuint y = (GLuint)floor(_map->getHeight() / 2.0);
+	
+	if(
+		//drzwi gorne
+		_characters[0].getPos().getX() > x - 0.2 && _characters[0].getPos().getX() < x + 0.2 && _characters[0].getPos().getY() < 0.1
+		//drzwi lewe
+		 || _characters[0].getPos().getX() < 0.1 && _characters[0].getPos().getY() > y - 0.2 && _characters[0].getPos().getY() < y + 0.2 
+		//drzwi prawe
+		 || _characters[0].getPos().getX() > _map->getWidth() - 1.2 && _characters[0].getPos().getY() > y - 0.2 && _characters[0].getPos().getY() < y + 0.2
+		//czy poziom zostal ukonczony
+		&& lvlWin == true
+	  )
+			_gameState = State::INIT;
+
+
+
 }
 
 
@@ -343,11 +392,10 @@ void GameEngine::ProcessPlayerShoot()
 	Animation::Dir  pdir = _characters[0].getSide();
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
 
-	if (delay <= 0.0f)
-	{
-		delay = 0.5;
-	}
-	if (delay == 0.5)
+	if (_gamedelay <= 0.0f)
+		_gamedelay = 0.5;
+
+	if (_gamedelay == 0.5)
 	{
 		switch (pdir)
 		{
@@ -384,7 +432,7 @@ void GameEngine::Update()
 	double deltaTime = t.getDelta();
 
 	// Tu mo¿na daæ mniejsz¹ wartosc i mnozyc * att speed 
-	delay -= deltaTime;
+	_gamedelay -= deltaTime;
 
 	for (int i = 0; i < temp.size(); i++)
 	{
@@ -604,7 +652,7 @@ GameEngine::Direction GameEngine::CalculateDirection(double x, bool pionowo, dou
 			if (x > 0) return LEFT;
 			else return  RIGHT;
 		}
-		else return  NONE;
+		else return  Direction::NONE;
 	}
 	else
 	{
@@ -613,7 +661,7 @@ GameEngine::Direction GameEngine::CalculateDirection(double x, bool pionowo, dou
 			if (x > 0) return UP;
 			else return DOWN;
 		}
-		else return  NONE;
+		else return  Direction::NONE;
 	}
 }
 

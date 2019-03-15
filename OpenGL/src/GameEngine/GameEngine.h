@@ -23,6 +23,28 @@
 
 class GameEngine
 {
+public:
+	//================================================================
+	//= GAME ENUM'S
+	//================================================================
+
+	enum Direction
+	{
+		NONE = -1,
+		DOWN = 0,
+		UP = 1,
+		LEFT = 2,
+		RIGHT = 3,
+	};
+
+	enum State
+	{
+		INIT,
+		GAME,
+		MENU,
+		EXIT
+	};
+
 protected:
 
 	//================================================================
@@ -43,8 +65,10 @@ protected:
 	double lastY;
 	bool firstMouse;
 	bool _canPickup;
-	double delay;
+	double _gamedelay;
+	double _delay;
 	bool lvlWin;
+	State _gameState;
 	//================================================================
 	//= Game Objects
 	//================================================================
@@ -57,14 +81,7 @@ protected:
 	//================================================================
 	//= Game Processor
 	//================================================================
-	enum Direction
-	{
-		NONE = -1,
-		DOWN=0,
-		UP=1,
-		LEFT=2,
-		RIGHT=3,	
-	};
+
 
 	void ProcessPlayerMove(double deltaTime,Direction dir);
 	void ProcessItemPickup();

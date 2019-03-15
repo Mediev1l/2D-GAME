@@ -19,6 +19,8 @@ public:
 
 	void CloseDoors() { DoorState = Object::DoorClosed; };
 	void OpenDoors() { DoorState = Object::DoorOpened; };
+
+	void ScreenDimm();
 private:
 
 	void setTextureCoords(Tile& tile);
@@ -41,6 +43,8 @@ private:
 	double StartPosY;
 	double TranslateValueX;
 	double TranslateValueY;
+	glm::vec4 GammaRatio;
+	
 
 	//Main renderShader
 	Shader _mainShader;

@@ -9,6 +9,9 @@ Renderer::Renderer(const Camera& camera)
 	, _objects{ {"res/Sprites/Objects/opened.png",true} ,{"res/Sprites/Objects/closed.png",true} }
 	,cam(camera)
 {
+	//Ustawienie gammy na full
+	GammaRatio = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	glGenVertexArrays(2, VAO);
 	glGenBuffers(2, VBO);
 	glGenBuffers(2, EBO);
@@ -75,6 +78,10 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*ite
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	_SpriteSheetShader.use();
+	_SpriteSheetShader.setVec4("Gamma", GammaRatio);
+	_mainShader.use();
+	_mainShader.setVec4("Gamma", GammaRatio);
 	RenderMap();
 	RenderItems(items);
 	RenderCharacters(characters);
@@ -121,6 +128,7 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 void Renderer::RenderItems( std::vector<Item*>* items)
 {
 	_SpriteSheetShader.use();
+
 	//Od ty³u bo sobie skopiowa³em z characters kappa
 	for (int i = (int)items->size()-1; i > -1; --i)
 	{
@@ -129,6 +137,15 @@ void Renderer::RenderItems( std::vector<Item*>* items)
 			draw((*items)[i]->getX(), (*items)[i]->getY(), (*items)[i]->getTexture(),false);
 		}
 	}
+}
+
+void Renderer::ScreenDimm()
+{
+	
+	if (GammaRatio.x > 0) GammaRatio.x -= 0.008f;
+	if (GammaRatio.y > 0) GammaRatio.y -= 0.008f;
+	if (GammaRatio.z > 0) GammaRatio.z -= 0.008f;
+
 }
 
 void Renderer::setTextureCoords(Tile & tile)

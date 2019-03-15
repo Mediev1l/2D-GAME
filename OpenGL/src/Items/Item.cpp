@@ -50,5 +50,5 @@ void Item::Create(std::string itemdatapath, Texture * text)
 
 SpeedBoots::SpeedBoots()
 {
-	Create("res/Items/SpeedBoots.txt", AssetManager::Get().getSprite("SpeedBoots"));
+	Create("res/Data/Items/SpeedBoots.txt", AssetManager::Get().getSprite("SpeedBoots"));
 }
