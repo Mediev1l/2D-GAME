@@ -65,8 +65,6 @@ protected:
 	double lastY;
 	bool firstMouse;
 	bool _canPickup;
-	double _gamedelay;
-	double _delay;
 	bool lvlWin;
 	State _gameState;
 	//================================================================

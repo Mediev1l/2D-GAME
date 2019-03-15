@@ -11,8 +11,6 @@ GameEngine::GameEngine()
 	, lastY(SCR_HEIGHT / 2.0)
 	, firstMouse(true)
 	, WindowName("Kacp3r3 & Bartek Playground")
-	, _gamedelay(1)
-	, _delay(0)
 	, camera(6,6)
 	, lvlWin(false)
 	,_lvlgen("res/Data/map.txt")
@@ -101,8 +99,6 @@ void GameEngine::Game_Run()
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window) && _gameState != State::EXIT)
 	{
-		//Delay For menu
-		_delay += 0.05;
 
 		//Providing delta Time
 		t.Mark();
@@ -110,6 +106,10 @@ void GameEngine::Game_Run()
 		{
 			t.Mark();
 		}
+
+		//Refresh all delay time
+		t.refresh();
+
 		//Updating Label name
 		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
 		glfwSetWindowTitle(window, a.c_str());
@@ -166,9 +166,8 @@ void GameEngine::processInput()
 
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 	{
-		if (_delay >= 2.0f)
-			_delay = 0.0;
-		if(_delay == 0)
+
+		if (t.delay("Menu", 1))
 			_gameState != State::MENU ? _gameState = State::MENU : _gameState = State::GAME;
 	}
 
@@ -392,10 +391,9 @@ void GameEngine::ProcessPlayerShoot()
 	Animation::Dir  pdir = _characters[0].getSide();
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
 
-	if (_gamedelay <= 0.0f)
-		_gamedelay = 0.5;
 
-	if (_gamedelay == 0.5)
+
+	if (t.delay("Shoot", 1))
 	{
 		switch (pdir)
 		{
@@ -431,8 +429,6 @@ void GameEngine::Update()
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
 	double deltaTime = t.getDelta();
 
-	// Tu mo¿na daæ mniejsz¹ wartosc i mnozyc * att speed 
-	_gamedelay -= deltaTime;
 
 	for (int i = 0; i < temp.size(); i++)
 	{

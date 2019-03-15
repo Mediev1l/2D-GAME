@@ -1,4 +1,5 @@
 #include "Timer.h"
+#include <iostream>
 
 
 
@@ -26,12 +27,32 @@ double Timer::getFPS()
 	return 1.0f/delta;
 }
 
+bool Timer::delay(std::string name, size_t secs)
+{
+	if (timeCounter.find(name) == timeCounter.end())
+	{
+		timeCounter.emplace(name, secs );
+		return true;
+	}
+	else
+	{
+		if (timeCounter[name] <= 0)
+		{
+			timeCounter[name] = secs ;
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Timer::Mark()
 {
 	if (delta >= 1 / maxFPS) delta = 0;
 	last = current;
 	current = std::chrono::system_clock::now();
 	delta+= std::chrono::duration<double>(current - last).count();
+
 }
 
 std::string Timer::date()
@@ -46,4 +67,13 @@ std::string Timer::date()
 		<< now->tm_min << ":"
 		<< now->tm_sec << "\n";
 	return tmp.str();
+}
+
+void Timer::refresh()
+{
+	std::map<std::string, float>::iterator it;
+	
+	for (it = timeCounter.begin(); it != timeCounter.end(); it++)
+		if (it->second > 0) it->second -= delta ;
+	
 }
