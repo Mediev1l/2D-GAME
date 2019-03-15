@@ -108,7 +108,7 @@ void GameEngine::Game_Run()
 		}
 
 		//Refresh all delay time
-		t.refresh();
+		t.refresh(false);
 
 		//Updating Label name
 		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
@@ -122,6 +122,7 @@ void GameEngine::Game_Run()
 		//Game Update
 		if (_gameState != State::MENU && _gameState != State::INIT)
 		{
+			t.refresh(true);
 			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
 			Update();
 			ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
@@ -167,7 +168,7 @@ void GameEngine::processInput()
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 	{
 
-		if (t.delay("Menu", 1))
+		if (t.delay("Menu", 1, false))
 			_gameState != State::MENU ? _gameState = State::MENU : _gameState = State::GAME;
 	}
 
@@ -393,7 +394,7 @@ void GameEngine::ProcessPlayerShoot()
 
 
 
-	if (t.delay("Shoot", 1))
+	if (t.delay("Shoot", 1, true))
 	{
 		switch (pdir)
 		{

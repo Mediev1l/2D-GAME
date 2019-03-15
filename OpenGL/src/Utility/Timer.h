@@ -13,17 +13,17 @@ public:
 	double getDelta();
 	double getSingleFrameTime();
 	double getFPS();
-	bool delay(std::string name, size_t secs);
+	bool delay(std::string name, size_t secs, bool gametime);
 	void Mark();
 	std::string date();
-	void refresh();
+	void refresh(bool ingame);
 private:
 	double delta;
 	double maxFPS;
 	double SingleFrame;
 	std::chrono::system_clock::time_point current;
 	std::chrono::system_clock::time_point last;
-	std::map<std::string, float> timeCounter;
+	std::map<std::string, std::pair<float, bool>> timeCounter;
 };
 #endif
 

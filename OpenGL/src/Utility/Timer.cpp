@@ -27,18 +27,18 @@ double Timer::getFPS()
 	return 1.0f/delta;
 }
 
-bool Timer::delay(std::string name, size_t secs)
+bool Timer::delay(std::string name, size_t secs, bool gametime)
 {
 	if (timeCounter.find(name) == timeCounter.end())
 	{
-		timeCounter.emplace(name, secs );
+		timeCounter.emplace(name, std::make_pair(secs, gametime));
 		return true;
 	}
 	else
 	{
-		if (timeCounter[name] <= 0)
+		if (timeCounter[name].first <= 0)
 		{
-			timeCounter[name] = secs ;
+			timeCounter[name].first = secs ;
 			return true;
 		}
 	}
@@ -69,11 +69,15 @@ std::string Timer::date()
 	return tmp.str();
 }
 
-void Timer::refresh()
+void Timer::refresh(bool ingame)
 {
-	std::map<std::string, float>::iterator it;
+	std::map<std::string, std::pair<float,bool>>::iterator it;
 	
 	for (it = timeCounter.begin(); it != timeCounter.end(); it++)
-		if (it->second > 0) it->second -= delta ;
+	{
+		if(it->second.second == ingame)
+			if (it->second.first > 0) it->second.first -= delta ;
+
+	}
 	
 }
