@@ -148,6 +148,13 @@ void Renderer::ScreenDimm()
 
 }
 
+void Renderer::ScreenBright()
+{
+	if (GammaRatio.x < 1) GammaRatio.x += 0.008f;
+	if (GammaRatio.y < 1) GammaRatio.y += 0.008f;
+	if (GammaRatio.z < 1) GammaRatio.z += 0.008f;
+}
+
 void Renderer::setTextureCoords(Tile & tile)
 {
 	GLuint nr = tile.getTextureNumber();

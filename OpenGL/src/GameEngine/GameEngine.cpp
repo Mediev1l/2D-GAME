@@ -15,6 +15,7 @@ GameEngine::GameEngine()
 	, lvlWin(false)
 	,_lvlgen("res/Data/map.txt")
 	, _gameState(State::INIT)
+	, _gameDifficulty(Difficulty::START)
 {
 }
 
@@ -340,17 +341,22 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 	GLuint x = (GLuint)floor(_map->getWidth() / 2.0);
 	GLuint y = (GLuint)floor(_map->getHeight() / 2.0);
 	
-	if(
-		//drzwi gorne
-		_characters[0].getPos().getX() > x - 0.2 && _characters[0].getPos().getX() < x + 0.2 && _characters[0].getPos().getY() < 0.1
 		//drzwi lewe
-		 || _characters[0].getPos().getX() < 0.1 && _characters[0].getPos().getY() > y - 0.2 && _characters[0].getPos().getY() < y + 0.2 
+	if (_characters[0].getPos().getX() < 0.1 && _characters[0].getPos().getY() > y - 0.2 && _characters[0].getPos().getY() < y + 0.2 && lvlWin == true)
+	{
+		_gameState = State::INIT;
+	}
+		//drzwi gorne
+	else if (_characters[0].getPos().getX() > x - 0.2 && _characters[0].getPos().getX() < x + 0.2 && _characters[0].getPos().getY() < 0.1 && lvlWin == true)
+	{
+		_gameState = State::INIT;
+	}
 		//drzwi prawe
-		 || _characters[0].getPos().getX() > _map->getWidth() - 1.2 && _characters[0].getPos().getY() > y - 0.2 && _characters[0].getPos().getY() < y + 0.2
-		//czy poziom zostal ukonczony
-		&& lvlWin == true
-	  )
-			_gameState = State::INIT;
+	else if (_characters[0].getPos().getX() > _map->getWidth() - 1.2 && _characters[0].getPos().getY() > y - 0.2 && _characters[0].getPos().getY() < y + 0.2 && lvlWin == true)
+	{
+		_gameState = State::INIT;
+
+	}
 
 
 

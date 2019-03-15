@@ -45,6 +45,14 @@ public:
 		EXIT
 	};
 
+	enum Difficulty
+	{
+		START,
+		EASY,
+		MEDIUM,
+		HARD
+	};
+
 protected:
 
 	//================================================================
@@ -67,6 +75,7 @@ protected:
 	bool _canPickup;
 	bool lvlWin;
 	State _gameState;
+	Difficulty _gameDifficulty;
 	//================================================================
 	//= Game Objects
 	//================================================================

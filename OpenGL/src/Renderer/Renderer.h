@@ -21,6 +21,7 @@ public:
 	void OpenDoors() { DoorState = Object::DoorOpened; };
 
 	void ScreenDimm();
+	void ScreenBright();
 private:
 
 	void setTextureCoords(Tile& tile);
