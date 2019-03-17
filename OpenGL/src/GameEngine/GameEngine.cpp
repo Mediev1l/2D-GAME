@@ -137,7 +137,7 @@ void GameEngine::Game_Run()
 			renderer->ScreenDimm();
 		
 		//Renderowanie ³adnie w jednej funkcji
-		renderer->Render(_characters, &_items);
+		renderer->Render(_characters, &_ItemGenerator.getItems());
 	
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -373,11 +373,11 @@ void GameEngine::ProcessItemPickup()
 
 	GLuint nearestid=-1;
 	double distance=100.0;
-	for (GLuint i = 0; i < _items.size(); ++i)
+	for (GLuint i = 0; i < _ItemGenerator.getItems().size(); ++i)
 	{
-		if (_items[i]->getOnMap())
+		if (_ItemGenerator.getItems()[i]->getOnMap())
 		{
-			double localdist = abs(_items[i]->getX() - px) + abs(_items[i]->getY() - py);
+			double localdist = abs(_ItemGenerator.getItems()[i]->getX() - px) + abs(_ItemGenerator.getItems()[i]->getY() - py);
 			if (localdist < distance)
 			{
 				distance = localdist;
@@ -388,8 +388,8 @@ void GameEngine::ProcessItemPickup()
 	
 	if (nearestid != -1)
 	{
-		_characters[0].consumeItem(_items[nearestid]);
-		_items[nearestid]->setOnMap(false);
+		_characters[0].consumeItem(_ItemGenerator.getItems()[nearestid]);
+		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
 	}
 }
 

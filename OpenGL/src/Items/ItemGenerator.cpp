@@ -1,6 +1,6 @@
 #include "ItemGenerator.h"
 
-void ItemGenerator::GenerateItem(bool unique, GLuint x, GLuint y)
+void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 {
 	auto it = AssetManager::Get().getItems().begin();
 	auto items = AssetManager::Get().getItems();

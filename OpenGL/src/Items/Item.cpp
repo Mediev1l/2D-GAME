@@ -52,3 +52,8 @@ SpeedBoots::SpeedBoots()
 {
 	Create("res/Data/Items/SpeedBoots.txt", AssetManager::Get().getSprite("SpeedBoots"));
 }
+
+BMW::BMW()
+{
+	Create("res/Data/Items/BMW.txt", AssetManager::Get().getSprite("BMW"));
+}

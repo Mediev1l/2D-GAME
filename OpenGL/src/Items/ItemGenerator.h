@@ -23,7 +23,7 @@ public:
 	void operator = (const ItemGenerator& cpy) = delete;
 
 	std::vector<Item*> getItems() { return _items; };
-	void GenerateItem(bool unique, GLuint x, GLuint y);
+	void GenerateItem(GLuint x, GLuint y, bool unique);
 
 
 

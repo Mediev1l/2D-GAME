@@ -47,4 +47,10 @@ class SpeedBoots: public Item
 public:
 	SpeedBoots();
 };
+
+class BMW : public Item
+{
+public:
+	BMW();
+};
 #endif

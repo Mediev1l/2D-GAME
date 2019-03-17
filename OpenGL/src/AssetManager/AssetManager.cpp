@@ -18,6 +18,7 @@ void AssetManager::LoadSprites()
 	load("zombie", "res/Sprites/Enemies/Zombie/zombie.png", true);
 	load("zombie2", "res/Sprites/Enemies/Zombie/zombie2.png", true);
 	load("SpeedBoots", "res/Sprites/Items/SpeedBoots.png", true);
+	load("BMW", "res/Sprites/Items/BMW.png", true);
 
 	//Map
 	load("Basement", "res/Sprites/Map/Basement/Basement.jpg", false);
@@ -41,6 +42,7 @@ void AssetManager::LoadItems()
 	};
 
 	load(new SpeedBoots());
+	load(new  BMW());
 }
 
 AssetManager::AssetManager()
