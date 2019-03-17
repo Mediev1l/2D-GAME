@@ -75,15 +75,10 @@ void GameEngine::Game_Init()
 	_characters.push_back(Enemy("skelly2",5.0, 6.0, 1.0, 0.9,9));
 	_characters.push_back(Enemy("skelly2",4.0, 5.0, 1.0, 0.9,9));
 
-	_ItemGenerator.GenerateItem(5, 7, true);
-	_ItemGenerator.GenerateItem(6, 7, false);
-	//_items.emplace_back(AssetManager::Get().getItem("SpeedBoots"));
-	//_items[0]->setX(5);
-	//_items[0]->setY(7);
+	_ItemGenerator.GenerateItem(5, 7, false);
+
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
-	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
-	//Na sztywno ustawianie na mapie ze jest tam item
 	
 	//HARDCODE
 	_characters[0].setRange(50);
@@ -244,7 +239,8 @@ void GameEngine::processInput()
 
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
-			ProcessItemPickup();
+			if(t.delay("PickUP", 1, true))
+				ProcessItemPickup();
 		}
 	}
 
@@ -392,6 +388,8 @@ void GameEngine::ProcessItemPickup()
 		_characters[0].consumeItem(_ItemGenerator.getItems()[nearestid]);
 		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
 	}
+
+	_ItemGenerator.GenerateItem(5, 6, false);
 }
 
 void GameEngine::ProcessPlayerShoot()

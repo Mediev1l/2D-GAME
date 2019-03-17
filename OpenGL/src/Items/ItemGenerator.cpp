@@ -2,7 +2,8 @@
 
 void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 {
-	auto it = AssetManager::Get().getItems().begin();
+	auto itStart = AssetManager::Get().getItems().begin();
+	auto itEnd = AssetManager::Get().getItems().end();
 	auto items = AssetManager::Get().getItems();
 	std::vector<std::string>::iterator usedit;
 
@@ -10,15 +11,16 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 	
 	if (unique != true)
 	{
-		std::advance(it, rand() % items.size());
-		_items.emplace_back(AssetManager::Get().getItem(it->first));
+		std::advance(itStart, rand() % items.size());
+
+		_items.emplace_back(AssetManager::Get().getItem(itStart->first));
 
 		
-		usedit = std::find(_used.begin(), _used.end(), it->first);
-		if (usedit == _used.end())
-		{
-			_used.push_back(it->first);
-		}
+		if (itStart == itEnd) itStart = AssetManager::Get().getItems().begin();
+
+		usedit = std::find(_used.begin(), _used.end(), itStart->first);
+
+		if (usedit == _used.end()) _used.emplace_back(itStart->first);
 
 		_items[_items.size() - 1]->setX(x);
 		_items[_items.size() - 1]->setY(y);
@@ -30,14 +32,16 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 
 		while (_used.size() != items.size())
 		{
-			std::advance(it, rand() % items.size());
+			std::advance(itStart, rand() % items.size());
 
-			usedit = std::find(_used.begin(), _used.end(), it->first);
+			if(itStart == itEnd) itStart = AssetManager::Get().getItems().begin();
+
+			usedit = std::find(_used.begin(), _used.end(), itStart->first);
 
 			if (usedit == _used.end())
 			{
-				_items.emplace_back(AssetManager::Get().getItem(it->first));
-				_used.push_back(it->first);
+				_items.emplace_back(AssetManager::Get().getItem(itStart->first));
+				_used.emplace_back(itStart->first);
 				_items[_items.size() - 1]->setX(x);
 				_items[_items.size() - 1]->setY(y);
 				break;
