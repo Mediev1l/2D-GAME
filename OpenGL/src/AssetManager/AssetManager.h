@@ -36,6 +36,8 @@ public:
 	void LoadMaps();
 	void LoadItems();
 
+	std::map<std::string, Item*>& getItems() { return _mapItems; };
+
 private:
 	AssetManager();
 	~AssetManager();

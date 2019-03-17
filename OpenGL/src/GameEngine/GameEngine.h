@@ -11,6 +11,7 @@
 #include "Characters/Enemy.h"
 #include "Renderer/Camera.h"
 #include "Maps/LvlGenerator.h"
+#include "Items/ItemGenerator.h"
 
 
 //================================================================
@@ -82,7 +83,8 @@ protected:
 	std::string WindowName;
 	std::vector<Character> _characters;
 	Map* _map;
-	std::vector<Item*> _items;
+	ItemGenerator _ItemGenerator;
+	//std::vector<Item*> _items;
 	LvlGenerator _lvlgen;
 
 	//================================================================

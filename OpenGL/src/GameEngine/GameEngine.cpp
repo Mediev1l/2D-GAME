@@ -74,9 +74,12 @@ void GameEngine::Game_Init()
 	_characters.push_back(Hero("player2",5.0, 5.0, 3.0, 0.8,8));
 	_characters.push_back(Enemy("skelly2",5.0, 6.0, 1.0, 0.9,9));
 	_characters.push_back(Enemy("skelly2",4.0, 5.0, 1.0, 0.9,9));
-	_items.emplace_back(AssetManager::Get().getItem("SpeedBoots"));
-	_items[0]->setX(5);
-	_items[0]->setY(7);
+
+	_ItemGenerator.GenerateItem(5, 7, true);
+	//_items.emplace_back(AssetManager::Get().getItem("SpeedBoots"));
+	//_items[0]->setX(5);
+	//_items[0]->setY(7);
+
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
 	//ITEMS Na razie jeden na sztywno || pozniej vektor wczytanych itemow z pliku
 	//Na sztywno ustawianie na mapie ze jest tam item
@@ -132,7 +135,7 @@ void GameEngine::Game_Run()
 		//Gdy przejdziemy poziom i wejdziemy w drzwi
 		if(_gameState == State::INIT)
 			renderer->ScreenDimm();
-
+		
 		//Renderowanie ³adnie w jednej funkcji
 		renderer->Render(_characters, &_items);
 	
