@@ -76,6 +76,7 @@ void GameEngine::Game_Init()
 	_characters.push_back(Enemy("skelly2",4.0, 5.0, 1.0, 0.9,9));
 
 	_ItemGenerator.GenerateItem(5, 7, true);
+	_ItemGenerator.GenerateItem(6, 7, false);
 	//_items.emplace_back(AssetManager::Get().getItem("SpeedBoots"));
 	//_items[0]->setX(5);
 	//_items[0]->setY(7);
