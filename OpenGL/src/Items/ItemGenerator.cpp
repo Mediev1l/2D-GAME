@@ -11,19 +11,22 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 	
 	if (unique != true)
 	{
-		std::advance(itStart, rand() % items.size());
+	std::advance(itStart, rand() % items.size());
+	
+	_items.emplace_back(AssetManager::Get().getItem(itStart->first));
+	
+	
+	if (itStart == itEnd) itStart = AssetManager::Get().getItems().begin();
+	
+	usedit = std::find(_used.begin(), _used.end(), itStart->first);
+	
+	if (usedit == _used.end()) _used.emplace_back(itStart->first);
+	
+	//tutaj dodac zmiane wskaznika itema ale to pozniej >.>
+	
 
-		_items.emplace_back(AssetManager::Get().getItem(itStart->first));
-
-		
-		if (itStart == itEnd) itStart = AssetManager::Get().getItems().begin();
-
-		usedit = std::find(_used.begin(), _used.end(), itStart->first);
-
-		if (usedit == _used.end()) _used.emplace_back(itStart->first);
-
-		_items[_items.size() - 1]->setX(x);
-		_items[_items.size() - 1]->setY(y);
+	_items[_items.size() - 1]->setX(x);
+	_items[_items.size() - 1]->setY(y);
 
 
 	}
@@ -33,11 +36,11 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 		while (_used.size() != items.size())
 		{
 			std::advance(itStart, rand() % items.size());
-
+		
 			if(itStart == itEnd) itStart = AssetManager::Get().getItems().begin();
-
+		
 			usedit = std::find(_used.begin(), _used.end(), itStart->first);
-
+		
 			if (usedit == _used.end())
 			{
 				_items.emplace_back(AssetManager::Get().getItem(itStart->first));
@@ -46,10 +49,12 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 				_items[_items.size() - 1]->setY(y);
 				break;
 			}
-
-
-
+		
+		
+		
 		}
+
+
 	}
 	
 	

@@ -75,8 +75,6 @@ void GameEngine::Game_Init()
 	_characters.push_back(Enemy("skelly2",5.0, 6.0, 1.0, 0.9,9));
 	_characters.push_back(Enemy("skelly2",4.0, 5.0, 1.0, 0.9,9));
 
-	_ItemGenerator.GenerateItem(5, 7, false);
-
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
 	
@@ -389,7 +387,7 @@ void GameEngine::ProcessItemPickup()
 		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
 	}
 
-	_ItemGenerator.GenerateItem(5, 6, false);
+
 }
 
 void GameEngine::ProcessPlayerShoot()
@@ -644,7 +642,12 @@ void GameEngine::Doors()
 		_map->getTile(id[i], id[i + 1]).setSolid(false);
 	}
 
-	if (lvlWin) renderer->OpenDoors();
+	if (lvlWin)
+	{
+		renderer->OpenDoors();
+		_ItemGenerator.GenerateItem(5, 6, true);
+	}
+
 	else renderer->CloseDoors();
 }
 
