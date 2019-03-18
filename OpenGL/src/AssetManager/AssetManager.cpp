@@ -10,10 +10,11 @@ void AssetManager::LoadSprites()
 	};
 
 	//Dynamics
-	load("player", "res/Sprites/Player/player.png",true);
-	load("player2", "res/Sprites/Player/player2.png",true);
+	//load("player", "res/Sprites/Player/player.png",true);
+	//load("player2", "res/Sprites/Player/player2.png",true);
 	load("player3", "res/Sprites/Player/player3.png",true);
 	load("pifpaf", "res/Sprites/Tears/basic_tear.png", true);
+	load("pifpafsheet", "res/Sprites/Tears/tearsheet.png", true);
 	load("skelly", "res/Sprites/Enemies/Skelly/skelly.png", true);
 	load("skelly2", "res/Sprites/Enemies/Skelly/skeleton.png", true);
 	load("zombie", "res/Sprites/Enemies/Zombie/zombie.png", true);

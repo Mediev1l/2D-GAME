@@ -9,7 +9,7 @@ Character::Character(std::string name, double x, double y, double w, GLuint nFra
 	,_animation(nFrames,1.0/nFrames)
 {
 	_texture = AssetManager::Get().getSprite(name);
-	_PifPafTexture = AssetManager::Get().getSprite("pifpaf");
+	_PifPafTexture = AssetManager::Get().getSprite("pifpafsheet");
 };
 
 Vec2i Character::getFrameIndex()

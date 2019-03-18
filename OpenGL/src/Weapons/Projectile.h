@@ -6,6 +6,7 @@
 
 #include "Basics/Coords.h"
 #include "Renderer/Texture.h"
+#include "Basics/Animation.h"
 
 class Projectile : public Coords
 {
@@ -25,12 +26,15 @@ protected:
 	Dir side;
 	double origin = 0.2;
 	Vec2d objVel;
-	
+	Animation _animation;
 public:
 	double Velocity;
 
 	Projectile();
-	Projectile(double size, double x, double y, double vel, double  distance, Projectile::Dir side, bool exist, Vec2d& objVel);
+	Projectile(double size, double x, double y, double vel, double  distance, Projectile::Dir side, bool exist, Vec2d& objVel,GLuint nFrames);
+
+
+	void UpdateAnimation(double dt) { _animation.UpdateAnimation({ Animation::DOWN,Animation::NONE },dt); }
 
 	void setSize(double siz) { size = siz; };
 	void setElapsedDistance(double elapsedDis) { elapsedDistance = elapsedDis; };
@@ -43,8 +47,8 @@ public:
 	double getX()const { return _position._x; };
 	double getY()const { return _position._y; };
 	double getOrigin()const { return origin; };
+	Vec2i getFrame() { return _animation.getAnimationIndex(); };
 	Projectile::Dir getSide() { return side; };
-
 	Vec2d& getObjVel() { return objVel; };
 
 

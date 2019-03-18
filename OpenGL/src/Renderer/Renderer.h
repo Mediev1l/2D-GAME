@@ -26,6 +26,7 @@ private:
 
 	void setTextureCoords(Tile& tile);
 	void setTextureCoords(Character& obj);
+	void setTextureCoords(Projectile& proj);
 	void draw(double x, double y, GLuint IdTexture, bool map, double scale=0.0 );
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);

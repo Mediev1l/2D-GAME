@@ -92,6 +92,7 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 			{
 				if (characters[0].getOnepiFpaF(i).getExistance() == true)
 				{
+					setTextureCoords(characters[0].getOnepiFpaF(i));
 					draw(characters[0].getOnepiFpaF(i)._position.getX(), characters[0].getOnepiFpaF(i)._position.getY(), characters[0].getPifPafTexture(),false,0.05);
 				}
 			}
@@ -152,6 +153,15 @@ void Renderer::setTextureCoords(Character & obj)
 
 	//std::cout << "OffsetX: " << offsetx << '\n';
 	//std::cout << "OffsetY: " << offsety << '\n';
+}
+
+void Renderer::setTextureCoords(Projectile & proj)
+{
+	Vec2i pos = proj.getFrame();
+	float offsetx = (float)pos._x*0.1f;
+	float offsety = (float)pos._y*0.25f;
+	_SpriteSheetShader.setFloat("offsetX", offsetx);
+	_SpriteSheetShader.setFloat("offsetY", offsety);
 }
 
 void Renderer::draw(double x, double y,GLuint IdTexture, bool map, double scale)

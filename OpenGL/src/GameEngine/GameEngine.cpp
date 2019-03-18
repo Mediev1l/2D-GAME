@@ -61,7 +61,7 @@ void GameEngine::Game_Init()
 
 		renderer = new Renderer(camera);
 		_map = renderer->getMap();
-		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
+		//_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
 	catch (std::runtime_error &e)
 	{
@@ -432,22 +432,22 @@ void GameEngine::ProcessPlayerShoot()
 		{
 		case UP:
 		{
-			temp.emplace_back(1, px, py - 0.1, 2, 0, Projectile::Dir::UP, true, _characters[0].getCurrVelocity());
+			temp.emplace_back(1, px, py - 0.1, 2, 0, Projectile::Dir::UP, true, _characters[0].getCurrVelocity(),6);
 			break;
 		}
 		case DOWN:
 		{
-			temp.emplace_back(1, px, py + 0.1, 2, 0, Projectile::Dir::DOWN, true, _characters[0].getCurrVelocity());
+			temp.emplace_back(1, px, py + 0.1, 2, 0, Projectile::Dir::DOWN, true, _characters[0].getCurrVelocity(),6);
 			break;
 		}
 		case LEFT:
 		{
-			temp.emplace_back(1, px - 0.1, py-0.1, 2, 0, Projectile::Dir::LEFT, true, _characters[0].getCurrVelocity());
+			temp.emplace_back(1, px - 0.1, py-0.1, 2, 0, Projectile::Dir::LEFT, true, _characters[0].getCurrVelocity(),6);
 			break;
 		}
 		case RIGHT:
 		{
-			temp.emplace_back(1, px + 0.1, py-0.1, 2, 0, Projectile::Dir::RIGHT, true, _characters[0].getCurrVelocity());
+			temp.emplace_back(1, px + 0.1, py-0.1, 2, 0, Projectile::Dir::RIGHT, true, _characters[0].getCurrVelocity(),6);
 			break;
 		}
 
@@ -477,27 +477,27 @@ void GameEngine::Update()
 		pvel._x = abs(pvel._x);
 		pvel._y = abs(pvel._y);
 
-		for (GLuint i = 0; i < 2; ++i)
+		for (GLuint j = 0; j < 2; ++j)
 		{
-			if (p[i] == Direction::NONE) continue;
+			if (p[j] == Direction::NONE) continue;
 
-			if (pdir == LEFT && p[i] == LEFT) tempV += pvel._x;
-			else if (pdir == LEFT && p[i] == RIGHT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+			if (pdir == LEFT && p[j] == LEFT) tempV += pvel._x;
+			else if (pdir == LEFT && p[j] == RIGHT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
 
-			else if (pdir == RIGHT && p[i] == LEFT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
-			else if (pdir == RIGHT && p[i] == RIGHT) tempV += pvel._x;
+			else if (pdir == RIGHT && p[j] == LEFT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+			else if (pdir == RIGHT && p[j] == RIGHT) tempV += pvel._x;
 
-			else if (pdir == UP && p[i] == UP) tempV += pvel._y;
-			else if (pdir == UP && p[i] == DOWN) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+			else if (pdir == UP && p[j] == UP) tempV += pvel._y;
+			else if (pdir == UP && p[j] == DOWN) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
 
-			else if (pdir == DOWN && p[i] == UP) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
-			else if (pdir == DOWN && p[i] == DOWN) tempV += pvel._y;
+			else if (pdir == DOWN && p[j] == UP) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+			else if (pdir == DOWN && p[j] == DOWN) tempV += pvel._y;
 		}
 
 		
 		if (temp[i].getElapdedDistance() < _characters[0].getRange() / 10)
 		{
-
+			temp[i].UpdateAnimation(deltaTime);
 			switch (pdir)
 			{
 				case UP:
