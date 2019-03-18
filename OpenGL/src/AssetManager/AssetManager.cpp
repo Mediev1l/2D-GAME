@@ -13,6 +13,7 @@ void AssetManager::LoadSprites()
 	//load("player", "res/Sprites/Player/player.png",true);
 	//load("player2", "res/Sprites/Player/player2.png",true);
 	load("player3", "res/Sprites/Player/player3.png",true);
+	load("obj", "res/Sprites/Objects/objectsheet.png",true);
 	load("pifpaf", "res/Sprites/Tears/basic_tear.png", true);
 	load("pifpafsheet", "res/Sprites/Tears/tearsheet.png", true);
 	load("skelly", "res/Sprites/Enemies/Skelly/skelly.png", true);

@@ -22,22 +22,31 @@ public:
 
 	void ScreenDimm();
 	void ScreenBright();
+
+	bool isDark() { return GammaRatio.x <= 0.0; };
+	bool isBright() { return GammaRatio.x >= 1.0; };
 private:
 
 	void setTextureCoords(Tile& tile);
 	void setTextureCoords(Character& obj);
 	void setTextureCoords(Projectile& proj);
-	void draw(double x, double y, GLuint IdTexture, bool map, double scale=0.0 );
+	void setTextureCoords(GLuint x);
+	void draw(double x, double y, GLuint IdTexture, double scale=0.0 );
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item*>* items);
+	
+
+	//Doors Stuff
 	enum Object
 	{
-		DoorOpened = 0,
-		DoorClosed = 1
+		DoorOpened = 1,
+		DoorClosed = 0
 	};
-
+	Texture* doors;
 	void DrawDoors(Object& obj);
+
+
 	//Drawing values
 	double ScaleFactorX;
 	double ScaleFactorY;
@@ -62,7 +71,6 @@ private:
 	//Basic objects on EveryMap
 	//Vektor na drzwi,tabliczki etc
 	Object DoorState;
-	std::vector<Texture> _objects;
 
 	//Vbo vao ebo itp
 	unsigned int VBO[2], VAO[2], EBO[2];
@@ -76,14 +84,23 @@ private:
 		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
 	};
 
-	//Tymczasowo dla reszty ferajny
-	float vertices2[20] = {
-		// positions          // textures coords
-		1.0f,  1.0f, 0.0f,   1.0f, 1.0f,  // top right
-		1.0f, -1.0f, 0.0f,   1.0f, 0.0f,  // bottom right
-		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // bottom left
-		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
+	//================================================================
+	//= Facey
+	//================================================================
+	unsigned int indices[6] = {  // note that we start from 0!
+	0, 1, 3,  // first Triangle
+	1, 2, 3   // second Triangle
 	};
+
+
+	////Tymczasowo dla reszty ferajny
+	//float vertices2[20] = {
+	//	// positions          // textures coords
+	//	1.0f,  1.0f, 0.0f,   1.0f, 1.0f,  // top right
+	//	1.0f, -1.0f, 0.0f,   1.0f, 0.0f,  // bottom right
+	//	-1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // bottom left
+	//	-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
+	//};
 
 
 
@@ -96,12 +113,6 @@ private:
 	//	-0.5f,  0.5f, 0.0f,  
 	//};
 
-	//================================================================
-	//= Facey
-	//================================================================
-	unsigned int indices[6] = {  // note that we start from 0!
-	0, 1, 3,  // first Triangle
-	1, 2, 3   // second Triangle
-	};
+	
 };
 #endif

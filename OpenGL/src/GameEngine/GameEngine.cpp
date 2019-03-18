@@ -61,7 +61,7 @@ void GameEngine::Game_Init()
 
 		renderer = new Renderer(camera);
 		_map = renderer->getMap();
-		//_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
+		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
 	catch (std::runtime_error &e)
 	{
@@ -72,8 +72,8 @@ void GameEngine::Game_Init()
 
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero("player3",5.0, 5.0, 3.0, 0.8,9));
-	//_characters.push_back(Enemy("skelly2",5.0, 6.0, 1.0, 0.9,9));
-	//_characters.push_back(Enemy("skelly2",4.0, 5.0, 1.0, 0.9,9));
+	_characters.push_back(Enemy("skelly2",5.0, 1.0, 1.0, 0.9,9));
+	_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, 0.9,9));
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
@@ -111,15 +111,15 @@ void GameEngine::Game_Run()
 		//Updating Label name
 		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
 		glfwSetWindowTitle(window, a.c_str());
-
-		// input
-		// -----
-		processInput();
+		
 
 
 		//Game Update
 		if (_gameState != State::MENU && _gameState != State::INIT)
 		{
+			// input tylko jak gracz ma cos robic
+			// -----
+			processInput();
 			t.refresh(true);
 			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
 			Update();
@@ -127,8 +127,26 @@ void GameEngine::Game_Run()
 		}
 
 		//Gdy przejdziemy poziom i wejdziemy w drzwi
-		if(_gameState == State::INIT)
-			renderer->ScreenDimm();
+		if (_gameState == State::INIT)
+		{
+			if(lvlWin==true && !renderer->isDark()) renderer->ScreenDimm();
+			else
+			{
+				if (!renderer->isBright() && lvlWin)
+				{
+					_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
+					//Tutaj funkcja do generowanie enemisuf
+					_characters.push_back(Enemy("skelly2", 5.0, 1.0, 1.0, 0.9, 9));
+					_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, 0.9, 9));
+					_characters[0]._position._x = _map->getWidth() / 2;
+					_characters[0]._position._y = _map->getHeight() / 2;
+					camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
+					lvlWin = false;
+				}
+				if(!renderer->isBright())renderer->ScreenBright();
+				if(renderer->isBright())_gameState = State::GAME;
+			}
+		}
 		
 		//Renderowanie ³adnie w jednej funkcji
 		renderer->Render(_characters, &_ItemGenerator.getItems());
@@ -215,13 +233,13 @@ void GameEngine::processInput()
 		{
 			//_characters[0].setSide(Animation::LEFT);
 			//ProcessPlayerShoot();
-			dirShoot.second = LEFT;
+			dirShoot.first = LEFT;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::RIGHT);
 			//ProcessPlayerShoot();
-			dirShoot.second = RIGHT;
+			dirShoot.first = RIGHT;
 		}
 
 		//MovementProcessor
@@ -252,7 +270,7 @@ void GameEngine::processInput()
 			if(t.delay("PickUP", 1, true))
 				ProcessItemPickup();
 		}
-		_characters[0].setSide((Animation::Direction)dirShoot.second);
+		_characters[0].setSide((Animation::Direction)dirShoot.first);
 		ProcessPlayerMove(deltaTime,dirMove);
 		ProcessPlayerShoot();
 	}
@@ -322,6 +340,10 @@ void GameEngine::ProcessPlayerMove(double deltaTime, std::pair<Direction, Direct
 			_characters[0].setCurrVelocity(0,  pv);
 			break;
 		}
+		case NONE:
+		{
+			_characters[0].setCurrVelocityY(0);
+		}
 	}
 
 	switch (dir.second)
@@ -337,6 +359,10 @@ void GameEngine::ProcessPlayerMove(double deltaTime, std::pair<Direction, Direct
 			newX += deltaTime * pv;
 			_characters[0].setCurrVelocity(pv, 0);
 			break;
+		}
+		case NONE:
+		{
+			_characters[0].setCurrVelocityX(0);
 		}
 	}
 
@@ -633,7 +659,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					}
 				}
 				_characters[i].setX(newX);
-				_characters[i].updateAnimation({ Animation::Direction::NONE,(Animation::Direction)dir[0]}, deltaTime);
+				if (HowMuchInY < HowMuchInX )_characters[i].updateAnimation({ Animation::Direction::NONE,(Animation::Direction)dir[0]}, deltaTime);
 			}
 			if (move2&&newY!=my)
 			{
@@ -648,10 +674,10 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					{
 						if (!CheckColissions(_characters[i], i, mx, my+value)) newY = my+value;
 					}
-					_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
+					//_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
 				}
 				_characters[i].setY(newY);
-				//_characters[i].updateAnimation((Animation::Dir)dir[1], deltaTime);
+				if(HowMuchInY>HowMuchInX)_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
 			}
 	}
 	

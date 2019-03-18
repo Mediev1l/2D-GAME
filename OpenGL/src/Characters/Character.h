@@ -64,6 +64,8 @@ public:
 	{
 		_curVelocity = vel;
 	}
+	void setCurrVelocityX(double x) { _curVelocity._x = x; }
+	void setCurrVelocityY(double x) { _curVelocity._y = x; }
 	void setCurrVelocity(double x, double y)
 	{
 		_curVelocity._x = x;

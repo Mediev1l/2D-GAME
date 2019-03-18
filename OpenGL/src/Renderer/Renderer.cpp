@@ -5,7 +5,6 @@
 Renderer::Renderer(const Camera& camera)
 	:
 	 _SpriteSheetShader("src/Shaders/vs.vs", "src/Shaders/fs.fs")
-	, _objects{ {"res/Sprites/Objects/opened.png",true} ,{"res/Sprites/Objects/closed.png",true} }
 	,cam(camera)
 {
 	//Ustawienie gammy na full
@@ -52,6 +51,7 @@ Renderer::Renderer(const Camera& camera)
 	AssetManager::Get().LoadMaps();
 	AssetManager::Get().LoadItems();
 	_maps = AssetManager::Get().getMap("Basement");
+	doors = AssetManager::Get().getSprite("obj");
 }
 
 
@@ -70,12 +70,19 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*ite
 
 void Renderer::RenderMap()
 {
+	GLuint x = (GLuint)ceil(_maps->getWidth() / 2.0) - 1;
+	GLuint y = (GLuint)ceil(_maps->getHeight() / 2.0) - 1;
+	GLuint id[] = { x,0,0,y,_maps->getWidth() - 1,y };
+
 	for (GLuint y = 0; y < (GLuint)_maps->getHeight(); y++)
 	{
 		for (GLuint x = 0; x < (GLuint)_maps->getWidth(); x++)
 		{
-			setTextureCoords(_maps->getTile(x,y));
-			draw(_maps->getTilePos(x, y)._x, _maps->getTilePos(x, y)._y, _maps->getTexture()->getID(),true);
+			if ( (x != id[0] || y != id[1]) && (x != id[2] || y != id[3]) && (x != id[4]  || y != id[5]) )
+			{
+				setTextureCoords(_maps->getTile(x, y));
+				draw(_maps->getTilePos(x, y)._x, _maps->getTilePos(x, y)._y, _maps->getTexture()->getID());
+			}
 		}
 	}
 	DrawDoors(DoorState);
@@ -93,15 +100,15 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 				if (characters[0].getOnepiFpaF(i).getExistance() == true)
 				{
 					setTextureCoords(characters[0].getOnepiFpaF(i));
-					draw(characters[0].getOnepiFpaF(i)._position.getX(), characters[0].getOnepiFpaF(i)._position.getY(), characters[0].getPifPafTexture(),false,0.05);
+					draw(characters[0].getOnepiFpaF(i)._position.getX(), characters[0].getOnepiFpaF(i)._position.getY(), characters[0].getPifPafTexture(),0.05);
 				}
 			}
 			setTextureCoords(characters[i]);
-			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),true);
+			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture());
 			break;
 		}
 		setTextureCoords(characters[i]);
-		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),true);
+		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture());
 	}
 }
 
@@ -114,7 +121,7 @@ void Renderer::RenderItems( std::vector<Item*>* items)
 	{
 		if ((*items)[i]->getOnMap() == true)
 		{
-			draw((*items)[i]->getX(), (*items)[i]->getY(), (*items)[i]->getTexture(),false);
+			draw((*items)[i]->getX(), (*items)[i]->getY(), (*items)[i]->getTexture());
 		}
 	}
 }
@@ -164,7 +171,15 @@ void Renderer::setTextureCoords(Projectile & proj)
 	_SpriteSheetShader.setFloat("offsetY", offsety);
 }
 
-void Renderer::draw(double x, double y,GLuint IdTexture, bool map, double scale)
+void Renderer::setTextureCoords(GLuint x)
+{
+	float offsetx = x*0.1f;
+	float offsety = 0.0f;
+	_SpriteSheetShader.setFloat("offsetX", offsetx);
+	_SpriteSheetShader.setFloat("offsetY", offsety);
+}
+
+void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 {
 
 	//Eksperymentalnie udowodniono ze dziala xD
@@ -183,7 +198,7 @@ void Renderer::draw(double x, double y,GLuint IdTexture, bool map, double scale)
 
 	_SpriteSheetShader.use();
 	_SpriteSheetShader.setMat4("model", model);
-	glBindVertexArray(VAO[0]);
+	glBindVertexArray(*VAO);
 	
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -222,11 +237,13 @@ void Renderer::DrawDoors(Object & obj)
 		
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _objects[obj].getID());
+		glBindTexture(GL_TEXTURE_2D, doors->getID());
+
+		setTextureCoords((GLuint)DoorState);
 
 		_SpriteSheetShader.use();
 		_SpriteSheetShader.setMat4("model", model);
-		glBindVertexArray(VAO[0]);
+		glBindVertexArray(*VAO);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
