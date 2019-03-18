@@ -71,9 +71,9 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero("player2",5.0, 5.0, 3.0, 0.8,8));
-	_characters.push_back(Enemy("skelly2",5.0, 6.0, 1.0, 0.9,9));
-	_characters.push_back(Enemy("skelly2",4.0, 5.0, 1.0, 0.9,9));
+	_characters.push_back(Hero("player3",5.0, 5.0, 3.0, 0.8,9));
+	//_characters.push_back(Enemy("skelly2",5.0, 6.0, 1.0, 0.9,9));
+	//_characters.push_back(Enemy("skelly2",4.0, 5.0, 1.0, 0.9,9));
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
@@ -152,6 +152,8 @@ void GameEngine::processInput()
 	{
 		std::cout << "PlayerX: " << _characters[0].getPos().getX() << '\n';
 		std::cout << "PlayerY: " << _characters[0].getPos().getY() << '\n';
+		//std::cout << "dirx: " << _characters[0].getPos().getY() << '\n';
+		//std::cout << "diry: " << _characters[0].getPos().getY() << '\n';
 		//std::cout << "PlayerVelocity: " << _characters[0].getVelocity() << '\n';
 		std::cout << "VectorX: " << camera.getTranslate()._x << '\n';
 		std::cout << "VectorY: " << camera.getTranslate()._y << '\n';
@@ -186,6 +188,8 @@ void GameEngine::processInput()
 	if (_gameState != State::MENU && _gameState != State::INIT)
 	{
 
+		std::pair<Direction, Direction> dirMove{NONE,NONE};
+		std::pair<Direction, Direction> dirShoot{NONE,NONE};
 		//PickupItems
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
@@ -197,42 +201,50 @@ void GameEngine::processInput()
 
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
-			_characters[0].setSide(Animation::UP);
-			ProcessPlayerShoot();
+			//_characters[0].setSide(Animation::UP);
+			//ProcessPlayerShoot();
+			dirShoot.first = UP;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
-			_characters[0].setSide(Animation::DOWN);
-			ProcessPlayerShoot();
+			//_characters[0].setSide(Animation::DOWN);
+			//ProcessPlayerShoot();
+			dirShoot.first = DOWN;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
-			_characters[0].setSide(Animation::LEFT);
-			ProcessPlayerShoot();
+			//_characters[0].setSide(Animation::LEFT);
+			//ProcessPlayerShoot();
+			dirShoot.second = LEFT;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
-			_characters[0].setSide(Animation::RIGHT);
-			ProcessPlayerShoot();
+			//_characters[0].setSide(Animation::RIGHT);
+			//ProcessPlayerShoot();
+			dirShoot.second = RIGHT;
 		}
 
 		//MovementProcessor
 		double deltaTime = t.getDelta();
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
-			ProcessPlayerMove(deltaTime, Direction::UP);
+			//ProcessPlayerMove(deltaTime, Direction::UP);
+			dirMove.first = UP;
 		}
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			ProcessPlayerMove(deltaTime, Direction::DOWN);
+			//ProcessPlayerMove(deltaTime, Direction::DOWN);
+			dirMove.first = DOWN;
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		{
-			ProcessPlayerMove(deltaTime, Direction::LEFT);
+			//ProcessPlayerMove(deltaTime, Direction::LEFT);
+			dirMove.second = LEFT;
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		{
-			ProcessPlayerMove(deltaTime, Direction::RIGHT);
+			//ProcessPlayerMove(deltaTime, Direction::RIGHT);
+			dirMove.second = RIGHT;
 		}
 
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
@@ -240,6 +252,9 @@ void GameEngine::processInput()
 			if(t.delay("PickUP", 1, true))
 				ProcessItemPickup();
 		}
+		_characters[0].setSide((Animation::Direction)dirShoot.second);
+		ProcessPlayerMove(deltaTime,dirMove);
+		ProcessPlayerShoot();
 	}
 
 }
@@ -281,7 +296,7 @@ void GameEngine::scroll_callback(double xoffset, double yoffset)
 	//camera.ProcessMouseScroll(yoffset);
 }
 
-void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
+void GameEngine::ProcessPlayerMove(double deltaTime, std::pair<Direction, Direction> dir)
 {
 	//Zmienne upraszczaj¹ce kod
 	double px = _characters[0]._position._x;
@@ -293,7 +308,7 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 	//Ustaw flage na 0
 	_canPickup = false;
 
-	switch (dir)
+	switch (dir.first)
 	{
 		case UP:
 		{
@@ -307,16 +322,20 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 			_characters[0].setCurrVelocity(0,  pv);
 			break;
 		}
+	}
+
+	switch (dir.second)
+	{
 		case LEFT:
 		{
 			newX -= deltaTime * pv;
-			_characters[0].setCurrVelocity( -pv,0);
+			_characters[0].setCurrVelocity(-pv, 0);
 			break;
 		}
 		case RIGHT:
 		{
 			newX += deltaTime * pv;
-			_characters[0].setCurrVelocity( pv,0);
+			_characters[0].setCurrVelocity(pv, 0);
 			break;
 		}
 	}
@@ -325,13 +344,20 @@ void GameEngine::ProcessPlayerMove(double deltaTime, Direction dir)
 	if (newY < 0)newY = 0;
 
 	//CheckColissions(_characters[0], 0, newX, newY);
-
-	_characters[0].updateAnimation((Animation::Dir)dir,deltaTime);
+	_characters[0].updateAnimation({ Animation::Direction(dir.first),Animation::Direction(dir.second) }, deltaTime);
 
 	if (!CheckColissions(_characters[0], 0, newX, newY))
 	{
 		_characters[0].setX(newX);
 		_characters[0].setY(newY);
+	}
+	else if (!CheckColissions(_characters[0], 0, px, newY))
+	{
+		_characters[0].setY(newY);
+	}
+	else if (!CheckColissions(_characters[0], 0, newX,py))
+	{
+		_characters[0].setX(newX);
 	}
 
 	//Czy pozycja gracza == pozycja drzwi
@@ -395,7 +421,7 @@ void GameEngine::ProcessPlayerShoot()
 	double px = _characters[0]._position._x;
 	double py = _characters[0]._position._y;
 	
-	Animation::Dir  pdir = _characters[0].getSide();
+	Animation::Direction  pdir = _characters[0].getSide();
 	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
 
 
@@ -607,7 +633,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					}
 				}
 				_characters[i].setX(newX);
-				_characters[i].updateAnimation((Animation::Dir)dir[0], deltaTime);
+				_characters[i].updateAnimation({ Animation::Direction::NONE,(Animation::Direction)dir[0]}, deltaTime);
 			}
 			if (move2&&newY!=my)
 			{
@@ -622,7 +648,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					{
 						if (!CheckColissions(_characters[i], i, mx, my+value)) newY = my+value;
 					}
-					//_characters[i].updateAnimation((Animation::Dir)dir[1], deltaTime);
+					_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
 				}
 				_characters[i].setY(newY);
 				//_characters[i].updateAnimation((Animation::Dir)dir[1], deltaTime);

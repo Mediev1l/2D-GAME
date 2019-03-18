@@ -48,7 +48,6 @@ private:
 	
 
 	//Main renderShader
-	Shader _mainShader;
 	Shader _SpriteSheetShader;
 
 	//Current and next map

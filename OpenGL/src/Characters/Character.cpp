@@ -27,7 +27,7 @@ void Character::consumeItem(const Item * item)
 	m_shield += item->getShield();
 }
 
-void Character::updateAnimation(Animation::Dir dir, double deltaTime)
+void Character::updateAnimation(std::pair<Animation::Direction, Animation::Direction> dir, double deltaTime)
 {
 	_animation.UpdateAnimation(dir, deltaTime);
 }

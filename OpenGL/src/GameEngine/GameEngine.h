@@ -92,7 +92,7 @@ protected:
 	//================================================================
 
 
-	void ProcessPlayerMove(double deltaTime,Direction dir);
+	void ProcessPlayerMove(double deltaTime,std::pair<Direction,Direction> dir);
 	void ProcessItemPickup();
 	void ProcessPlayerShoot();
 	void Update();

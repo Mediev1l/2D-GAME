@@ -26,9 +26,9 @@ public:
 //= Gettery
 //================================================================
 	double getVelocity() { return m_speed; };
-	Animation::Dir getSide() { return side; };
+	Animation::Direction getSide() { return side; };
 	GLuint getPifPafSize() const { return (GLuint)_piFpaF.size(); };
-	void setSide(Animation::Dir sid) { side = sid; };
+	void setSide(Animation::Direction sid) { side = sid; };
 	std::vector<Projectile>& getpiFpaF() { return _piFpaF; };
 	Projectile& getOnepiFpaF (GLuint index) { return _piFpaF[index]; };
 	GLuint getPifPafTexture() { return _PifPafTexture->getID(); };
@@ -46,7 +46,7 @@ public:
 		m_health -= 20;
 		return !(m_health > 0);
 	};
-	void updateAnimation(Animation::Dir dir, double deltaTime);
+	void updateAnimation(std::pair<Animation::Direction,Animation::Direction> dir, double deltaTime);
 //================================================================
 // Settery
 //================================================================
@@ -85,7 +85,7 @@ protected:
 	//Weapons
 	std::vector<Projectile> _piFpaF;
 	//W ktora strone jest zwrocony
-	Animation::Dir side;
+	Animation::Direction side;
 	Animation _animation;
 	//Do akceleracji strza³ów
 	Vec2d _curVelocity;

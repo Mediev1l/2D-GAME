@@ -8,13 +8,13 @@ class Character;
 class Animation
 {
 public:
-	enum Dir
+	enum Direction
 	{
 		NONE = -1,
 		DOWN = 0,
 		UP = 1,
 		LEFT = 2,
-		RIGHT = 3
+		RIGHT = 3,
 	};
 //================================================================
 //= Konstruktory
@@ -25,13 +25,13 @@ public:
 //= Interakcja
 //================================================================
 	Vec2i getAnimationIndex();
-	void UpdateAnimation(Dir x, double deltaTime);
+	void UpdateAnimation(std::pair<Direction,Direction> dir, double deltaTime);
 private:
 	double _dt;
 	double _elapsedTime;
 	GLuint _nFrames;
 	GLuint _currentFrame;
-	Dir _currentDirection;
+	std::pair<Direction,Direction> _currentDirection;
 };
 
 #endif
