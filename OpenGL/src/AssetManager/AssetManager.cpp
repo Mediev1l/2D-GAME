@@ -25,6 +25,7 @@ void AssetManager::LoadSprites()
 
 	//Map
 	load("Basement", "res/Sprites/Map/Basement/Basement.jpg", false);
+	load("Basement2", "res/Sprites/Map/Basement/basementNew.png", true);
 }
 
 void AssetManager::LoadMaps()

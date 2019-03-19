@@ -59,5 +59,5 @@ void Map::LoadLevel(std::vector<std::pair<int, bool>> lvl)
 
 Map_Basement::Map_Basement()
 {
-	Create("Basement", "res/Data/Map/Basement.txt", AssetManager::Get().getSprite("Basement"));
+	Create("Basement", "res/Data/Map/Basement.txt", AssetManager::Get().getSprite("Basement2"));
 }

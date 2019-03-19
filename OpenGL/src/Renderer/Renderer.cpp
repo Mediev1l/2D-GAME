@@ -70,6 +70,7 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*ite
 
 void Renderer::RenderMap()
 {
+	srand(0);
 	GLuint x = (GLuint)ceil(_maps->getWidth() / 2.0) - 1;
 	GLuint y = (GLuint)ceil(_maps->getHeight() / 2.0) - 1;
 	GLuint id[] = { x,0,0,y,_maps->getWidth() - 1,y };
@@ -146,8 +147,11 @@ void Renderer::setTextureCoords(Tile & tile)
 {
 	GLuint nr = tile.getTextureNumber();
 	float offsetx = (float)nr*0.1f;
+	float offsety = GLuint(nr / 10)*0.25f;
+	// Just for fun
+	if (tile.getTextureNumber() == 8) offsety = 0.25f*(rand() % 4);
 	_SpriteSheetShader.setFloat("offsetX", offsetx);
-	_SpriteSheetShader.setFloat("offsetY", 0);
+	_SpriteSheetShader.setFloat("offsetY", offsety);
 }
 
 void Renderer::setTextureCoords(Character & obj)

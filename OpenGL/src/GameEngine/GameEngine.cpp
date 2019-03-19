@@ -144,6 +144,7 @@ void GameEngine::Game_Run()
 					_characters[0]._position._y = _map->getHeight() / 2;
 					camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
 					lvlWin = false;
+					renderer->CloseDoors();
 				}
 				if(!renderer->isBright())renderer->ScreenBright();
 				if(renderer->isBright())_gameState = State::GAME;
