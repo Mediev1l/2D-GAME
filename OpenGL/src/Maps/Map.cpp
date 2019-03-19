@@ -36,7 +36,7 @@ void Map::Create(std::string name, std::string lvldatapath, Texture* text)
 		{
 			TileIds >> textureNumber;
 			TileIds >> solid;
-			_Tiles.emplace_back(solid == 0 ? false : true, x, y, textureNumber, 1.0);
+			_Tiles.emplace_back(solid == 0 ? false : true, x, y, textureNumber,Vec2d(1.0,1.0));
 		}
 
 	//Initialize Texture

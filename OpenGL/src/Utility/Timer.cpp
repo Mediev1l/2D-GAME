@@ -38,7 +38,7 @@ bool Timer::delay(std::string name, size_t secs, bool gametime)
 	{
 		if (timeCounter[name].first <= 0)
 		{
-			timeCounter[name].first = secs ;
+			timeCounter[name].first = (float)secs ;
 			return true;
 		}
 	}
@@ -76,7 +76,7 @@ void Timer::refresh(bool ingame)
 	for (it = timeCounter.begin(); it != timeCounter.end(); it++)
 	{
 		if(it->second.second == ingame)
-			if (it->second.first > 0) it->second.first -= delta ;
+			if (it->second.first > 0) it->second.first -= (float)delta ;
 
 	}
 	

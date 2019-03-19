@@ -208,6 +208,7 @@
     <Image Include="res\Sprites\Player\issac.png" />
     <Image Include="res\Sprites\Player\player3.png" />
     <Image Include="res\Sprites\Tears\basic_tear.png" />
+    <Image Include="res\Sprites\Tears\tearsheet.png" />
     <Image Include="res\Sprites\wooden.jpg" />
   </ItemGroup>
   <ItemGroup>

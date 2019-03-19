@@ -34,13 +34,13 @@ void Camera::initCamera(const Vec2d& pos, GLuint wscreen, GLuint hscreen)
 	else _translateVector._y = 0;
 }
 
-void Camera::UpdateCamera(const Vec2d & pos, double center)
+void Camera::UpdateCamera(const Vec2d & pos, Vec2d center)
 {
-	double tmpx = -2 * _scaleFactor * (pos._x+center - Fov._x / 2.0);
-	double tmpy = 2 * _scaleFactor * (pos._y+center - Fov._y / 2.0);
+	double tmpx = -2 * _scaleFactor * (pos._x+center._x - Fov._x / 2.0);
+	double tmpy = 2 * _scaleFactor * (pos._y+center._y - Fov._y / 2.0);
 	
-	bool right = pos._x+center < (double)_w - (Fov._x / 2.0);
-	bool bottom = pos._y+center < (double)_h - (Fov._y / 2.0);
+	bool right = pos._x+center._x < (double)_w - (Fov._x / 2.0);
+	bool bottom = pos._y+center._y < (double)_h - (Fov._y / 2.0);
 
 	if (tmpx < 0 && right)_translateVector._x = tmpx;
 	else if (!right) _translateVector._x = -2 * _scaleFactor * (((double)_w - (Fov._x / 2.0)) - Fov._x / 2.0);

@@ -19,8 +19,8 @@ public:
 		Player = 5
 	};
 	Tile() = delete;
-	Tile(bool solid, GLuint x, GLuint y, GLuint texture, double origin);
-	Tile(bool solid, Vec2d pos, GLuint texture, double origin);
+	Tile(bool solid, GLuint x, GLuint y, GLuint texture, Vec2d OriSize);
+	Tile(bool solid, Vec2d pos, GLuint texture, Vec2d OriSize);
 	~Tile();
 
 	//================================================================

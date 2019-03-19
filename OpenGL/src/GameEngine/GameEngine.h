@@ -1,4 +1,3 @@
-
 #ifndef _GameEngine_H
 #define _GameEngine_H
 
@@ -28,15 +27,6 @@ public:
 	//================================================================
 	//= GAME ENUM'S
 	//================================================================
-
-	enum Direction
-	{
-		NONE = -1,
-		DOWN = 0,
-		UP = 1,
-		LEFT = 2,
-		RIGHT = 3,
-	};
 
 	enum State
 	{
@@ -92,18 +82,18 @@ protected:
 	//================================================================
 
 
-	void ProcessPlayerMove(double deltaTime,std::pair<Direction,Direction> dir);
+	void ProcessPlayerMove(double deltaTime,std::pair<Animation::Direction, Animation::Direction> dir);
 	void ProcessItemPickup();
 	void ProcessPlayerShoot();
 	void Update();
 
 	void ProcessEnemiesMove(double deltaTime);
 	void Doors();
-	GameEngine::Direction CalculateDirection(double x, bool pionowo, double margin);
+	Animation::Direction CalculateDirection(double x, bool pionowo, double margin);
 	bool CheckColissions(Character& obj, GLuint index, double x, double y);
 	bool ShapeOverlap_DIAGS(Origin &r1, Origin &r2);
 
-	bool CheckCollisionsBullet(const Projectile& bullet, GLuint index, double x, double y);
+	bool CheckCollisionsBullet(Projectile& bullet, GLuint index, double x, double y);
 
 public:
 

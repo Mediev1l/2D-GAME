@@ -20,7 +20,7 @@ public:
 //================================================================
 //= Konstruktory
 //================================================================
-	Character(std::string name, double x, double y, double w, GLuint nFrames);
+	Character(std::string name, double x, double y, Vec2d OriSize, GLuint nFrames);
 	
 //================================================================
 //= Gettery
@@ -79,10 +79,6 @@ protected:
 	std::vector<Item*> _items;
 	//Koniec do przekminiania
 
-	//Coords
-	Texture* _texture;
-	Texture* _PifPafTexture;
-
 	Origin _ori;
 	//Weapons
 	std::vector<Projectile> _piFpaF;
@@ -91,5 +87,9 @@ protected:
 	Animation _animation;
 	//Do akceleracji strza³ów
 	Vec2d _curVelocity;
+
+	//Textury
+	Texture* _PifPafTexture;
+	Texture* _texture;
 };
 #endif

@@ -40,7 +40,7 @@ public:
 //= Operatory
 //================================================================
 	Vec2<T>& operator /= (T number);
-
+	Vec2<T> operator/(T number);
 //================================================================
 //= Sk³adowe
 //================================================================
@@ -137,5 +137,11 @@ inline Vec2<T> & Vec2<T>::operator/=(T number)
 {
 	*this->_x /= number;
 	*this->_y /= number;
-};
+}
+template<typename T>
+inline Vec2<T> Vec2<T>::operator/(T number)
+{
+	return { this->_x / number,this->_y / number };
+}
+;
 #endif

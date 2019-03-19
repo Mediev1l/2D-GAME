@@ -2,12 +2,12 @@
 
 
 
-Tile::Tile(bool solid, GLuint x, GLuint y, GLuint texture, double origin)
+Tile::Tile(bool solid, GLuint x, GLuint y, GLuint texture, Vec2d OriSize)
 	:
 	 _solid(solid)
 	,_position((double)x,(double)y)
 	,_textureNumber(texture)
-	,_ori(4, origin,_position)
+	,_ori(4, OriSize,_position)
 	,_vertexs()
 {
 	//Dla wielok¹tów 
@@ -21,9 +21,9 @@ Tile::Tile(bool solid, GLuint x, GLuint y, GLuint texture, double origin)
 	}*/
 }
 
-Tile::Tile(bool solid, Vec2d pos, GLuint texture, double origin)
+Tile::Tile(bool solid, Vec2d pos, GLuint texture, Vec2d OriSize)
 	:
-	 Tile(solid,pos._x,pos._y,texture,origin)
+	 Tile(solid,(GLuint)pos._x, (GLuint)pos._y,texture,OriSize)
 	{}
 
 Tile::~Tile()

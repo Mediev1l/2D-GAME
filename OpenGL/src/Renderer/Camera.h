@@ -14,7 +14,7 @@ public:
 	const Vec2i& getFov()const { return Fov; };
 	const Vec2d& getTranslate()const { return _translateVector; };
 	void initCamera(const Vec2d& pos, GLuint wscreen, GLuint hscreen);
-	void UpdateCamera(const Vec2d & pos, double center);
+	void UpdateCamera(const Vec2d & pos, Vec2d center);
 private:
 	Vec2d _translateVector;
 	Vec2i Fov;

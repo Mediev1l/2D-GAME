@@ -1,11 +1,11 @@
 #include "Character.h"
 #include "AssetManager/AssetManager.h"
 
-Character::Character(std::string name, double x, double y, double w, GLuint nFrames) 
+Character::Character(std::string name, double x, double y, Vec2d OriSize, GLuint nFrames) 
 	:
 	Stats()
 	, Dynamic(name, x, y)
-	, _ori(4, w, _position)
+	, _ori(4, OriSize, _position)
 	,_animation(nFrames,1.0/nFrames)
 {
 	_texture = AssetManager::Get().getSprite(name);

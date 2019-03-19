@@ -7,7 +7,7 @@ class Origin
 {
 public:
 	Origin();
-	Origin(unsigned int nVertex, double Size, Vec2d _position);
+	Origin(unsigned int nVertex, Vec2d Size, Vec2d _position);
 	~Origin();
 
 	//Gettery
@@ -19,13 +19,13 @@ public:
 	{
 		return _vertexs[x];
 	};
-	Vec2d getCenter() { return _center; };
-	double getSize() const { return _size; };
+	Vec2d& getCenter() { return _center; };
+	Vec2d& getSize() { return _size; };
 	//Utils
 	void Update(bool ox, Vec2d& _position);
 private:
 	std::vector<Vec2d> _vertexs;
 	Vec2d _center;
-	double _size;
+	Vec2d _size;
 };
 #endif

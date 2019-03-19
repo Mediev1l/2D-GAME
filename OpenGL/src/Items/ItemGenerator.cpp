@@ -25,8 +25,8 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 	//tutaj dodac zmiane wskaznika itema ale to pozniej >.>
 	
 
-	_items[_items.size() - 1]->setX(x);
-	_items[_items.size() - 1]->setY(y);
+	_items[_items.size() - 1]->setX((float)x);
+	_items[_items.size() - 1]->setY((float)y);
 
 
 	}
@@ -45,8 +45,8 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y, bool unique)
 			{
 				_items.emplace_back(AssetManager::Get().getItem(itStart->first));
 				_used.emplace_back(itStart->first);
-				_items[_items.size() - 1]->setX(x);
-				_items[_items.size() - 1]->setY(y);
+				_items[_items.size() - 1]->setX((float)x);
+				_items[_items.size() - 1]->setY((float)y);
 				break;
 			}
 		
