@@ -1,16 +1,16 @@
 #include "TextGenerator.h"
 
-void TextGenerator::setText(std::string uniqueName, std::string text, Vec2i position, size_t duration )
+void TextGenerator::setText(std::string uniqueName, std::string text, Vec2i position, size_t duration, double size )
 {
 	if (_timer.delay(uniqueName, duration, true))
 	{
-		_text.emplace(uniqueName, std::make_pair(text, position));
+		_text.emplace(uniqueName, params{ text, position, size });
 	}
 }
 
 bool TextGenerator::CheckDrawing(size_t index) const
 {
-	std::map<std::string, std::pair<std::string, Vec2ic>>:: const_iterator it;
+	std::map<std::string, params>:: const_iterator it;
 	int counter = 0;
 
 	for (it = _text.begin(); it != _text.end(); it++)
@@ -27,20 +27,34 @@ bool TextGenerator::CheckDrawing(size_t index) const
 	}
 }
 
-std::string TextGenerator::getText(size_t index) const
+std::string TextGenerator::findIndex(size_t index) const
 {
-	std::map<std::string, std::pair<std::string, Vec2ic>>::const_iterator it;
+	std::map<std::string, params>::const_iterator it;
 	int counter = 0;
 
 	for (it = _text.begin(); it != _text.end(); it++)
 	{
 		if (counter == index)
 		{
-			return it->second.first;
+			return it->first;
 
 		}
 		counter++;
 	}
+
+	return "_ERROR";
+}
+
+double TextGenerator::getSize(size_t index) const
+{
+	if (findIndex(index) != "_ERROR")
+		return _text.at(findIndex(index)).size;
+}
+
+std::string TextGenerator::getText(size_t index) const
+{
+	if (findIndex(index) != "_ERROR")
+		return _text.at(findIndex(index)).text;
 }
 
 Vec2ic TextGenerator::getSheetPosition(char letter) const
@@ -77,17 +91,8 @@ Vec2ic TextGenerator::getSheetPosition(char letter) const
 
 Vec2ic TextGenerator::getPosition(size_t index) const
 {
-	std::map<std::string, std::pair<std::string, Vec2ic>>::const_iterator it;
-	int counter = 0;
+	if (findIndex(index) != "_ERROR")
+		return _text.at(findIndex(index)).pos;
 
-	for (it = _text.begin(); it != _text.end(); it++)
-	{
-		if (counter == index)
-		{
-			return it->second.second;
-
-		}
-		counter++;
-	}
 }
 

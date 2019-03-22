@@ -131,7 +131,7 @@ void Renderer::RenderItems( std::vector<Item*>* items)
 void Renderer::RenderText(const TextGenerator& text)
 {
 
-	for (size_t i = 0; i < text.getSize(); i++)
+	for (size_t i = 0; i < text.getAmount(); i++)
 	{	
 		if (text.CheckDrawing(i) == true)
 		{
@@ -142,7 +142,8 @@ void Renderer::RenderText(const TextGenerator& text)
 				Vec2ic textPos = text.getPosition(i);
 
 				//skalowanie do poprawy na razie na sztywno
-				//size_t size = text.getText(i).size();
+				//size_t size = text.getText(i).size(); ilosc liter
+				//double size1 = text.getSize(i);// wielkosc liter
 				size_t size = 5;
 				
 				setTextureCoords(sheetPos);

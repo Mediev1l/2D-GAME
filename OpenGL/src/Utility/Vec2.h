@@ -55,6 +55,8 @@ public:
 typedef Vec2<double> Vec2d;
 typedef Vec2<float> Vec2f;
 typedef Vec2<int> Vec2i;
+typedef const Vec2<double> Vec2dc;
+typedef const Vec2<float> Vec2fc;
 typedef const Vec2<int> Vec2ic;
 
 
