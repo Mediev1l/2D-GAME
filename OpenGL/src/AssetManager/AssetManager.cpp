@@ -22,6 +22,7 @@ void AssetManager::LoadSprites()
 	load("zombie2", "res/Sprites/Enemies/Zombie/zombie2.png", true);
 	load("SpeedBoots", "res/Sprites/Items/SpeedBoots.png", true);
 	load("BMW", "res/Sprites/Items/BMW.png", true);
+	load("Font", "res/Sprites/Font/Font.png", true);
 
 	//Map
 	load("Basement", "res/Sprites/Map/Basement/Basement.jpg", false);

@@ -3,6 +3,7 @@
 #include "Maps/Map.h"
 #include "Characters/Character.h"
 #include "Items/Item.h"
+#include "Renderer/TextGenerator.h"
 #include "Renderer/Camera.h"
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
@@ -14,7 +15,7 @@ public:
 	Renderer(const Camera& cam);
 	~Renderer() { delete _maps; };
 
-	void Render( std::vector<Character>&characters, std::vector<Item*>*items);
+	void Render( std::vector<Character>&characters, std::vector<Item*>*items, const TextGenerator& text);
 	Map* getMap() { return _maps; };
 
 	void CloseDoors() { DoorState = Object::DoorClosed; };
@@ -31,10 +32,13 @@ private:
 	void setTextureCoords(Character& obj);
 	void setTextureCoords(Projectile& proj);
 	void setTextureCoords(GLuint x);
+	void setTextureCoords(Vec2i pos);
 	void draw(double x, double y, GLuint IdTexture, double scale=0.0 );
+	void drawText(double x, double y, GLuint IdTexture, double scale = 0.0);
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item*>* items);
+	void RenderText(const TextGenerator& text);
 	
 
 	//Doors Stuff

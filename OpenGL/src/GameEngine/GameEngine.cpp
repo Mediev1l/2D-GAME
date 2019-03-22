@@ -16,11 +16,17 @@ GameEngine::GameEngine()
 	,_lvlgen("res/Data/map.txt")
 	, _gameState(State::INIT)
 	, _gameDifficulty(Difficulty::START)
+	, textGen(10.0, 10.0, t)
+	
 {
 }
 
 void GameEngine::Game_Init()
 {
+
+	
+
+
 	
 	try {
 
@@ -143,6 +149,7 @@ void GameEngine::Game_Run()
 					_characters[0]._position._x = _map->getWidth() / 2;
 					_characters[0]._position._y = _map->getHeight() / 2;
 					camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
+					t.Reset();
 					lvlWin = false;
 					renderer->CloseDoors();
 				}
@@ -152,7 +159,7 @@ void GameEngine::Game_Run()
 		}
 		
 		//Renderowanie ³adnie w jednej funkcji
-		renderer->Render(_characters, &_ItemGenerator.getItems());
+		renderer->Render(_characters, &_ItemGenerator.getItems(), textGen);
 	
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -208,6 +215,12 @@ void GameEngine::processInput()
 		//PickupItems
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
+			textGen.setText("TEST", "JEd EN", { 0,0 }, 1);
+			textGen.setText("TEST1", "DW.A", { 0,1 }, 2);
+			textGen.setText("TEST2", "TSZY", { 0,2 }, 3);
+			textGen.setText("TEST3", "CZTERY", { 0,3 }, 4);
+			textGen.setText("TEST4", "WUJ", { 0,4 }, 10);
+
 			if (_canPickup)
 			{
 				ProcessItemPickup();

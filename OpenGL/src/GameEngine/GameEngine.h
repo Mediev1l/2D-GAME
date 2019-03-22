@@ -11,6 +11,7 @@
 #include "Renderer/Camera.h"
 #include "Maps/LvlGenerator.h"
 #include "Items/ItemGenerator.h"
+#include "Renderer/TextGenerator.h"
 
 
 //================================================================
@@ -54,6 +55,7 @@ protected:
 	Timer t;
 	Camera camera;
 	Renderer* renderer;
+	TextGenerator textGen;
 
 	//================================================================
 	//= GLOBALSETTINGS

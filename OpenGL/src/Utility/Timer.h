@@ -15,6 +15,8 @@ public:
 	double getFPS();
 	bool delay(std::string name, size_t secs, bool gametime);
 	void Mark();
+	void Reset();
+	bool CheckState(std::string name);
 	std::string date();
 	void refresh(bool ingame);
 private:

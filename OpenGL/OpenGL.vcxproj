@@ -149,6 +149,7 @@
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Maps\Map.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Renderer\TextGenerator.cpp" />
     <ClCompile Include="src\Shaders\Shader.cpp" />
     <ClCompile Include="src\Stats\Stats.cpp" />
     <ClCompile Include="src\Utility\Timer.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\Characters\Enemy.h" />
     <ClInclude Include="src\Items\Item.h" />
     <ClInclude Include="src\Basics\Dynamic.h" />
+    <ClInclude Include="src\Renderer\TextGenerator.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
     <ClInclude Include="src\Stats\Skill.h" />
     <ClInclude Include="src\Stats\Stats.h" />

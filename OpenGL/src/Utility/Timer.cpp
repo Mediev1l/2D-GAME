@@ -55,6 +55,28 @@ void Timer::Mark()
 
 }
 
+void Timer::Reset()
+{
+	std::map<std::string, std::pair<float, bool>>::iterator it;
+
+	for (it = timeCounter.begin(); it != timeCounter.end(); it++)
+	{
+		if (it->second.second == true)
+			if (it->second.first > 0) it->second.first = 0;
+
+	}
+}
+
+bool Timer::CheckState(std::string name)
+{
+	if (timeCounter[name].first <= 0)
+	{
+		return false;
+	}
+	else
+		return true;
+}
+
 std::string Timer::date()
 {
 	std::stringstream tmp;
@@ -75,8 +97,11 @@ void Timer::refresh(bool ingame)
 	
 	for (it = timeCounter.begin(); it != timeCounter.end(); it++)
 	{
-		if(it->second.second == ingame)
+		if (it->second.second == ingame)
+		{
+
 			if (it->second.first > 0) it->second.first -= (float)delta ;
+		}
 
 	}
 	

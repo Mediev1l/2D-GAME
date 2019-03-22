@@ -55,6 +55,7 @@ public:
 typedef Vec2<double> Vec2d;
 typedef Vec2<float> Vec2f;
 typedef Vec2<int> Vec2i;
+typedef const Vec2<int> Vec2ic;
 
 
 //================================================================
@@ -73,6 +74,7 @@ inline Vec2<T>::Vec2(T x, T y)
 	_x(x)
 	, _y(y)
 {};
+
 
 template<typename T>
 inline Vec2<T>::Vec2(const Vec2<T>& src)

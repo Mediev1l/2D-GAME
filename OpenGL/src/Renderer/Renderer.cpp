@@ -55,7 +55,7 @@ Renderer::Renderer(const Camera& camera)
 }
 
 
-void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*items)
+void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*items, const TextGenerator& text)
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -64,6 +64,7 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*ite
 	RenderMap();
 	RenderItems(items);
 	RenderCharacters(characters);
+	RenderText(text);
 }
 
 
@@ -127,6 +128,32 @@ void Renderer::RenderItems( std::vector<Item*>* items)
 	}
 }
 
+void Renderer::RenderText(const TextGenerator& text)
+{
+
+	for (size_t i = 0; i < text.getSize(); i++)
+	{	
+		if (text.CheckDrawing(i) == true)
+		{
+			double counter = 0;
+			for (auto x : text.getText(i))
+			{
+				Vec2ic sheetPos = text.getSheetPosition(toupper(x));
+				Vec2ic textPos = text.getPosition(i);
+
+				//skalowanie do poprawy na razie na sztywno
+				//size_t size = text.getText(i).size();
+				size_t size = 5;
+				
+				setTextureCoords(sheetPos);
+				drawText(textPos._x + counter / 2 * size/ 5 , textPos._y, AssetManager::Get().getSprite("Font")->getID(), 0.1 / size * 5);
+				counter++;
+			}
+		}
+	}
+
+}
+
 void Renderer::ScreenDimm()
 {
 	
@@ -183,6 +210,14 @@ void Renderer::setTextureCoords(GLuint x)
 	_SpriteSheetShader.setFloat("offsetY", offsety);
 }
 
+void Renderer::setTextureCoords(Vec2i pos)
+{
+	float offsetx = pos._x * 0.1f;
+	float offsety = pos._y *0.25f;
+	_SpriteSheetShader.setFloat("offsetX", offsetx);
+	_SpriteSheetShader.setFloat("offsetY", offsety);
+}
+
 void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 {
 
@@ -207,6 +242,28 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+}
+
+void Renderer::drawText(double x, double y, GLuint IdTexture, double scale)
+{
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
+	model = glm::translate(model, glm::vec3(TranslateValueX*x, -TranslateValueY * y, 0.0f));
+	//model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
+
+	model = glm::scale(model, glm::vec3(scale > 0 ? scale : ScaleFactorX, scale > 0 ? scale : ScaleFactorY, 0.0f));
+
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, IdTexture);
+
+	_SpriteSheetShader.use();
+	_SpriteSheetShader.setMat4("model", model);
+	glBindVertexArray(*VAO);
+
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::DrawDoors(Object & obj)
