@@ -1,10 +1,10 @@
 #include "TextGenerator.h"
 
-void TextGenerator::setText(std::string uniqueName, std::string text, Vec2i position, size_t duration, double size )
+void TextGenerator::setText(std::string uniqueName, std::string text, Vec2d position, size_t duration )
 {
 	if (_timer.delay(uniqueName, duration, true))
 	{
-		_text.emplace(uniqueName, params{ text, position, size });
+		_text.emplace(uniqueName, params{ text, position });
 	}
 }
 
@@ -45,7 +45,7 @@ std::string TextGenerator::findIndex(size_t index) const
 	return "_ERROR";
 }
 
-double TextGenerator::getSize(size_t index) const
+Vec2d TextGenerator::getSize(size_t index) const
 {
 	if (findIndex(index) != "_ERROR")
 		return _text.at(findIndex(index)).size;
@@ -89,7 +89,7 @@ Vec2ic TextGenerator::getSheetPosition(char letter) const
 	}
 }
 
-Vec2ic TextGenerator::getPosition(size_t index) const
+Vec2d TextGenerator::getPosition(size_t index) const
 {
 	if (findIndex(index) != "_ERROR")
 		return _text.at(findIndex(index)).pos;

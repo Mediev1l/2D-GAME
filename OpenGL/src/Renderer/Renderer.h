@@ -34,7 +34,7 @@ private:
 	void setTextureCoords(GLuint x);
 	void setTextureCoords(Vec2i pos);
 	void draw(double x, double y, GLuint IdTexture, double scale=0.0 );
-	void drawText(double x, double y, GLuint IdTexture, double scale = 0.0);
+	void drawText(double x, double y, GLuint IdTexture, Vec2d scale);
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item*>* items);

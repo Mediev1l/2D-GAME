@@ -141,7 +141,7 @@ void Renderer::RenderText(const TextGenerator& text)
 			for (auto x : text.getText(i))
 			{
 				Vec2ic sheetPos = text.getSheetPosition(toupper(x));
-				Vec2ic textPos = text.getPosition(i);
+				Vec2dc textPos = text.getPosition(i);
 
 				//skalowanie do poprawy na razie na sztywno
 				//size_t size = text.getText(i).size(); ilosc liter
@@ -149,7 +149,7 @@ void Renderer::RenderText(const TextGenerator& text)
 				size_t size = 5;
 				
 				setTextureCoords(sheetPos);
-				drawText(textPos._x + counter / 2 * size/ 5 , textPos._y, AssetManager::Get().getSprite("Font")->getID(), 0.1 / size * 5);
+				drawText(textPos._x + counter*text.getSize(i)._x*5, textPos._y, AssetManager::Get().getSprite("Font")->getID(), text.getSize(i));
 				counter++;
 			}
 		}
@@ -247,7 +247,7 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 
 }
 
-void Renderer::drawText(double x, double y, GLuint IdTexture, double scale)
+void Renderer::drawText(double x, double y, GLuint IdTexture, Vec2d scale)
 {
 
 	glm::mat4 model = glm::mat4(1.0f);
@@ -255,7 +255,7 @@ void Renderer::drawText(double x, double y, GLuint IdTexture, double scale)
 	model = glm::translate(model, glm::vec3(TranslateValueX*x, -TranslateValueY * y, 0.0f));
 	//model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
 
-	model = glm::scale(model, glm::vec3(scale > 0 ? scale : ScaleFactorX, scale > 0 ? scale : ScaleFactorY, 0.0f));
+	model = glm::scale(model, glm::vec3(scale._x,scale._y , 0.0f));
 
 
 	glActiveTexture(GL_TEXTURE0);

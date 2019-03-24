@@ -446,8 +446,8 @@ void GameEngine::ProcessItemPickup()
 	if (nearestid != -1)
 	{
 		auto item = _ItemGenerator.getItems()[nearestid];
-		textGen.setText(item->sName, item->sName, { 0,2 }, 10, 1);
-		textGen.setText(item->sName+"desc", item->getDescription(), { 0,3 }, 10, 1);
+		textGen.setText(item->sName, item->sName, { camera.getFov()._x/2.0,0.5 }, 4);
+		textGen.setText(item->sName+"desc", item->getDescription(), { camera.getFov()._x / 2.0,0.95 }, 4);
 		_characters[0].consumeItem(item);
 		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
 	}
