@@ -86,7 +86,7 @@ void GameEngine::Game_Init()
 	
 	//HARDCODE
 	_characters[0].setRange(50);
-
+	Item::_texture = AssetManager::Get().getSprite("items");
 	_gameState = State::GAME;
 
 }

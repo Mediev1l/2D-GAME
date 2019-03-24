@@ -123,6 +123,8 @@ void Renderer::RenderItems( std::vector<Item*>* items)
 	{
 		if ((*items)[i]->getOnMap() == true)
 		{
+
+			setTextureCoords((*items)[i]->getID());
 			draw((*items)[i]->getX(), (*items)[i]->getY(), (*items)[i]->getTexture());
 		}
 	}

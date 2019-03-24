@@ -17,15 +17,19 @@ Obiekt odpowiedzialny za wszystkie przedmioty w grze
 
 class Item : public Dynamic, public Stats
 {
+public:
+	static Texture* _texture;
 protected:
 	std::string description;
-	Texture* _texture;
 	bool onMap;
+	GLuint ID;
 
 public:
 	Item();
 
 	void Create(std::string itemdatapath, Texture* text);
+
+	GLuint getID() { return ID; };
 	double getX() { return _position.getX(); };
 	double getY() { return _position.getY(); };
 	bool getOnMap() { return onMap; };

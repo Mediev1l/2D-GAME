@@ -1,5 +1,6 @@
 #include "Item.h"
 #include "AssetManager/AssetManager.h"
+Texture* Item::_texture = nullptr;
 Item::Item()
 	: 
 	  Stats() 
@@ -18,8 +19,8 @@ void Item::Create(std::string itemdatapath, Texture * text)
 
 
 	// Na razie na sztywno || do zmiany
-	//std::getline(itemFile, line);
-	//id = stoi(line);
+	std::getline(itemFile, line);
+	ID = stoi(line);
 
 	std::getline(itemFile, line);
 	sName = line;
