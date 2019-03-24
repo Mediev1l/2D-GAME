@@ -215,11 +215,11 @@ void GameEngine::processInput()
 		//PickupItems
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
-			textGen.setText("TEST", "JEd EN", { 0,0 }, 1, 1);
+			/*textGen.setText("TEST", "JEd EN", { 0,0 }, 1, 1);
 			textGen.setText("TEST1", "DW.A", { 0,1 }, 2, 1);
 			textGen.setText("TEST2", "TSZY", { 0,2 }, 3, 1);
 			textGen.setText("TEST3", "CZTERY", { 0,3 }, 4, 1);
-			textGen.setText("TEST4", "WUJ", { 0,4 }, 10, 1);
+			textGen.setText("TEST4", "WUJ", { 0,4 }, 10, 1);*/
 
 			if (_canPickup)
 			{
@@ -445,7 +445,10 @@ void GameEngine::ProcessItemPickup()
 	
 	if (nearestid != -1)
 	{
-		_characters[0].consumeItem(_ItemGenerator.getItems()[nearestid]);
+		auto item = _ItemGenerator.getItems()[nearestid];
+		textGen.setText(item->sName, item->sName, { 0,2 }, 10, 1);
+		textGen.setText(item->sName+"desc", item->getDescription(), { 0,3 }, 10, 1);
+		_characters[0].consumeItem(item);
 		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
 	}
 

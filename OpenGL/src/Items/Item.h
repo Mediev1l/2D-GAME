@@ -27,7 +27,7 @@ protected:
 public:
 	Item();
 
-	void Create(std::string itemdatapath, Texture* text);
+	void Create(std::string itemdatapath);
 
 	GLuint getID() { return ID; };
 	double getX() { return _position.getX(); };

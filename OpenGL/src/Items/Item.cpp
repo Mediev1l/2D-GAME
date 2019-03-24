@@ -7,7 +7,7 @@ Item::Item()
 	 , onMap(true)
 	{}
 
-void Item::Create(std::string itemdatapath, Texture * text)
+void Item::Create(std::string itemdatapath)
 {
 	std::fstream itemFile;
 	std::string line;
@@ -45,16 +45,14 @@ void Item::Create(std::string itemdatapath, Texture * text)
 
 	itemFile.close();
 
-	_texture = text;
-
 }
 
 SpeedBoots::SpeedBoots()
 {
-	Create("res/Data/Items/SpeedBoots.txt", AssetManager::Get().getSprite("SpeedBoots"));
+	Create("res/Data/Items/SpeedBoots.txt");
 }
 
 BMW::BMW()
 {
-	Create("res/Data/Items/BMW.txt", AssetManager::Get().getSprite("BMW"));
+	Create("res/Data/Items/BMW.txt");
 }
