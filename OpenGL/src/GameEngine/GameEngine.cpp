@@ -83,7 +83,7 @@ void GameEngine::Game_Init()
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
-	
+	engine = irrklang::createIrrKlangDevice();
 	//HARDCODE
 	_characters[0].setRange(50);
 	Item::_texture = AssetManager::Get().getSprite("items");
@@ -141,6 +141,7 @@ void GameEngine::Game_Run()
 			{
 				if (!renderer->isBright() && lvlWin)
 				{
+					engine->play2D("sound.wav");
 					_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 					//Tutaj funkcja do generowanie enemisuf
 					_characters.push_back(Enemy("skelly2", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));

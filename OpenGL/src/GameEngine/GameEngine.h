@@ -21,7 +21,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-
+#include <irrKlang.h>
 class GameEngine
 {
 public:
@@ -56,6 +56,7 @@ protected:
 	Camera camera;
 	Renderer* renderer;
 	TextGenerator textGen;
+	irrklang::ISoundEngine* engine;
 
 	//================================================================
 	//= GLOBALSETTINGS
