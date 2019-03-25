@@ -12,7 +12,7 @@
 #include "Maps/LvlGenerator.h"
 #include "Items/ItemGenerator.h"
 #include "Renderer/TextGenerator.h"
-
+#include "GameEngine/Sound.h"
 
 //================================================================
 //= Windows Libraries
@@ -21,7 +21,8 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-
+#include <irrKlang.h>
+#include <thread>
 class GameEngine
 {
 public:
@@ -56,7 +57,7 @@ protected:
 	Camera camera;
 	Renderer* renderer;
 	TextGenerator textGen;
-
+	Sound soundEngine;
 	//================================================================
 	//= GLOBALSETTINGS
 	//================================================================
