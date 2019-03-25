@@ -17,7 +17,7 @@ GameEngine::GameEngine()
 	, _gameState(State::INIT)
 	, _gameDifficulty(Difficulty::START)
 	, textGen(10.0, 10.0, t)
-	
+	, soundEngine("res/Data/Sounds/", t)
 {
 }
 
@@ -83,7 +83,6 @@ void GameEngine::Game_Init()
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
-	engine = irrklang::createIrrKlangDevice();
 	//HARDCODE
 	_characters[0].setRange(50);
 	Item::_texture = AssetManager::Get().getSprite("items");
@@ -136,12 +135,15 @@ void GameEngine::Game_Run()
 		//Gdy przejdziemy poziom i wejdziemy w drzwi
 		if (_gameState == State::INIT)
 		{
-			if(lvlWin==true && !renderer->isDark()) renderer->ScreenDimm();
+			if (lvlWin == true && !renderer->isDark())
+			{
+				soundEngine.Play("win");
+				renderer->ScreenDimm();
+			}
 			else
 			{
 				if (!renderer->isBright() && lvlWin)
 				{
-					engine->play2D("sound.wav");
 					_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 					//Tutaj funkcja do generowanie enemisuf
 					_characters.push_back(Enemy("skelly2", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));
@@ -154,13 +156,16 @@ void GameEngine::Game_Run()
 					renderer->CloseDoors();
 				}
 				if(!renderer->isBright())renderer->ScreenBright();
-				if(renderer->isBright())_gameState = State::GAME;
+				if (renderer->isBright())
+				{
+					_gameState = State::GAME;
+				}
 			}
 		}
 		
 		//Renderowanie ³adnie w jednej funkcji
 		renderer->Render(_characters, &_ItemGenerator.getItems(), textGen);
-	
+		soundEngine.Refresh();
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
@@ -857,6 +862,7 @@ bool GameEngine::CheckCollisionsBullet(Projectile & bullet, GLuint index, double
 	{
 		if (ShapeOverlap_DIAGS(tmp, _characters[j].getOrigin()))
 		{
+			soundEngine.Play("hit");
 			if (_characters[j].TakeDamage(bullet))
 			{
 				_characters.erase(_characters.begin() + j);
