@@ -17,6 +17,7 @@ private:
 
 	const struct params
 	{
+		params() = default;
 		params(std::string x, Vec2d p, Vec2d siz, bool infinite = false)
 			:
 			 text(x)

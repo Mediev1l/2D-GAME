@@ -159,6 +159,7 @@
     <ClCompile Include="src\Weapons\Projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="irrKlang.dll" />
     <None Include="src\Shaders\fs.fs" />
     <None Include="src\Shaders\fs2.fs" />
     <None Include="src\Shaders\vs.vs" />
@@ -216,6 +217,7 @@
     <Image Include="res\Sprites\wooden.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="res\Data\Items\BMW.txt" />
     <Text Include="res\Data\map.txt" />
     <Text Include="res\Data\Items\SpeedBoots.txt" />
     <Text Include="res\Data\Map\Basement.txt" />

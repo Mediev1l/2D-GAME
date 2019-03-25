@@ -86,6 +86,7 @@
     <None Include="src\Shaders\vs.vs" />
     <None Include="src\Shaders\fs.fs" />
     <None Include="src\Shaders\fs2.fs" />
+    <None Include="irrKlang.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Maps\Map.h">
@@ -239,5 +240,6 @@
     <Text Include="res\Data\map.txt" />
     <Text Include="res\Data\Map\Basement.txt" />
     <Text Include="res\Data\Items\SpeedBoots.txt" />
+    <Text Include="res\Data\Items\BMW.txt" />
   </ItemGroup>
 </Project>

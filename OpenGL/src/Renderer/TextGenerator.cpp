@@ -2,6 +2,11 @@
 
 void TextGenerator::setText(std::string uniqueName, std::string text, Vec2d position, size_t duration, Vec2d size )
 {
+	if (_text.find(uniqueName) != _text.end())
+	{
+		_text[uniqueName].text = text;
+		return;
+	}
 	if (_timer.delay(uniqueName, duration, true))
 	{
 		if(duration == 0)
@@ -89,7 +94,7 @@ Vec2i TextGenerator::getSheetPosition(char letter) const
 		case 55:
 		case 56:
 		case 57:
-			return Vec2i((size_t)48 - letter, 3);
+			return Vec2i(letter-(size_t)48, 3);
 			break;
 		default:
 		{
