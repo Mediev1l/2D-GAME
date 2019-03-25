@@ -88,6 +88,7 @@ protected:
 	void ProcessItemPickup();
 	void ProcessPlayerShoot();
 	void Update();
+	void ShowGUI(Vec2d position);
 
 	void ProcessEnemiesMove(double deltaTime);
 	void Doors();
