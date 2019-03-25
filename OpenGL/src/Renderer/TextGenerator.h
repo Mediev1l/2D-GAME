@@ -17,25 +17,36 @@ private:
 
 	const struct params
 	{
-		params(std::string x, Vec2d p)
+		params(std::string x, Vec2d p, Vec2d siz, bool infinite = false)
 			:
 			 text(x)
 			, pos(p)
+			, constant(infinite)
 		{
 			GLuint dlugosc = (GLuint)text.size();
 			//Max dlugosci 0.8
 			//Max wysokosci 0.4
 			double stosunek = 0.4 / 0.8; //HAHA ALE SMIESZNE
 			//Hardkodowane 16 jako max dlugosc
-			double min = std::min((double)24, (double)dlugosc);
-			size._x = 0.8 / min;
-			double scaley = size._x * stosunek;
-			size._y = scaley > 0.4 ? 0.4 : scaley;
-			pos._x -= (size._x * dlugosc*2.8);
+			if (siz._x == 0 && siz._y == 0)
+			{
+				double min = std::min((double)24, (double)dlugosc);
+				size._x = 0.8 / min;
+				double scaley = size._x * stosunek;
+				size._y = scaley > 0.4 ? 0.4 : scaley;
+			}
+			else
+			{
+				size._x = siz._x;
+				size._y = siz._y;
+			}
+				pos._x -= (size._x * dlugosc*2.8);
+
 		}
 		std::string text;
 		Vec2d pos;
 		Vec2d size;
+		bool constant;
 	};
 
 	double _maxWidth;
@@ -49,7 +60,7 @@ public:
 	TextGenerator(const TextGenerator& cpy) = delete;
 	TextGenerator(double maxWidth, double maxHeight, Timer& timer) : _maxWidth(maxWidth), _maxHeight(maxHeight), _timer(timer) {};
 
-	void setText(std::string uniqueName, std::string text, Vec2d position, size_t duration);
+	void setText(std::string uniqueName, std::string text, Vec2d position, size_t duration, Vec2d size = Vec2d(0,0));
 	bool CheckDrawing(size_t index) const;
 
 

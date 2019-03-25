@@ -123,6 +123,8 @@ void GameEngine::Game_Run()
 			// -----
 		processInput();
 
+		textGen.setText("HP", "HP ", Vec2d(0.5, 1), 0, Vec2d(0.09, 0.05));
+
 
 		//Game Update
 		if (_gameState != State::MENU && _gameState != State::INIT)
@@ -141,6 +143,7 @@ void GameEngine::Game_Run()
 			{
 				if (!renderer->isBright() && lvlWin)
 				{
+					
 					_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 					//Tutaj funkcja do generowanie enemisuf
 					_characters.push_back(Enemy("skelly2", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));

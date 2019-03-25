@@ -1,30 +1,28 @@
 #include "TextGenerator.h"
 
-void TextGenerator::setText(std::string uniqueName, std::string text, Vec2d position, size_t duration )
+void TextGenerator::setText(std::string uniqueName, std::string text, Vec2d position, size_t duration, Vec2d size )
 {
 	if (_timer.delay(uniqueName, duration, true))
 	{
-		_text.emplace(uniqueName, params{ text, position });
+		if(duration == 0)
+			_text.emplace(uniqueName, params{ text, position, size, true });
+		else
+			_text.emplace(uniqueName, params{ text, position,size });
 	}
 }
 
 bool TextGenerator::CheckDrawing(size_t index) const
 {
-	std::map<std::string, params>:: const_iterator it;
-	int counter = 0;
 
-	for (it = _text.begin(); it != _text.end(); it++)
+	if (findIndex(index) != "_ERROR")
 	{
-		if (counter == index)
-		{
-			if (_timer.CheckState(it->first))
-				return true;
-			else
-				return false;
-				
-		}
-		counter++;
+		if (_timer.CheckState(findIndex(index)) || _text.at(findIndex(index)).constant == true)
+			return true;
+		else
+			return false;
+
 	}
+
 }
 
 std::string TextGenerator::findIndex(size_t index) const
