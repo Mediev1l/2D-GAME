@@ -235,6 +235,12 @@
     <Image Include="res\Sprites\Tears\tearsheet.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="res\Sprites\Enemies\Skelly\skeleton.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\Enemies\Bae\bae.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\Data\map.txt" />

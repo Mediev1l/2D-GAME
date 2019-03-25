@@ -21,6 +21,7 @@ Sound::Sound(std::string sound_path, Timer& t) :t(t)
 
 Sound::~Sound()
 {
+	engine->drop();
 }
 
 void Sound::Play(std::string x)

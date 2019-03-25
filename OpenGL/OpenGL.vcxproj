@@ -192,6 +192,8 @@
     <ClInclude Include="src\Utility\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\Sprites\Enemies\Bae\bae.png" />
+    <Image Include="res\Sprites\Enemies\Skelly\skeleton.png" />
     <Image Include="res\Sprites\Enemies\Skelly\skelly.png" />
     <Image Include="res\Sprites\Enemies\Zombie\zombie.png" />
     <Image Include="res\Sprites\Items\SpeedBoots.png" />

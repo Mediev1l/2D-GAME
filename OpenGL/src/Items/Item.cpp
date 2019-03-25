@@ -56,3 +56,23 @@ BMW::BMW()
 {
 	Create("res/Data/Items/BMW.txt");
 }
+
+Yamaha::Yamaha()
+{
+	Create("res/Data/Items/Yamaha.txt");
+}
+
+Cpp::Cpp()
+{
+	Create("res/Data/Items/C++.txt");
+}
+
+Dzban::Dzban()
+{
+	Create("res/Data/Items/Dzban.txt");
+}
+
+Wfis::Wfis()
+{
+	Create("res/Data/Items/Wfis.txt");
+}

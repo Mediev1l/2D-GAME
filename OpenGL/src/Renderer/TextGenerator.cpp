@@ -76,12 +76,12 @@ Vec2i TextGenerator::getSheetPosition(char letter) const
 		}
 		case 33:
 		{
-			return Vec2i(8, 2);
+			return Vec2i(9, 2);
 			break;
 		}
 		case 58:
 		{
-			return Vec2i(9, 2);
+			return Vec2i(8, 2);
 			break;
 		}
 		case 48:

@@ -12,12 +12,15 @@ void AssetManager::LoadSprites()
 	//Dynamics
 	//load("player", "res/Sprites/Player/player.png",true);
 	//load("player2", "res/Sprites/Player/player2.png",true);
-	load("player3", "res/Sprites/Player/player3.png",true);
+	load("player", "res/Sprites/Player/player.png",true);
 	load("obj", "res/Sprites/Objects/objectsheet.png",true);
 	load("pifpaf", "res/Sprites/Tears/basic_tear.png", true);
 	load("pifpafsheet", "res/Sprites/Tears/tearsheet.png", true);
 	load("skelly", "res/Sprites/Enemies/Skelly/skelly.png", true);
 	load("skelly2", "res/Sprites/Enemies/Skelly/skeleton.png", true);
+	load("boss", "res/Sprites/Enemies/Boss/boss.png", true);
+	load("bae", "res/Sprites/Enemies/Bae/bae.png", true);
+	load("boy", "res/Sprites/Enemies/Boy/boy.png", true);
 	load("zombie", "res/Sprites/Enemies/Zombie/zombie.png", true);
 	load("zombie2", "res/Sprites/Enemies/Zombie/zombie2.png", true);
 	load("SpeedBoots", "res/Sprites/Items/SpeedBoots.png", true);
@@ -48,6 +51,10 @@ void AssetManager::LoadItems()
 
 	load(new SpeedBoots());
 	load(new  BMW());
+	load(new Yamaha());
+	load(new Wfis());
+	load(new Dzban());
+	load(new Cpp());
 }
 
 AssetManager::AssetManager()

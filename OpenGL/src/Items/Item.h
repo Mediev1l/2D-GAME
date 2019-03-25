@@ -57,4 +57,28 @@ class BMW : public Item
 public:
 	BMW();
 };
+
+class Yamaha : public Item
+{
+public:
+	Yamaha();
+};
+
+class Cpp : public Item
+{
+public:
+	Cpp();
+};
+
+class Dzban : public Item
+{
+public:
+	Dzban();
+};
+
+class Wfis : public Item
+{
+public:
+	Wfis();
+};
 #endif

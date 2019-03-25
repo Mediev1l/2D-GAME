@@ -77,9 +77,11 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero("player3", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
-	_characters.push_back(Enemy("skelly2", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9));
+	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
+	_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9));
 	_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
+	_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
+	_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
@@ -150,8 +152,9 @@ void GameEngine::Game_Run()
 					
 					_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 					//Tutaj funkcja do generowanie enemisuf
-					_characters.push_back(Enemy("skelly2", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));
+					_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));
 					_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9));
+					_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9));
 					_characters[0]._position._x = _map->getWidth() / 2;
 					_characters[0]._position._y = _map->getHeight() / 2;
 					camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
