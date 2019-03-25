@@ -69,7 +69,7 @@ public:
 	std::string findIndex(size_t index) const;
 	Vec2d getSize(size_t index) const;
 	std::string getText(size_t index) const;
-	Vec2ic getSheetPosition(char letter) const;
+	Vec2i getSheetPosition(char letter) const;
 	Vec2d getPosition(size_t index) const;
 	
 

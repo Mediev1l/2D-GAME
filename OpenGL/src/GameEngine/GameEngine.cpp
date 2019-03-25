@@ -591,32 +591,34 @@ void GameEngine::ShowGUI(Vec2d position)
 	Vec2d scale = position;
 	scale._x = (1.2  + position._x - 1) / 2;
 	scale._y = (0.3  + position._y - 1) / 2;
-	double offset = 0.3;
+	double offsetX = 0.3;
+	double offsetY = 0.8;
+
 
 	// HP
 	textGen.setText("HP", "HP ", Vec2d(scale._x, scale._y), 0, Vec2d(0.03, 0.05));
-	//textGen.setText("HP value", std::to_string(_characters[0].getHealth()), Vec2d(1, 0.2), 0, Vec2d(0.09, 0.05));
-	textGen.setText("HP VALUE", "xx", Vec2d(scale._x + 0.8, scale._y), 0, Vec2d(0.05, 0.04));
+	//textGen.setText("HP VALUE", std::to_string(_characters[0].getHealth()), Vec2d(scale._x + offsetY, scale._y), 0, Vec2d(0.05, 0.04));
+	textGen.setText("HP VALUE", "xx", Vec2d(scale._x + offsetY, scale._y), 0, Vec2d(0.05, 0.04));
 
 	// RANGE
-	textGen.setText("RANGE", "RANGE ", Vec2d(scale._x, scale._y + 1 * offset), 0, Vec2d(0.03, 0.05));
-	//textGen.setText("HP value", std::to_string(_characters[0].getHealth()), Vec2d(1, 0.2), 0, Vec2d(0.09, 0.05));
-	textGen.setText("RANGE VALUE", "xx", Vec2d(scale._x + 0.8, scale._y + 1 * offset), 0, Vec2d(0.05, 0.04));
+	textGen.setText("RANGE", "RANGE ", Vec2d(scale._x, scale._y + 1 * offsetX), 0, Vec2d(0.03, 0.05));
+	//textGen.setText("RANGE VALUE", std::to_string(_characters[0].getRange()) , Vec2d(scale._x + offsetY, scale._y + 1 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen.setText("RANGE VALUE", "xx", Vec2d(scale._x + offsetY, scale._y + 1 * offsetX), 0, Vec2d(0.05, 0.04));
 
 	// SPEED
-	textGen.setText("SPEED", "SPEED ", Vec2d(scale._x, scale._y + 2 * offset), 0, Vec2d(0.03, 0.05));
-	//textGen.setText("HP value", std::to_string(_characters[0].getHealth()), Vec2d(1, 0.2), 0, Vec2d(0.09, 0.05));
-	textGen.setText("SPEED VALUE", "xx", Vec2d(scale._x + 0.8, scale._y + 2 * offset), 0, Vec2d(0.05, 0.04));
+	textGen.setText("SPEED", "SPEED ", Vec2d(scale._x, scale._y + 2 * offsetX), 0, Vec2d(0.03, 0.05));
+	//textGen.setText("RANGE VALUE", std::to_string(_characters[0].getMovementSpeed()) , Vec2d(scale._x + offsetY, scale._y + 2 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen.setText("SPEED VALUE", "xx", Vec2d(scale._x + offsetY, scale._y + 2 * offsetX), 0, Vec2d(0.05, 0.04));
 
 	// ATT S
-	textGen.setText("ATTACKS", "ATT S ", Vec2d(scale._x, scale._y + 3 * offset), 0, Vec2d(0.03, 0.05));
-	//textGen.setText("HP value", std::to_string(_characters[0].getHealth()), Vec2d(1, 0.2), 0, Vec2d(0.09, 0.05));
-	textGen.setText("ATTACKS VALUE", "xx", Vec2d(scale._x + 0.8, scale._y + 3 * offset), 0, Vec2d(0.05, 0.04));
+	textGen.setText("ATTACKS", "ATT S ", Vec2d(scale._x, scale._y + 3 * offsetX), 0, Vec2d(0.03, 0.05));
+	//textGen.setText("RANGE VALUE", std::to_string(_characters[0].getAttackSpeed()) , Vec2d(scale._x + offsetY, scale._y + 3 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen.setText("ATTACKS VALUE", "xx", Vec2d(scale._x + offsetY, scale._y + 3 * offsetX), 0, Vec2d(0.05, 0.04));
 
-	// HP
-	textGen.setText("DMG", "DMG ", Vec2d(scale._x, scale._y + 4 * offset), 0, Vec2d(0.03, 0.05));
-	//textGen.setText("HP value", std::to_string(_characters[0].getHealth()), Vec2d(1, 0.2), 0, Vec2d(0.09, 0.05));
-	textGen.setText("DMG VALUE", "xx", Vec2d(scale._x + 0.8, scale._y + 4 * offset), 0, Vec2d(0.05, 0.04));
+	// DMG
+	textGen.setText("DMG", "DMG ", Vec2d(scale._x, scale._y + 4 * offsetX), 0, Vec2d(0.03, 0.05));
+	//textGen.setText("RANGE VALUE", std::to_string(_characters[0].getDamage()) , Vec2d(scale._x + offsetY, scale._y + 4 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen.setText("DMG VALUE", "xx", Vec2d(scale._x + offsetY, scale._y + 4 * offsetX), 0, Vec2d(0.05, 0.04));
 }
 
 void GameEngine::ProcessEnemiesMove(double deltaTime)
