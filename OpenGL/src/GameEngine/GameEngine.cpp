@@ -25,7 +25,7 @@ void GameEngine::Game_Init()
 {
 
 	
-
+	
 
 	
 	try {
@@ -173,6 +173,8 @@ void GameEngine::Game_Run()
 
 	glfwTerminate();
 }
+
+
 
 
 void GameEngine::processInput()
@@ -449,8 +451,8 @@ void GameEngine::ProcessItemPickup()
 	if (nearestid != -1)
 	{
 		auto item = _ItemGenerator.getItems()[nearestid];
-		textGen.setText(item->sName, item->sName, { camera.getFov()._x/2.0,0.5 }, 4);
-		textGen.setText(item->sName+"desc", item->getDescription(), { camera.getFov()._x / 2.0,0.95 }, 4);
+		textGen.setText(item->sName, item->sName, { camera.getFov()._x/2.0, 2 }, 4);
+		textGen.setText(item->sName+"desc", item->getDescription(), { camera.getFov()._x / 2.0, 5 }, 4);
 		_characters[0].consumeItem(item);
 		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
 	}
@@ -588,7 +590,7 @@ void GameEngine::ShowGUI(Vec2d position)
 {
 	Vec2d scale = position;
 	scale._x = (1.2  + position._x - 1) / 2;
-	scale._y = (0.7  + position._y - 1) / 2;
+	scale._y = (0.3  + position._y - 1) / 2;
 	double offset = 0.3;
 
 	// HP
