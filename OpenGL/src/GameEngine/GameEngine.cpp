@@ -127,7 +127,6 @@ void GameEngine::Game_Run()
 		//Game Update
 		if (_gameState != State::MENU && _gameState != State::INIT)
 		{
-			
 			t.refresh(true);
 			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
 			Update();

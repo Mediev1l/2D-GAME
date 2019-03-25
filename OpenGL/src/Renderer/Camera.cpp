@@ -24,8 +24,8 @@ void Camera::initCamera(const Vec2d& pos, GLuint wscreen, GLuint hscreen)
 	_w = wscreen;
 	_h = hscreen;
 	_scaleFactor = 1.0 / Fov._x;
-	double tmpx = -2 * _scaleFactor * (pos._x - Fov._x / 2.0);
-	double tmpy = 2 * _scaleFactor * (pos._y - Fov._y / 2.0);
+	double tmpx = -2 * _scaleFactor * (pos._x+0.5 - Fov._x / 2.0);
+	double tmpy = 2 * _scaleFactor * (pos._y+0.5 - Fov._y / 2.0);
 
 	if (tmpx < 0)_translateVector._x = tmpx;
 	else _translateVector._x = 0;
@@ -36,10 +36,10 @@ void Camera::initCamera(const Vec2d& pos, GLuint wscreen, GLuint hscreen)
 
 void Camera::UpdateCamera(const Vec2d & pos, Vec2d center)
 {
-	double tmpx = -2 * _scaleFactor * (pos._x+center._x - Fov._x / 2.0) - 0.1;
-	double tmpy = 2 * _scaleFactor * (pos._y+center._y - Fov._y / 2.0)+0.025;
+	double tmpx = -2 * _scaleFactor * (pos._x + center._x - Fov._x / 2.0);// -0.1;
+		double tmpy = 2 * _scaleFactor * (pos._y + center._y - Fov._y / 2.0);//+0.025;
 	
-	bool right = pos._x+center._x -0.1 < (double)_w - (Fov._x / 2.0);
+	bool right = pos._x+center._x-0.1 < (double)_w - (Fov._x / 2.0);
 	bool bottom = pos._y+center._y + 0.025 < (double)_h - (Fov._y / 2.0);
 
 	if (tmpx < 0 && right)_translateVector._x = tmpx;
