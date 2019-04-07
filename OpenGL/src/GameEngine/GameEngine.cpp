@@ -4,9 +4,10 @@ GameEngine::GameEngine()
 	:
 	  window(nullptr)
 	, renderer(nullptr)
+	, textGen(nullptr)
 	, t()
-	, SCR_WIDTH(1500)
-	, SCR_HEIGHT(1000)
+	, SCR_WIDTH(800)
+	, SCR_HEIGHT(800)
 	, lastX(SCR_WIDTH / 2.0)
 	, lastY(SCR_HEIGHT / 2.0)
 	, firstMouse(true)
@@ -16,7 +17,6 @@ GameEngine::GameEngine()
 	,_lvlgen("res/Data/map.txt")
 	, _gameState(State::INIT)
 	, _gameDifficulty(Difficulty::START)
-	, textGen(nullptr)
 	, soundEngine("res/Data/Sounds/", t)
 {
 }
@@ -481,7 +481,7 @@ void GameEngine::ProcessPlayerShoot()
 
 
 
-	if (t.delay("Shoot", 1, true))
+	if (t.delay("Shoot", 0, true))
 	{
 		switch (pdir)
 		{

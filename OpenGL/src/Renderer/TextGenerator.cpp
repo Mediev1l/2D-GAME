@@ -30,6 +30,23 @@ bool TextGenerator::CheckDrawing(size_t index) const
 
 }
 
+void TextGenerator::setTransparency(size_t index, float value) const
+{
+	if (findIndex(index) != "_ERROR")
+		const_cast<TextGenerator*>(this)->_text.at(findIndex(index)).color.a = value;
+}
+
+bool TextGenerator::getTransparency(size_t index) const
+{
+	if (findIndex(index) != "_ERROR")
+	{
+		_text.at(findIndex(index)).color.a >= 0.0f;
+		return true;
+	}
+	else
+		return false;
+}
+
 std::string TextGenerator::findIndex(size_t index) const
 {
 	std::map<std::string, params>::const_iterator it;

@@ -18,7 +18,7 @@ class TextGenerator
 {
 private:
 
-	const struct params
+	struct params
 	{
 		params() = default;
 		params(std::string x, Vec2d p, Vec2d siz, bool infinite = false)
@@ -76,9 +76,11 @@ public:
 	void setText(std::string uniqueName, std::string text, Vec2d position, size_t duration, Vec2d size = Vec2d(0,0));
 	bool CheckDrawing(size_t index) const;
 	void setColor(std::string name, glm::vec4 col) { _text[name].color = col; };
+	void setTransparency(size_t index, float value) const;
 
 	size_t getAmount() const { return _text.size(); };
 	GLuint getTexture() const { return texture->getID(); };
+	bool getTransparency(size_t index) const;
 	std::string findIndex(size_t index) const;
 	Vec2d getSize(size_t index) const;
 	std::string getText(size_t index) const;

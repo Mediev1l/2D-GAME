@@ -139,18 +139,13 @@ void Renderer::RenderText(const TextGenerator& text)
 
 	for (size_t i = 0; i < text.getAmount(); i++)
 	{	
-		if (text.CheckDrawing(i) == true)
+		if (text.CheckDrawing(i) == true || text.getTransparency(i))
 		{
 			double counter = 0;
 			for (auto x : text.getText(i))
 			{
 				Vec2ic sheetPos = text.getSheetPosition(toupper(x));
 				Vec2dc textPos = text.getPosition(i);
-
-				//skalowanie do poprawy na razie na sztywno
-				//size_t size = text.getText(i).size(); ilosc liter
-				//double size1 = text.getSize(i);// wielkosc liter
-				size_t size = 5;
 
 				glm::vec4 tempColor = text.getColor(i);
 				if (dimmRatio > 0)
@@ -160,7 +155,10 @@ void Renderer::RenderText(const TextGenerator& text)
 					tempColor.b -= dimmRatio;
 				}
 
-				
+				if (tempColor.a <= 1.0f && text.CheckDrawing(i) == true) text.setTransparency(i, tempColor.a += 0.004f);
+				else if(text.CheckDrawing(i) == false) 
+					text.setTransparency(i, tempColor.a -= 0.004f);
+
 				setTextureCoords(sheetPos);
 				drawText(textPos._x + counter*text.getSize(i)._x*5, textPos._y, text.getTexture(), text.getSize(i), tempColor);
 				counter++;
