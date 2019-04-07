@@ -1,6 +1,6 @@
 #include "Sound.h"
 
-Sound::Sound(std::string sound_path, Timer& t) :t(t)
+Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false)
 {
 	std::fstream plik;
 	plik.open(sound_path+"sounds.txt", std::ios::in);
@@ -26,12 +26,16 @@ Sound::~Sound()
 
 void Sound::Play(std::string x)
 {
-	auto& sound = sounds[x];
-	if (sound.play == false)
+	if (!mute)
 	{
-		sound.play = true;
-		engine->play2D(sound.path.c_str());
-		t.delay(x, sound.time, false);
+		auto& sound = sounds[x];
+		if (sound.play == false)
+		{
+			sound.play = true;
+			engine->play2D(sound.path.c_str());
+			t.delay(x, sound.time, false);
+	
+		}
 	}
 }
 

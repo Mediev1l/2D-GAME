@@ -265,9 +265,8 @@ void Renderer::drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
 	model = glm::translate(model, glm::vec3(TranslateValueX*x, -TranslateValueY * y, 0.0f));
-	//model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
 
-	model = glm::scale(model, glm::vec3(scale._x,scale._y , 0.0f));
+	model = glm::scale(model, glm::vec3(scale._x, scale._y , 0.0f));
 
 
 	glActiveTexture(GL_TEXTURE0);

@@ -30,12 +30,14 @@ public:
 public:
 	void Play(std::string x);
 	void Refresh();
+	void Mute(bool mute) { this->mute = mute; };
 private:
 	void Stop(snd& snd);
 private:
 	std::map<std::string, snd> sounds;
 	Timer& t;
 	irrklang::ISoundEngine* engine;
+	bool mute;
 };
 
 #endif

@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameEngine\Menu.cpp" />
     <ClCompile Include="src\GameEngine\Sound.cpp" />
     <ClCompile Include="src\Basics\Animation.cpp" />
     <ClCompile Include="src\Basics\Origin.cpp" />
@@ -165,6 +166,7 @@
     <None Include="src\Shaders\vs.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameEngine\Menu.h" />
     <ClInclude Include="src\GameEngine\Sound.h" />
     <ClInclude Include="src\Basics\Animation.h" />
     <ClInclude Include="src\Basics\Origin.h" />
