@@ -29,7 +29,7 @@ void Menu::enter()
 		{
 		case mmSTART:
 		{
-
+			gameEngineState = GameEngine::State::INIT;
 		}
 		case mmOPTIONS:
 		{
@@ -37,7 +37,7 @@ void Menu::enter()
 		}
 		case mmEXIT:
 		{
-
+			gameEngineState = GameEngine::State::EXIT;
 		}
 		}
 	}

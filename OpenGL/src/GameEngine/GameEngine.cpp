@@ -236,7 +236,7 @@ void GameEngine::processInput()
 			textGen.setText("TEST2", "TSZY", { 0,2 }, 3, 1);
 			textGen.setText("TEST3", "CZTERY", { 0,3 }, 4, 1);
 			textGen.setText("TEST4", "WUJ", { 0,4 }, 10, 1);*/
-
+			textGen->setColor("HP", glm::vec4(1.0, 0.0, 1.0, 0.5));
 			if (_canPickup)
 			{
 				ProcessItemPickup();
