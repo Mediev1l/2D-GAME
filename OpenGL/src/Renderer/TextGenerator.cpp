@@ -111,3 +111,9 @@ Vec2d TextGenerator::getPosition(size_t index) const
 
 }
 
+glm::vec4 TextGenerator::getColor(size_t index) const
+{
+	if (findIndex(index) != "_ERROR")
+		return _text.at(findIndex(index)).color;
+}
+

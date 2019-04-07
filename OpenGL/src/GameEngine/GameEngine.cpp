@@ -5,8 +5,8 @@ GameEngine::GameEngine()
 	  window(nullptr)
 	, renderer(nullptr)
 	, t()
-	, SCR_WIDTH(800)
-	, SCR_HEIGHT(800)
+	, SCR_WIDTH(1500)
+	, SCR_HEIGHT(1000)
 	, lastX(SCR_WIDTH / 2.0)
 	, lastY(SCR_HEIGHT / 2.0)
 	, firstMouse(true)
@@ -16,7 +16,7 @@ GameEngine::GameEngine()
 	,_lvlgen("res/Data/map.txt")
 	, _gameState(State::INIT)
 	, _gameDifficulty(Difficulty::START)
-	, textGen(10.0, 10.0, t)
+	, textGen(nullptr)
 	, soundEngine("res/Data/Sounds/", t)
 {
 }
@@ -37,6 +37,7 @@ void GameEngine::Game_Init()
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 
 
 		//================================================================
@@ -66,6 +67,7 @@ void GameEngine::Game_Init()
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
 		renderer = new Renderer(camera);
+		textGen = new TextGenerator(10.0, 10.0, t);
 		_map = renderer->getMap();
 		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
@@ -79,9 +81,9 @@ void GameEngine::Game_Init()
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
 	_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9));
-	_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
-	_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
-	_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
+	//_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
+	//_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
+	//_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
@@ -143,7 +145,7 @@ void GameEngine::Game_Run()
 			if (lvlWin == true && !renderer->isDark())
 			{
 				soundEngine.Play("win");
-				renderer->ScreenDimm();
+				renderer->ScreenDimm(1.0f);
 			}
 			else
 			{
@@ -171,7 +173,7 @@ void GameEngine::Game_Run()
 		}
 		
 		//Renderowanie ³adnie w jednej funkcji
-		renderer->Render(_characters, &_ItemGenerator.getItems(), textGen);
+		renderer->Render(_characters, &_ItemGenerator.getItems(), *textGen);
 		soundEngine.Refresh();
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -460,8 +462,8 @@ void GameEngine::ProcessItemPickup()
 	if (nearestid != -1)
 	{
 		auto item = _ItemGenerator.getItems()[nearestid];
-		textGen.setText(item->sName, item->sName, { camera.getFov()._x/2.0, 2 }, 4);
-		textGen.setText(item->sName+"desc", item->getDescription(), { camera.getFov()._x / 2.0, 5 }, 4);
+		textGen->setText(item->sName, item->sName, { camera.getFov()._x/2.0, 2 }, 4);
+		textGen->setText(item->sName+"desc", item->getDescription(), { camera.getFov()._x / 2.0, 5 }, 4);
 		_characters[0].consumeItem(item);
 		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
 	}
@@ -605,29 +607,34 @@ void GameEngine::ShowGUI(Vec2d position)
 
 
 	// HP
-	textGen.setText("HP", "HP ", Vec2d(scale._x, scale._y), 0, Vec2d(0.03, 0.05));
-	textGen.setText("HP VALUE", std::to_string((GLuint)_characters[0].getHealth()), Vec2d(scale._x + offsetY, scale._y), 0, Vec2d(0.05, 0.04));
-	//textGen.setText("HP VALUE", "xx", Vec2d(scale._x + offsetY, scale._y), 0, Vec2d(0.05, 0.04));
-
+	textGen->setText("HP", "HP ", Vec2d(scale._x, scale._y), 0, Vec2d(0.03, 0.05));
+	textGen->setText("HP VALUE", std::to_string((GLuint)_characters[0].getHealth()), Vec2d(scale._x + offsetY, scale._y), 0, Vec2d(0.05, 0.04));
 	// RANGE
-	textGen.setText("RANGE", "RANGE ", Vec2d(scale._x, scale._y + 1 * offsetX), 0, Vec2d(0.03, 0.05));
-	textGen.setText("RANGE VALUE", std::to_string((GLuint)_characters[0].getRange()) , Vec2d(scale._x + offsetY, scale._y + 1 * offsetX), 0, Vec2d(0.05, 0.04));
-	//textGen.setText("RANGE VALUE", "xx", Vec2d(scale._x + offsetY, scale._y + 1 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen->setText("RANGE", "RANGE ", Vec2d(scale._x, scale._y + 1 * offsetX), 0, Vec2d(0.03, 0.05));
+	textGen->setText("RANGE VALUE", std::to_string((GLuint)_characters[0].getRange()) , Vec2d(scale._x + offsetY, scale._y + 1 * offsetX), 0, Vec2d(0.05, 0.04));
 
 	// SPEED
-	textGen.setText("SPEED", "SPEED ", Vec2d(scale._x, scale._y + 2 * offsetX), 0, Vec2d(0.03, 0.05));
-	textGen.setText("SPEED VALUE", std::to_string((GLuint)_characters[0].getMovementSpeed()) , Vec2d(scale._x + offsetY, scale._y + 2 * offsetX), 0, Vec2d(0.05, 0.04));
-	//textGen.setText("SPEED VALUE", "xx", Vec2d(scale._x + offsetY, scale._y + 2 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen->setText("SPEED", "SPEED ", Vec2d(scale._x, scale._y + 2 * offsetX), 0, Vec2d(0.03, 0.05));
+	textGen->setText("SPEED VALUE", std::to_string((GLuint)_characters[0].getMovementSpeed()) , Vec2d(scale._x + offsetY, scale._y + 2 * offsetX), 0, Vec2d(0.05, 0.04));
 
 	// ATT S
-	textGen.setText("ATTACKS", "ATT S ", Vec2d(scale._x, scale._y + 3 * offsetX), 0, Vec2d(0.03, 0.05));
-	textGen.setText("ATTACK VALUE", std::to_string((GLuint)_characters[0].getAttackSpeed()) , Vec2d(scale._x + offsetY, scale._y + 3 * offsetX), 0, Vec2d(0.05, 0.04));
-	//textGen.setText("ATTACKS VALUE", "xx", Vec2d(scale._x + offsetY, scale._y + 3 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen->setText("ATTACKS", "ATT S ", Vec2d(scale._x, scale._y + 3 * offsetX), 0, Vec2d(0.03, 0.05));
+	textGen->setText("ATTACK VALUE", std::to_string((GLuint)_characters[0].getAttackSpeed()) , Vec2d(scale._x + offsetY, scale._y + 3 * offsetX), 0, Vec2d(0.05, 0.04));
 
 	// DMG
-	textGen.setText("DMG", "DMG ", Vec2d(scale._x, scale._y + 4 * offsetX), 0, Vec2d(0.03, 0.05));
-	textGen.setText("DMG VALUE", std::to_string((GLuint)_characters[0].getDamage()) , Vec2d(scale._x + offsetY, scale._y + 4 * offsetX), 0, Vec2d(0.05, 0.04));
-	//textGen.setText("DMG VALUE", "xx", Vec2d(scale._x + offsetY, scale._y + 4 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen->setText("DMG", "DMG ", Vec2d(scale._x, scale._y + 4 * offsetX), 0, Vec2d(0.03, 0.05));
+	textGen->setText("DMG VALUE", std::to_string((GLuint)_characters[0].getDamage()) , Vec2d(scale._x + offsetY, scale._y + 4 * offsetX), 0, Vec2d(0.05, 0.04));
+
+	//textGen.setSize("HP", Vec2d(0.03, 0.05));
+	//textGen.setSize("HP VALUE", Vec2d(0.05, 0.04));
+	//textGen.setSize("RANGE", Vec2d(0.03, 0.05));
+	//textGen.setSize("RANGE VALUE", Vec2d(0.05, 0.04));
+	//textGen.setSize("SPEED", Vec2d(0.03, 0.05));
+	//textGen.setSize("SPEED VALUE", Vec2d(0.05, 0.04));
+	//textGen.setSize("ATTACKS", Vec2d(0.03, 0.05));
+	//textGen.setSize("ATTAK VALUE", Vec2d(0.05, 0.04));
+	//textGen.setSize("DMG", Vec2d(0.03, 0.05));
+	//textGen.setSize("DMG VALUE", Vec2d(0.05, 0.04));
 }
 
 void GameEngine::ProcessEnemiesMove(double deltaTime)

@@ -56,7 +56,7 @@ protected:
 	Timer t;
 	Camera camera;
 	Renderer* renderer;
-	TextGenerator textGen;
+	TextGenerator* textGen;
 	Sound soundEngine;
 	//================================================================
 	//= GLOBALSETTINGS

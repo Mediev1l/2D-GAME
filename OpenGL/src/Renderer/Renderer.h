@@ -21,10 +21,10 @@ public:
 	void CloseDoors() { DoorState = Object::DoorClosed; };
 	void OpenDoors() { DoorState = Object::DoorOpened; };
 
-	void ScreenDimm();
+	void ScreenDimm(float perc = 1.0f);
 	void ScreenBright();
 
-	bool isDark() { return GammaRatio.x <= 0.0; };
+	bool isDark() { return GammaRatio.x <= 1.0f - percentage; };
 	bool isBright() { return GammaRatio.x >= 1.0; };
 private:
 
@@ -34,7 +34,7 @@ private:
 	void setTextureCoords(GLuint x);
 	void setTextureCoords(Vec2i pos);
 	void draw(double x, double y, GLuint IdTexture, double scale=0.0 );
-	void drawText(double x, double y, GLuint IdTexture, Vec2d scale);
+	void drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::vec4 color);
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item*>* items);
@@ -59,6 +59,8 @@ private:
 	double TranslateValueX;
 	double TranslateValueY;
 	glm::vec4 GammaRatio;
+	float percentage;
+	float dimmRatio;
 	
 
 	//Main renderShader

@@ -12,6 +12,7 @@ void main()
 	//FragColor = texture(texture1,TexCoord);
 	vec4 texColor = texture(texture1, vec2(TexCoord.x+offsetX,TexCoord.y-offsetY));
 	if(texColor.a < 0.1)
-        discard;
+      discard;
+	texColor.a * Gamma.a;
     FragColor = texColor * Gamma;
 }
