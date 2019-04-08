@@ -46,7 +46,7 @@ private:
 				size._y = siz._y;
 			}
 				pos._x -= (size._x * dlugosc*2.8);
-				infinite == false ? color.a = 0.0f : 1.0f;
+				infinite == true ? color.a = 0.0f : 1.0f;
 
 
 		}

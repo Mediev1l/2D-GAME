@@ -1,4 +1,5 @@
-3
+4
 win win.wav 5
 hit hit.wav 0
 start start.wav 0
+main main1.wav 0

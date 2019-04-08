@@ -79,9 +79,12 @@ protected:
 	std::vector<Item*> _items;
 	//Koniec do przekminiania
 
+	//Kolizje
 	Origin _ori;
+
 	//Weapons
 	std::vector<Projectile> _piFpaF;
+	
 	//W ktora strone jest zwrocony
 	Animation::Direction side;
 	Animation _animation;

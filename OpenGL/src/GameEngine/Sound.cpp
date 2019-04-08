@@ -1,6 +1,6 @@
 #include "Sound.h"
 
-Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false)
+Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false), volumeLvl(1.0)
 {
 	std::fstream plik;
 	plik.open(sound_path+"sounds.txt", std::ios::in);
@@ -16,7 +16,7 @@ Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false)
 		sounds.emplace(name,snd(sound_path+path,false,secs));
 	}
 	engine = irrklang::createIrrKlangDevice();
-	Play("start");
+	Play("main",true);
 }
 
 Sound::~Sound()
@@ -24,15 +24,16 @@ Sound::~Sound()
 	engine->drop();
 }
 
-void Sound::Play(std::string x)
+void Sound::Play(std::string x, bool looped)
 {
 	if (!mute)
 	{
+
 		auto& sound = sounds[x];
 		if (sound.play == false)
 		{
 			sound.play = true;
-			engine->play2D(sound.path.c_str());
+			engine->play2D(sound.path.c_str(), looped);
 			t.delay(x, sound.time, false);
 	
 		}
@@ -45,13 +46,30 @@ void Sound::Refresh()
 	{
 		if (!t.CheckState(snd.first))
 		{
-			Stop(snd.second);
+			snd.second.play = false;
 		}
 	}
 }
 
-void Sound::Stop(snd& snd)
+void Sound::VolumeUp()
 {
-	snd.play = false;
-	//if(snd.engine != nullptr) snd.engine->drop();
+	if (volumeLvl < 1.0)
+	{
+	volumeLvl += 0.005; 
+	engine->setSoundVolume((irrklang::ik_f32)volumeLvl); 
+	}
+}
+
+void Sound::VolumeDown()
+{	
+	if (volumeLvl > 0.0)
+	{
+		volumeLvl -= 0.005; 
+		engine->setSoundVolume((irrklang::ik_f32)volumeLvl); 
+	}
+}
+
+void Sound::Stop()
+{
+	engine->stopAllSounds();
 }

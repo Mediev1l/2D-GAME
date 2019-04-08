@@ -13,6 +13,7 @@
 #include "Items/ItemGenerator.h"
 #include "Renderer/TextGenerator.h"
 #include "GameEngine/Sound.h"
+#include "Utility/DebugInfo.h"
 
 //================================================================
 //= Windows Libraries
@@ -22,7 +23,6 @@
 #include <string>
 #include <sstream>
 #include <irrKlang.h>
-#include <thread>
 class GameEngine
 {
 public:
@@ -47,7 +47,13 @@ public:
 	};
 
 protected:
-
+	//================================================================
+	//= Console Debug Purpose
+	//================================================================
+	DebugInfo debuginfo;
+	void initInfo();
+	void updateInfo();
+	void drawInfo();
 	//================================================================
 	//= OBJECTS
 	//================================================================

@@ -28,16 +28,19 @@ public:
 	Sound(std::string sound_path, Timer& t);
 	~Sound();
 public:
-	void Play(std::string x);
+	void Play(std::string x, bool looped=false);
 	void Refresh();
 	void Mute(bool mute) { this->mute = mute; };
+	void VolumeUp();
+	void VolumeDown();
 private:
-	void Stop(snd& snd);
+	void Stop();
 private:
 	std::map<std::string, snd> sounds;
 	Timer& t;
 	irrklang::ISoundEngine* engine;
 	bool mute;
+	double volumeLvl;
 };
 
 #endif

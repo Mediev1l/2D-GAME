@@ -81,9 +81,9 @@ void GameEngine::Game_Init()
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
 	_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9));
-	//_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
-	//_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
-	//_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
+	_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
+	_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
+	_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
@@ -92,6 +92,8 @@ void GameEngine::Game_Init()
 	Item::_texture = AssetManager::Get().getSprite("items");
 	_gameState = State::GAME;
 
+	//DEBUG STUFF
+	initInfo();
 }
 
 void GameEngine::Game_Run()
@@ -159,10 +161,11 @@ void GameEngine::Game_Run()
 					_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9));
 					_characters[0]._position._x = _map->getWidth() / 2;
 					_characters[0]._position._y = _map->getHeight() / 2;
+					_characters[0].getpiFpaF().clear();
 					camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
 					t.Reset();
 					lvlWin = false;
-					renderer->CloseDoors();
+					Doors();
 				}
 				if(!renderer->isBright())renderer->ScreenBright();
 				if (renderer->isBright())
@@ -175,6 +178,12 @@ void GameEngine::Game_Run()
 		//Renderowanie ³adnie w jednej funkcji
 		renderer->Render(_characters, &_ItemGenerator.getItems(), *textGen);
 		soundEngine.Refresh();
+		
+
+		//DEBUG STUFF
+		updateInfo();
+		drawInfo();
+		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
@@ -202,6 +211,10 @@ void GameEngine::processInput()
 	//Closing Window
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
+		soundEngine.VolumeUp();
+	if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
+		soundEngine.VolumeDown();
 
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 	{
@@ -236,7 +249,7 @@ void GameEngine::processInput()
 			textGen.setText("TEST2", "TSZY", { 0,2 }, 3, 1);
 			textGen.setText("TEST3", "CZTERY", { 0,3 }, 4, 1);
 			textGen.setText("TEST4", "WUJ", { 0,4 }, 10, 1);*/
-			textGen->setColor("HP", glm::vec4(1.0, 0.0, 1.0, 0.5));
+			textGen->setColor("HP", glm::vec4(0.0, 0.0, 1.0, 0.5));
 			if (_canPickup)
 			{
 				ProcessItemPickup();
@@ -338,6 +351,22 @@ void GameEngine::mouse_callback(double xpos, double ypos)
 void GameEngine::scroll_callback(double xoffset, double yoffset)
 {
 	//camera.ProcessMouseScroll(yoffset);
+}
+
+void GameEngine::initInfo()
+{
+
+	debuginfo.Init(_characters);
+}
+
+void GameEngine::updateInfo()
+{
+	debuginfo.Update(_characters);
+}
+
+void GameEngine::drawInfo()
+{
+	debuginfo.Draw();
 }
 
 void GameEngine::ProcessPlayerMove(double deltaTime, std::pair<Animation::Direction, Animation::Direction> dir)
@@ -481,7 +510,7 @@ void GameEngine::ProcessPlayerShoot()
 
 
 
-	if (t.delay("Shoot", 0, true))
+	if (t.delay("Shoot", 0.2, true))
 	{
 		switch (pdir)
 		{
@@ -664,9 +693,8 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 
 		//Rozpatrzmy kierunki
 		Animation::Direction dir[2];
-		const double margin = 0.1;
-		dir[0] = CalculateDirection(Move._x,false, margin);
-		dir[1] = CalculateDirection(Move._y,true, margin);
+		dir[0] = CalculateDirection(Move._x, false, 0.03);
+		dir[1] = CalculateDirection(Move._y,true,0.03);
 
 		for(GLuint i=0;i<2;i++)
 		{
@@ -709,7 +737,6 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 		//Check in Y
 		move2 = !CheckColissions(_characters[i], i, mx, newY);
 
-
 		//Wykonaj ruch
 			if (move1 && newX!=mx)
 			{
@@ -728,6 +755,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					}
 				}
 				_characters[i].setX(newX);
+				
 				if (HowMuchInY < HowMuchInX )_characters[i].updateAnimation({ Animation::Direction::NONE,(Animation::Direction)dir[0]}, deltaTime);
 			}
 			if (move2&&newY!=my)
@@ -746,6 +774,7 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 					//_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
 				}
 				_characters[i].setY(newY);
+				
 				if(HowMuchInY>HowMuchInX)_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
 			}
 	}
@@ -758,18 +787,25 @@ void GameEngine::Doors()
 	GLuint y = (GLuint)ceil(_map->getHeight() / 2.0) - 1;
 	GLuint id[] = { x,0,0,y,_map->getWidth() - 1,y };
 
-	for(GLuint i=0;i<6;i+=2)
-	{
-		_map->getTile(id[i], id[i + 1]).setSolid(false);
-	}
-
 	if (lvlWin)
 	{
+		for (GLuint i = 0; i < 6; i += 2)
+		{
+			_map->getTile(id[i], id[i + 1]).setSolid(false);
+		}
 		renderer->OpenDoors();
 		_ItemGenerator.GenerateItem(5, 6);
 	}
 
-	else renderer->CloseDoors();
+	else
+	{
+		for (GLuint i = 0; i < 6; i += 2)
+		{
+			_map->getTile(id[i], id[i + 1]).setSolid(true);
+		}
+		renderer->CloseDoors();
+	}
+
 }
 
 Animation::Direction GameEngine::CalculateDirection(double x, bool pionowo, double margin)
