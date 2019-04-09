@@ -253,11 +253,33 @@
     <Image Include="res\Sprites\Enemies\Bae\bae.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="res\Sprites\Items\BMW.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\Items\c++.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\Items\dzban.jpg">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\Items\items.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\Items\wfis.jpg">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\Sprites\Items\Yamaha.jpg">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\Data\map.txt" />
     <Text Include="res\Data\Map\Basement.txt" />
     <Text Include="res\Data\Items\SpeedBoots.txt" />
     <Text Include="res\Data\Items\BMW.txt" />
+    <Text Include="res\Data\Items\C++.txt" />
+    <Text Include="res\Data\Items\Dzban.txt" />
+    <Text Include="res\Data\Items\Wfis.txt" />
+    <Text Include="res\Data\Items\Yamaha.txt" />
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@ Vec2i Character::getFrameIndex()
 	return _animation.getAnimationIndex();
 }
 
+
 void Character::consumeItem(const Item * item)
 {
 	//_items.emplace_back(item);

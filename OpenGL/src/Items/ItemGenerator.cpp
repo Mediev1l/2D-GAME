@@ -10,22 +10,25 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y)
 
 		while (_used.size() != items.size())
 		{
-			std::advance(itStart, rand() % items.size());
-		
-			if(itStart == itEnd) itStart = AssetManager::Get().getItems().begin();
-		
-			usedit = std::find(_used.begin(), _used.end(), itStart->first);
-		
-			if (usedit == _used.end())
+			int random = rand() % items.size();
+			int dist = std::distance(itStart, AssetManager::Get().getItems().end());
+			if (dist == 1)
+				itStart = AssetManager::Get().getItems().begin();
+			if (dist - random > 0 || dist == 6)
 			{
-				_items.emplace_back(AssetManager::Get().getItem(itStart->first));
-				_used.emplace_back(itStart->first);
-				_items[_items.size() - 1]->setX((float)x);
-				_items[_items.size() - 1]->setY((float)y);
-				break;
-			}
-
+				std::advance(itStart, random);
+				usedit = std::find(_used.begin(), _used.end(), itStart->first);
 		
+				if (usedit == _used.end())
+				{
+					_items.emplace_back(AssetManager::Get().getItem(itStart->first));
+					_used.emplace_back(itStart->first);
+					_items[_items.size() - 1]->setX((float)x);
+					_items[_items.size() - 1]->setY((float)y);
+					break;
+				}
+
+			}
 		}
 	
 }

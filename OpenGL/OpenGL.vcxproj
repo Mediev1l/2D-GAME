@@ -200,7 +200,13 @@
     <Image Include="res\Sprites\Enemies\Skelly\skeleton.png" />
     <Image Include="res\Sprites\Enemies\Skelly\skelly.png" />
     <Image Include="res\Sprites\Enemies\Zombie\zombie.png" />
+    <Image Include="res\Sprites\Items\BMW.png" />
+    <Image Include="res\Sprites\Items\c++.png" />
+    <Image Include="res\Sprites\Items\dzban.jpg" />
+    <Image Include="res\Sprites\Items\items.png" />
     <Image Include="res\Sprites\Items\SpeedBoots.png" />
+    <Image Include="res\Sprites\Items\wfis.jpg" />
+    <Image Include="res\Sprites\Items\Yamaha.jpg" />
     <Image Include="res\Sprites\Map\Basement\0.jpg" />
     <Image Include="res\Sprites\Map\Basement\1.jpg" />
     <Image Include="res\Sprites\Map\Basement\10.jpg" />
@@ -224,6 +230,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\Data\Items\BMW.txt" />
+    <Text Include="res\Data\Items\C++.txt" />
+    <Text Include="res\Data\Items\Dzban.txt" />
+    <Text Include="res\Data\Items\Wfis.txt" />
+    <Text Include="res\Data\Items\Yamaha.txt" />
     <Text Include="res\Data\map.txt" />
     <Text Include="res\Data\Items\SpeedBoots.txt" />
     <Text Include="res\Data\Map\Basement.txt" />

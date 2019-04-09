@@ -19,22 +19,23 @@ public:
 public:
 	void Init(std::vector<Character>& _characters);
 	void Update(std::vector<Character>& _characters);
+	void DrawClear();
 	void Draw();
 private:
 	struct CharInfo
 	{
-		CharInfo(std::string n, Vec2d p, GLuint h, GLuint sh, GLuint ran, double spd, double atspd, double dmg, Vec2i a) 
+		CharInfo(std::string* n, Vec2d* p, GLuint* h, GLuint* sh, GLuint* ran, double* spd, double* atspd, double* dmg, Vec2i a) 
 			:
 			name(n), pos(p), health(h),shield(sh),range(ran),speed(spd),att_speed(atspd),damage(dmg), anim(a)
 		{};
-		std::string name;
-		Vec2d pos;
-		GLuint health;
-		GLuint shield; // albo tylko hp
-		GLuint range;
-		double speed;
-		double att_speed;
-		double damage;
+		std::string* name;
+		Vec2d* pos;
+		GLuint* health;
+		GLuint* shield; // albo tylko hp
+		GLuint* range;
+		double* speed;
+		double* att_speed;
+		double* damage;
 		Vec2i anim;
 		std::vector<std::string> vItems;
 	};

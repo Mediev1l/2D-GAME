@@ -67,7 +67,7 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*ite
 	RenderMap();
 	RenderItems(items);
 	RenderCharacters(characters);
-	RenderText(text);
+	//RenderText(text);
 	_SpriteSheetShader.setVec4("Gamma", GammaRatio);
 }
 

@@ -9,8 +9,7 @@ Animation::Animation(GLuint frames, double timePerFrame)
 {}
 
 Animation::~Animation()
-{
-}
+{}
 
 Vec2i Animation::getAnimationIndex()
 {
@@ -28,6 +27,7 @@ Vec2i Animation::getAnimationIndex()
 				? (GLuint)_currentDirection.first : (GLuint)_currentDirection.second;
 	return Vec2i(x,y);
 }
+
 
 void Animation::UpdateAnimation(std::pair<Direction,Direction> dir, double deltaTime)
 {

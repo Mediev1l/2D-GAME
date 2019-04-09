@@ -30,6 +30,14 @@ public:
 	double getMovementSpeed() const { return m_speed; };
 	double getDamage() const { return m_damage; };
 
+
+	GLuint& getHealth() { return m_health; };
+	GLuint& getShield() { return m_shield; };
+	GLuint& getRange() { return m_range; };
+	double& getAttackSpeed() { return m_att_speed; };
+	double& getMovementSpeed() { return m_speed; };
+	double& getDamage() { return m_damage; };
+
 	void setRange(GLuint range) { m_range = range; };
 
 };

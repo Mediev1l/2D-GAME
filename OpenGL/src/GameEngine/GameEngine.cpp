@@ -166,6 +166,7 @@ void GameEngine::Game_Run()
 					t.Reset();
 					lvlWin = false;
 					Doors();
+					debuginfo.Init(_characters);
 				}
 				if(!renderer->isBright())renderer->ScreenBright();
 				if (renderer->isBright())
@@ -356,17 +357,17 @@ void GameEngine::scroll_callback(double xoffset, double yoffset)
 void GameEngine::initInfo()
 {
 
-	debuginfo.Init(_characters);
+	//debuginfo.Init(_characters);
 }
 
 void GameEngine::updateInfo()
 {
-	debuginfo.Update(_characters);
+	//debuginfo.Update(_characters);
 }
 
 void GameEngine::drawInfo()
 {
-	debuginfo.Draw();
+	//debuginfo.Draw();
 }
 
 void GameEngine::ProcessPlayerMove(double deltaTime, std::pair<Animation::Direction, Animation::Direction> dir)
