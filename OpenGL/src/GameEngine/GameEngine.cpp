@@ -37,7 +37,8 @@ void GameEngine::Game_Init()
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		
 
 
 		//================================================================
@@ -92,8 +93,6 @@ void GameEngine::Game_Init()
 	Item::_texture = AssetManager::Get().getSprite("items");
 	_gameState = State::GAME;
 
-	//DEBUG STUFF
-	initInfo();
 }
 
 void GameEngine::Game_Run()
@@ -161,7 +160,6 @@ void GameEngine::Game_Run()
 					_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9));
 					_characters[0]._position._x = _map->getWidth() / 2;
 					_characters[0]._position._y = _map->getHeight() / 2;
-					_characters[0].getpiFpaF().clear();
 					camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
 					t.Reset();
 					lvlWin = false;
