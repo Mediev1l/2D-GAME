@@ -13,7 +13,7 @@ public:
 	double getDelta();
 	double getSingleFrameTime();
 	double getFPS();
-	bool delay(std::string name, size_t secs, bool gametime);
+	bool delay(std::string name, double secs, bool gametime);
 	void Mark();
 	void Reset();
 	bool CheckState(std::string name);

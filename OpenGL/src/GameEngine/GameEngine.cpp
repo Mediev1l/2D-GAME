@@ -37,7 +37,8 @@ void GameEngine::Game_Init()
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		
 
 
 		//================================================================
@@ -81,9 +82,9 @@ void GameEngine::Game_Init()
 	//PLAYER ADDED HERE
 	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
 	_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9));
-	//_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
-	//_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
-	//_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
+	_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
+	_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
+	_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
@@ -481,7 +482,7 @@ void GameEngine::ProcessPlayerShoot()
 
 
 
-	if (t.delay("Shoot", 0, true))
+	if (t.delay("Shoot", 0.05, true))
 	{
 		switch (pdir)
 		{
