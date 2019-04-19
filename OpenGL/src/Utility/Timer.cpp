@@ -27,6 +27,11 @@ double Timer::getFPS()
 	return 1.0f/delta;
 }
 
+double Timer::getDelay(std::string name)
+{
+	return timeCounter[name].first;
+}
+
 bool Timer::delay(std::string name, double secs, bool gametime)
 {
 	if (timeCounter.find(name) == timeCounter.end())

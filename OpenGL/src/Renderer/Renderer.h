@@ -26,6 +26,7 @@ public:
 
 	bool isDark() { return GammaRatio.x <= 1.0f - percentage; };
 	bool isBright() { return GammaRatio.x >= 1.0; };
+	void setDelta(double delta);
 private:
 
 	void setTextureCoords(Tile& tile);
@@ -61,6 +62,7 @@ private:
 	glm::vec4 GammaRatio;
 	float percentage;
 	float dimmRatio;
+	double Delta;
 	
 
 	//Main renderShader

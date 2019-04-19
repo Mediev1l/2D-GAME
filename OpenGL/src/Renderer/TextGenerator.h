@@ -26,6 +26,7 @@ private:
 			 text(x)
 			, pos(p)
 			, constant(infinite)
+			, finished(false)
 			, color(1.0f, 1.0f, 1.0f, 1.0f)
 		{
 			GLuint dlugosc = (GLuint)text.size();
@@ -46,7 +47,7 @@ private:
 				size._y = siz._y;
 			}
 				pos._x -= (size._x * dlugosc*2.8);
-				infinite == true ? color.a = 0.0f : 1.0f;
+				infinite == false ? color.a = 0.0f : 1.0f;
 
 
 		}
@@ -54,6 +55,7 @@ private:
 		Vec2d pos;
 		Vec2d size;
 		bool constant;
+		bool finished;
 		glm::vec4 color;
 	};
 
@@ -87,6 +89,7 @@ public:
 	Vec2i getSheetPosition(char letter) const;
 	Vec2d getPosition(size_t index) const;
 	glm::vec4 getColor(size_t index) const;
+	bool getFinish(size_t index) const;
 	
 
 };

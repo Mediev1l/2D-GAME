@@ -67,7 +67,7 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*ite
 	RenderMap();
 	RenderItems(items);
 	RenderCharacters(characters);
-	//RenderText(text);
+	RenderText(text);
 	_SpriteSheetShader.setVec4("Gamma", GammaRatio);
 }
 
@@ -139,7 +139,7 @@ void Renderer::RenderText(const TextGenerator& text)
 
 	for (size_t i = 0; i < text.getAmount(); i++)
 	{	
-		if (text.CheckDrawing(i) == true || text.getTransparency(i))
+		if (text.CheckDrawing(i) == true)
 		{
 			double counter = 0;
 			for (auto x : text.getText(i))
@@ -154,15 +154,17 @@ void Renderer::RenderText(const TextGenerator& text)
 					tempColor.g -= dimmRatio;
 					tempColor.b -= dimmRatio;
 				}
-
-				if (tempColor.a <= 1.0f && text.CheckDrawing(i) == true) text.setTransparency(i, tempColor.a += 0.004f);
-				else if(text.CheckDrawing(i) == false) 
-					text.setTransparency(i, tempColor.a -= 0.004f);
+				
+				if (tempColor.a <= 1.0f && text.getFinish(i) == false) text.setTransparency(i, tempColor.a += 0.2f * Delta);
+				else if (tempColor.a >= 0.0f && text.getFinish(i) == true) text.setTransparency(i, tempColor.a -= 0.2f * Delta);
+				//else if(text.CheckDrawing(i) == false) 
+				//	text.setTransparency(i, tempColor.a -= 0.004f);
 
 				setTextureCoords(sheetPos);
 				drawText(textPos._x + counter*text.getSize(i)._x*5, textPos._y, text.getTexture(), text.getSize(i), tempColor);
 				counter++;
 			}
+	
 		}
 	}
 
@@ -171,18 +173,18 @@ void Renderer::RenderText(const TextGenerator& text)
 void Renderer::ScreenDimm(float perc)
 {
 	percentage = perc;
-	if (GammaRatio.x > 1.0f - percentage) dimmRatio += 0.008f;
-	if (GammaRatio.x > 1.0f - percentage) GammaRatio.x -= 0.008f;
-	if (GammaRatio.y > 1.0f - percentage) GammaRatio.y -= 0.008f;
-	if (GammaRatio.z > 1.0f - percentage) GammaRatio.z -= 0.008f;
+	if (GammaRatio.x > 1.0f - percentage) dimmRatio += Delta;//0.008f;
+	if (GammaRatio.x > 1.0f - percentage) GammaRatio.x -= Delta; //0.008f;
+	if (GammaRatio.y > 1.0f - percentage) GammaRatio.y -= Delta; //0.008f;
+	if (GammaRatio.z > 1.0f - percentage) GammaRatio.z -= Delta; //0.008f;
 }
 
 void Renderer::ScreenBright()
 {
-	if (GammaRatio.x < 1) dimmRatio -= 0.008f;
-	if (GammaRatio.x < 1) GammaRatio.x += 0.008f;
-	if (GammaRatio.y < 1) GammaRatio.y += 0.008f;
-	if (GammaRatio.z < 1) GammaRatio.z += 0.008f;
+	if (GammaRatio.x < 1) dimmRatio -= Delta;// 0.008f;
+	if (GammaRatio.x < 1) GammaRatio.x += Delta; //0.008f;
+	if (GammaRatio.y < 1) GammaRatio.y += Delta; //0.008f;
+	if (GammaRatio.z < 1) GammaRatio.z += Delta; //0.008f;
 }
 
 void Renderer::setTextureCoords(Tile & tile)
@@ -233,6 +235,11 @@ void Renderer::setTextureCoords(Vec2i pos)
 	_SpriteSheetShader.setFloat("offsetY", offsety);
 }
 
+void Renderer::setDelta(double delta)
+{
+	Delta = delta;
+}
+
 void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 {
 
@@ -261,6 +268,7 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 
 void Renderer::drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::vec4 color)
 {
+	
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
@@ -277,7 +285,7 @@ void Renderer::drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::
 	_SpriteSheetShader.setVec4("Gamma", color);
 	glBindVertexArray(*VAO);
 
-
+	
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 

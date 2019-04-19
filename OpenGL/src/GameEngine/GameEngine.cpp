@@ -117,6 +117,7 @@ void GameEngine::Game_Run()
 
 		//Refresh all delay time
 		t.refresh(false);
+		renderer->setDelta(t.getDelta());
 
 		//Updating Label name
 		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
