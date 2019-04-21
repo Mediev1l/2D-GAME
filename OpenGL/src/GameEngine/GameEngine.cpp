@@ -5,6 +5,7 @@ GameEngine::GameEngine()
 	  window(nullptr)
 	, renderer(nullptr)
 	, textGen(nullptr)
+	, _Menu(nullptr)
 	, t()
 	, SCR_WIDTH(800)
 	, SCR_HEIGHT(800)
@@ -69,6 +70,7 @@ void GameEngine::Game_Init()
 
 		renderer = new Renderer(camera);
 		textGen = new TextGenerator(10.0, 10.0, t);
+		_Menu = new Menu(soundEngine, _gameState, window , t);
 		_map = renderer->getMap();
 		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
@@ -131,6 +133,12 @@ void GameEngine::Game_Run()
 		//GUI
 		ShowGUI({0,0});
 
+		//If In Menu
+		if (_gameState == State::MENU)
+		{
+			renderer->ScreenDimm(0.3f);
+			_Menu->ShowMenu();
+		}
 
 		//Game Update
 		if (_gameState != State::MENU && _gameState != State::INIT)
@@ -199,119 +207,137 @@ void GameEngine::Game_Run()
 
 void GameEngine::processInput()
 {
-
-	//Debug info
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	if (_gameState != State::INIT)
 	{
-		std::cout << "PlayerX: " << _characters[0].getPos().getX() << '\n';
-		std::cout << "PlayerY: " << _characters[0].getPos().getY() << '\n';
-		std::cout << "VectorX: " << camera.getTranslate()._x << '\n';
-		std::cout << "VectorY: " << camera.getTranslate()._y << '\n';
-	}
-	//Closing Window
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
-		soundEngine.VolumeUp();
-	if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
-		soundEngine.VolumeDown();
+		//Closing Window
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+		if (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
+			soundEngine.VolumeUp();
+		if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
+			soundEngine.VolumeDown();
+		
+		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+		{
+			if (t.delay("Menu", 0.3, false))
+			{
+				if (_gameState == State::GAME)
+				{
+					_gameState = State::MENU;
+				}
+				else if (_gameState == State::MENU)
+					_Menu->enter();
+				//_gameState != State::MENU ? _gameState = State::MENU : _gameState = State::GAME;
+			}
+		}
+		
+		
+		//if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+		//{
+		//}
+		//if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+		//{
+		//}
 
-	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
-	{
 
-		if (t.delay("Menu", 1, false))
-			_gameState != State::MENU ? _gameState = State::MENU : _gameState = State::GAME;
-	}
-
-	//Fun
-	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	//if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-	//{
-	//}
-	//if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-	//{
-	//}
-
-	if (_gameState != State::MENU && _gameState != State::INIT)
-	{
 
 		std::pair<Animation::Direction, Animation::Direction> dirMove{ Animation::Direction::NONE,Animation::Direction::NONE};
 		std::pair<Animation::Direction, Animation::Direction> dirShoot{ Animation::Direction::NONE,Animation::Direction::NONE};
-		//PickupItems
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		{
-			/*textGen.setText("TEST", "JEd EN", { 0,0 }, 1, 1);
-			textGen.setText("TEST1", "DW.A", { 0,1 }, 2, 1);
-			textGen.setText("TEST2", "TSZY", { 0,2 }, 3, 1);
-			textGen.setText("TEST3", "CZTERY", { 0,3 }, 4, 1);
-			textGen.setText("TEST4", "WUJ", { 0,4 }, 10, 1);*/
-			textGen->setColor("HP", glm::vec4(0.0, 0.0, 1.0, 0.5));
-			if (_canPickup)
-			{
-				ProcessItemPickup();
-			}
-		}
 
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::UP);
 			//ProcessPlayerShoot();
-			dirShoot.first = Animation::Direction::UP;
+			if (_gameState == State::GAME)
+				dirShoot.first = Animation::Direction::UP;
+			else if (_gameState == State::MENU)
+				_Menu->moveUP();
 		}
 		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::DOWN);
 			//ProcessPlayerShoot();
-			dirShoot.first = Animation::Direction::DOWN;
+			if (_gameState == State::GAME)
+				dirShoot.first = Animation::Direction::DOWN;
+			else if (_gameState == State::MENU)
+				_Menu->moveDOWN();
 		}
 		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::LEFT);
 			//ProcessPlayerShoot();
-			dirShoot.first = Animation::Direction::LEFT;
+			if (_gameState == State::GAME)
+				dirShoot.first = Animation::Direction::LEFT;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::RIGHT);
 			//ProcessPlayerShoot();
-			dirShoot.first = Animation::Direction::RIGHT;
+			if (_gameState == State::GAME)
+				dirShoot.first = Animation::Direction::RIGHT;
 		}
 
-		//MovementProcessor
-		double deltaTime = t.getDelta();
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		// InGame
+		if (_gameState == State::GAME)
 		{
-			//ProcessPlayerMove(deltaTime, Direction::UP);
-			dirMove.first = Animation::Direction::UP;
-		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		{
-			//ProcessPlayerMove(deltaTime, Direction::DOWN);
-			dirMove.first = Animation::Direction::DOWN;
-		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		{
-			//ProcessPlayerMove(deltaTime, Direction::LEFT);
-			dirMove.second = Animation::Direction::LEFT;
-		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		{
-			//ProcessPlayerMove(deltaTime, Direction::RIGHT);
-			dirMove.second = Animation::Direction::RIGHT;
-		}
+			//Debug info
+			if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+			{
+				std::cout << "PlayerX: " << _characters[0].getPos().getX() << '\n';
+				std::cout << "PlayerY: " << _characters[0].getPos().getY() << '\n';
+				std::cout << "VectorX: " << camera.getTranslate()._x << '\n';
+				std::cout << "VectorY: " << camera.getTranslate()._y << '\n';
+			}
 
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		{
-			if(t.delay("PickUP", 1, true))
-				ProcessItemPickup();
+			//Fun
+			if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+			//PickupItems
+			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && _gameState == State::GAME)
+			{
+				textGen->setColor("HP", glm::vec4(0.0, 0.0, 1.0, 0.5));
+				textGen->Infinity("HP", false);
+				if (_canPickup)
+				{
+					ProcessItemPickup();
+				}
+			}
+
+			//MovementProcessor
+			double deltaTime = t.getDelta();
+			if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			{
+				//ProcessPlayerMove(deltaTime, Direction::UP);
+				dirMove.first = Animation::Direction::UP;
+			}
+			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			{
+				//ProcessPlayerMove(deltaTime, Direction::DOWN);
+				dirMove.first = Animation::Direction::DOWN;
+			}
+			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			{
+				//ProcessPlayerMove(deltaTime, Direction::LEFT);
+				dirMove.second = Animation::Direction::LEFT;
+			}
+			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			{
+				//ProcessPlayerMove(deltaTime, Direction::RIGHT);
+				dirMove.second = Animation::Direction::RIGHT;
+			}
+
+			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			{
+				if (t.delay("PickUP", 1, true))
+					ProcessItemPickup();
+			}
+			_characters[0].setSide((Animation::Direction)dirShoot.first);
+			ProcessPlayerMove(deltaTime, dirMove);
+			ProcessPlayerShoot();
 		}
-		_characters[0].setSide((Animation::Direction)dirShoot.first);
-		ProcessPlayerMove(deltaTime,dirMove);
-		ProcessPlayerShoot();
 	}
 
 }
@@ -491,8 +517,8 @@ void GameEngine::ProcessItemPickup()
 	if (nearestid != -1)
 	{
 		auto item = _ItemGenerator.getItems()[nearestid];
-		textGen->setText(item->sName, item->sName, { camera.getFov()._x/2.0, 2 }, 4);
-		textGen->setText(item->sName+"desc", item->getDescription(), { camera.getFov()._x / 2.0, 5 }, 4);
+		textGen->setText(item->sName, item->sName, { camera.getFov()._x/2.0, 2 }, 1);
+		textGen->setText(item->sName+"desc", item->getDescription(), { camera.getFov()._x / 2.0, 5 }, 1);
 		_characters[0].consumeItem(item);
 		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
 	}
@@ -510,7 +536,7 @@ void GameEngine::ProcessPlayerShoot()
 
 
 
-	if (t.delay("Shoot", 0.2, true))
+	if (t.delay("Shoot", 0, true))
 	{
 		switch (pdir)
 		{

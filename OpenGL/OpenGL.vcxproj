@@ -189,6 +189,7 @@
     <ClInclude Include="src\Shaders\Shader.h" />
     <ClInclude Include="src\Stats\Skill.h" />
     <ClInclude Include="src\Stats\Stats.h" />
+    <ClInclude Include="src\Utility\Enums.h" />
     <ClInclude Include="src\Utility\Timer.h" />
     <ClInclude Include="src\Maps\Tile.h" />
     <ClInclude Include="src\Renderer\Texture.h" />

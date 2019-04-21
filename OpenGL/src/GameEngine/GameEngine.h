@@ -13,7 +13,9 @@
 #include "Items/ItemGenerator.h"
 #include "Renderer/TextGenerator.h"
 #include "GameEngine/Sound.h"
+
 #include "Utility/DebugInfo.h"
+
 
 //================================================================
 //= Windows Libraries
@@ -23,28 +25,29 @@
 #include <string>
 #include <sstream>
 #include <irrKlang.h>
+#include "GameEngine/Menu.h"
 class GameEngine
 {
-public:
-	//================================================================
-	//= GAME ENUM'S
-	//================================================================
-
-	enum State
-	{
-		INIT,
-		GAME,
-		MENU,
-		EXIT
-	};
-
-	enum Difficulty
-	{
-		START,
-		EASY,
-		MEDIUM,
-		HARD
-	};
+//public:
+//	//================================================================
+//	//= GAME ENUM'S
+//	//================================================================
+//
+//	enum State
+//	{
+//		INIT,
+//		GAME,
+//		MENU,
+//		EXIT
+//	};
+//
+//	enum Difficulty
+//	{
+//		START,
+//		EASY,
+//		MEDIUM,
+//		HARD
+//	};
 
 protected:
 	//================================================================
@@ -64,6 +67,7 @@ protected:
 	Renderer* renderer;
 	TextGenerator* textGen;
 	Sound soundEngine;
+	Menu* _Menu;
 	//================================================================
 	//= GLOBALSETTINGS
 	//================================================================
@@ -85,6 +89,7 @@ protected:
 	ItemGenerator _ItemGenerator;
 	//std::vector<Item*> _items;
 	LvlGenerator _lvlgen;
+	
 
 	//================================================================
 	//= Game Processor

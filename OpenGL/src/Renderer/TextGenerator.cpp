@@ -57,6 +57,11 @@ void TextGenerator::setTransparency(size_t index, float value) const
 		const_cast<TextGenerator*>(this)->_text.at(ind).color.a = value;
 }
 
+void TextGenerator::Infinity(std::string name, bool isConst)
+{
+	_text.at(name).constant = isConst;
+}
+
 
 bool TextGenerator::getTransparency(size_t index) const
 {

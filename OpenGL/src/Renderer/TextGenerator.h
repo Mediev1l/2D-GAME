@@ -79,6 +79,7 @@ public:
 	bool CheckDrawing(size_t index) const;
 	void setColor(std::string name, glm::vec4 col) { _text[name].color = col; };
 	void setTransparency(size_t index, float value) const;
+	void Infinity(std::string name, bool isConst);
 
 	size_t getAmount() const { return _text.size(); };
 	GLuint getTexture() const { return texture->getID(); };

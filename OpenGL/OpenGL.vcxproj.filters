@@ -176,6 +176,9 @@
     <ClInclude Include="src\Utility\DebugInfo.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utility\Enums.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Sprites\wooden.jpg">

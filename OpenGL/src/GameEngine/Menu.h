@@ -1,48 +1,47 @@
 #ifndef _Menu_H
 #define _Menu_H
 
-#include "GameEngine/GameEngine.h"
+#include <GL/glew.h>
+#include "GLFW/glfw3.h"
+
+#include "Utility/Enums.h"
+#include "Renderer/Texture.h"
+#include "GameEngine/Sound.h"
+#include "Renderer/TextGenerator.h"
+#include "Utility/Timer.h"
 
 
-class Menu
+class Menu 
 {
-public:
-	enum MainMenu
-	{
-		mmSTART = 0,
-		mmOPTIONS = 1,
-		mmEXIT = 2,
-		mmLAST = 3
-	};
-
-
-	enum GameMenu
-	{
-	gmRESUME = 0,
-	gmOPTIONS = 1,
-	gmTOMAIN = 2,
-	gmEXIT = 3,
-	gmLAST = 4
-	};
 private:
-
-	Texture* texture;
+	//=====================
+	//Actual State
+	//=====================
 	MainMenu mainMenu;
 	GameMenu gameMenu;
-	GameEngine::State& gameEngineState;
-	Sound* gameSound;
 	bool onMainMenu;
+
+	//=====================
+	//Objects
+	//=====================
+	Texture* texture;
+	State& gameEngineState;
+	Sound& gameSound;
+	GLFWwindow* window;
+	TextGenerator txt;
+	
 
 
 public:
 	Menu() = delete;
-	Menu(Sound& sound, GameEngine::State& state);
+	Menu(Sound& sound, State& state, GLFWwindow* window, Timer& timer);
 
-	void setGameMenu() { onMainMenu = false; gameMenu = GameMenu::gmRESUME; };
-	void setMainMenu() { onMainMenu = true; mainMenu = MainMenu::mmSTART; };
+	void setGameMenu() { onMainMenu = false; gameMenu = GameMenu::GAME_RESUME; };
+	void setMainMenu() { onMainMenu = true; mainMenu = MainMenu::MAIN_START; };
 	void moveUP();
 	void moveDOWN();
 	void enter();
+	void ShowMenu();
 
 };
 #endif

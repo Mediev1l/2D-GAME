@@ -157,8 +157,6 @@ void Renderer::RenderText(const TextGenerator& text)
 				
 				if (tempColor.a <= 1.0f && text.getFinish(i) == false) text.setTransparency(i, tempColor.a += 0.2f * Delta);
 				else if (tempColor.a >= 0.0f && text.getFinish(i) == true) text.setTransparency(i, tempColor.a -= 0.2f * Delta);
-				//else if(text.CheckDrawing(i) == false) 
-				//	text.setTransparency(i, tempColor.a -= 0.004f);
 
 				setTextureCoords(sheetPos);
 				drawText(textPos._x + counter*text.getSize(i)._x*5, textPos._y, text.getTexture(), text.getSize(i), tempColor);
