@@ -139,15 +139,16 @@ void Renderer::RenderText(const TextGenerator& text)
 
 	for (size_t i = 0; i < text.getAmount(); i++)
 	{	
-		if (text.CheckDrawing(i) == true)
+		std::string name = text.getName(i);
+		if (text.CheckDrawing(name) == true)
 		{
 			double counter = 0;
-			for (auto x : text.getText(i))
+			for (auto x : text.getText(name))
 			{
 				Vec2ic sheetPos = text.getSheetPosition(toupper(x));
-				Vec2dc textPos = text.getPosition(i);
+				Vec2dc textPos = text.getPosition(name);
 
-				glm::vec4 tempColor = text.getColor(i);
+				glm::vec4 tempColor = text.getColor(name);
 				if (dimmRatio > 0)
 				{
 					tempColor.r -= dimmRatio;
@@ -155,11 +156,11 @@ void Renderer::RenderText(const TextGenerator& text)
 					tempColor.b -= dimmRatio;
 				}
 				
-				if (tempColor.a <= 1.0f && text.getFinish(i) == false) text.setTransparency(i, tempColor.a += 0.2f * Delta);
-				else if (tempColor.a >= 0.0f && text.getFinish(i) == true) text.setTransparency(i, tempColor.a -= 0.2f * Delta);
+				if (tempColor.a <= 1.0f && text.getFinish(name) == false) text.setTransparency(name, tempColor.a += 0.2f * Delta);
+				else if (tempColor.a >= 0.0f && text.getFinish(name) == true) text.setTransparency(name, tempColor.a -= 0.2f * Delta);
 
 				setTextureCoords(sheetPos);
-				drawText(textPos._x + counter*text.getSize(i)._x*5, textPos._y, text.getTexture(), text.getSize(i), tempColor);
+				drawText(textPos._x + counter*text.getSize(name)._x*5, textPos._y, text.getTexture(), text.getSize(name), tempColor);
 				counter++;
 			}
 	

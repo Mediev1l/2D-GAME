@@ -29,9 +29,19 @@ void TextGenerator::setText(std::string uniqueName, std::string text, Vec2d posi
 	//}
 }
 
+void TextGenerator::setSize(std::string name, Vec2d size)
+{
+	_text.at(name).size = size;
+}
+
+void TextGenerator::setMenu(std::string name, bool menu)
+{
+	_text.at(name).menu = menu;
+}
+
 bool TextGenerator::CheckDrawing(size_t index) const
 {
-	std::string ind = findIndex(index);
+	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 	{
 		if (_timer.CheckState(ind) || _text.at(ind).constant == true)
@@ -52,12 +62,69 @@ bool TextGenerator::CheckDrawing(size_t index) const
 
 void TextGenerator::setTransparency(size_t index, float value) const
 {
-	std::string ind = findIndex(index);
+	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		const_cast<TextGenerator*>(this)->_text.at(ind).color.a = value;
 }
 
-void TextGenerator::Infinity(std::string name, bool isConst)
+bool TextGenerator::CheckDrawing(std::string name) const
+{
+	if (_timer.CheckState(name) || _text.at(name).constant == true)
+	{
+		if (_timer.getDelay(name) <= 1.0 &&  _text.at(name).constant != true)
+			const_cast<TextGenerator*>(this)->_text.at(name).finished = true;
+		else
+			const_cast<TextGenerator*>(this)->_text.at(name).finished = false;
+
+		return true;
+	}
+	else
+		return false;
+}
+
+
+bool TextGenerator::getTransparency(std::string name) const
+{
+	if (_text.at(name).color.a >= 0.0f)
+		return true;
+	else
+		return false;
+}
+
+bool TextGenerator::getFinish(std::string name) const
+{
+	if (_text.at(name).finished == true)
+		return true;
+	else
+		return false;
+}
+
+glm::vec4 TextGenerator::getColor(std::string name) const
+{
+	return _text.at(name).color;
+}
+
+std::string TextGenerator::getText(std::string name) const
+{
+	return _text.at(name).text;
+}
+
+Vec2d TextGenerator::getSize(std::string name) const
+{
+	return _text.at(name).size;
+}
+
+Vec2d TextGenerator::getPosition(std::string name) const
+{
+	return _text.at(name).pos;
+}
+
+void TextGenerator::setTransparency(std::string name, float value) const
+{
+	const_cast<TextGenerator*>(this)->_text.at(name).color.a = value;
+}
+
+void TextGenerator::setInfinity(std::string name, bool isConst)
 {
 	_text.at(name).constant = isConst;
 }
@@ -65,17 +132,19 @@ void TextGenerator::Infinity(std::string name, bool isConst)
 
 bool TextGenerator::getTransparency(size_t index) const
 {
-	std::string ind = findIndex(index);
+	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 	{
-		_text.at(ind).color.a >= 0.0f;
-		return true;
+		if (_text.at(ind).color.a >= 0.0f)
+			return true;
+		else
+			return false;
 	}
 	else
 		return false;
 }
 
-std::string TextGenerator::findIndex(size_t index) const
+std::string TextGenerator::FindIndex(size_t index) const
 {
 	std::map<std::string, params>::const_iterator it;
 	int counter = 0;
@@ -95,14 +164,19 @@ std::string TextGenerator::findIndex(size_t index) const
 
 Vec2d TextGenerator::getSize(size_t index) const
 {
-	std::string ind = findIndex(index);
+	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		return _text.at(ind).size;
 }
 
+bool TextGenerator::getMenu(std::string name) const
+{
+	return _text.at(name).menu;
+}
+
 std::string TextGenerator::getText(size_t index) const
 {
-	std::string ind = findIndex(index);
+	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		return _text.at(ind).text;
 }
@@ -153,15 +227,24 @@ Vec2i TextGenerator::getSheetPosition(char letter) const
 
 Vec2d TextGenerator::getPosition(size_t index) const
 {
-	std::string ind = findIndex(index);
+	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		return _text.at(ind).pos;
 
 }
 
+std::string TextGenerator::getName(size_t index) const
+{
+	std::string ind = FindIndex(index);
+	if (ind != "_ERROR")
+		return ind;
+	else
+		return "_ERROR";
+}
+
 glm::vec4 TextGenerator::getColor(size_t index) const
 {
-	std::string ind = findIndex(index);
+	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		return _text.at(ind).color;
 }
@@ -169,7 +252,7 @@ glm::vec4 TextGenerator::getColor(size_t index) const
 bool TextGenerator::getFinish(size_t index) const
 {
 
-	std::string ind = findIndex(index);
+	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 	{
 		if (_text.at(ind).finished == true)

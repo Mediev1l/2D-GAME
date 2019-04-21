@@ -27,6 +27,7 @@ private:
 			, pos(p)
 			, constant(infinite)
 			, finished(false)
+			, menu(false)
 			, color(1.0f, 1.0f, 1.0f, 1.0f)
 		{
 			GLuint dlugosc = (GLuint)text.size();
@@ -56,6 +57,7 @@ private:
 		Vec2d size;
 		bool constant;
 		bool finished;
+		bool menu;
 		glm::vec4 color;
 	};
 
@@ -75,23 +77,57 @@ public:
 		texture = AssetManager::Get().getSprite("Font");
 	};
 
-	void setText(std::string uniqueName, std::string text, Vec2d position, size_t duration, Vec2d size = Vec2d(0,0));
-	bool CheckDrawing(size_t index) const;
-	void setColor(std::string name, glm::vec4 col) { _text[name].color = col; };
-	void setTransparency(size_t index, float value) const;
-	void Infinity(std::string name, bool isConst);
+	//================================================================
+	//= SETTERS
+	//================================================================
 
+	void setText(std::string uniqueName, std::string text, Vec2d position, size_t duration, Vec2d size = Vec2d(0,0));
+	void setSize(std::string name, Vec2d size);
+	void setMenu(std::string name, bool menu);
+	void setColor(std::string name, glm::vec4 col) { _text[name].color = col; };
+	void setInfinity(std::string name, bool isConst);
+
+	//================================================================
+	//= GETTERS
+	//================================================================
+	bool getMenu(std::string name) const;
 	size_t getAmount() const { return _text.size(); };
 	GLuint getTexture() const { return texture->getID(); };
-	bool getTransparency(size_t index) const;
-	std::string findIndex(size_t index) const;
-	Vec2d getSize(size_t index) const;
-	std::string getText(size_t index) const;
 	Vec2i getSheetPosition(char letter) const;
-	Vec2d getPosition(size_t index) const;
-	glm::vec4 getColor(size_t index) const;
+
+	//================================================================
+	//= GET BY INDEX
+	//================================================================
+	bool CheckDrawing(size_t index) const;
+	std::string FindIndex(size_t index) const;
+	bool getTransparency(size_t index) const;
 	bool getFinish(size_t index) const;
-	
+	glm::vec4 getColor(size_t index) const;
+	std::string getText(size_t index) const;
+	Vec2d getSize(size_t index) const;
+	Vec2d getPosition(size_t index) const;
+	std::string getName(size_t index) const;
+
+	//================================================================
+	//= SET BY INDEX
+	//================================================================
+	void setTransparency(size_t index, float value) const;
+
+	//================================================================
+	//= GET BY UNIQUE NAME
+	//================================================================
+	bool CheckDrawing(std::string name) const;
+	bool getTransparency(std::string name) const;
+	bool getFinish(std::string name) const;
+	glm::vec4 getColor(std::string name) const;
+	std::string getText(std::string name) const;
+	Vec2d getSize(std::string name) const;
+	Vec2d getPosition(std::string name) const;
+
+	//================================================================
+	//= SET BY UNIQUE NAME
+	//================================================================
+	void setTransparency(std::string name, float value) const;
 
 };
 

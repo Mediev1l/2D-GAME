@@ -299,7 +299,7 @@ void GameEngine::processInput()
 			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && _gameState == State::GAME)
 			{
 				textGen->setColor("HP", glm::vec4(0.0, 0.0, 1.0, 0.5));
-				textGen->Infinity("HP", false);
+
 				if (_canPickup)
 				{
 					ProcessItemPickup();
