@@ -70,7 +70,7 @@ void GameEngine::Game_Init()
 
 		renderer = new Renderer(camera);
 		textGen = new TextGenerator(10.0, 10.0, t);
-		_Menu = new Menu(soundEngine, _gameState, window , t);
+		_Menu = new Menu(soundEngine, _gameState, window , *textGen, *renderer);
 		_map = renderer->getMap();
 		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
@@ -94,6 +94,8 @@ void GameEngine::Game_Init()
 	_characters[0].setRange(50);
 	Item::_texture = AssetManager::Get().getSprite("items");
 	_gameState = State::GAME;
+
+	renderer->setGameState(_gameState);
 
 }
 
@@ -136,18 +138,25 @@ void GameEngine::Game_Run()
 		//If In Menu
 		if (_gameState == State::MENU)
 		{
-			renderer->ScreenDimm(0.3f);
-			_Menu->ShowMenu();
+
+			_Menu->ShowMenu(1.8, 1.3);
 		}
+		else if (_Menu->isClosed() && !renderer->isBright())
+			renderer->ScreenBright();
+		else if (_Menu->isClosed() && renderer->isBright())
+			_Menu->setClosed(false);
 
 		//Game Update
-		if (_gameState != State::MENU && _gameState != State::INIT)
+		if (_gameState == State::GAME)
 		{
 			t.refresh(true);
 			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
 			Update();
 			ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
 		}
+		//else if
+
+
 
 		//Gdy przejdziemy poziom i wejdziemy w drzwi
 		if (_gameState == State::INIT)
@@ -182,11 +191,12 @@ void GameEngine::Game_Run()
 				}
 			}
 		}
+
 		
 		//Renderowanie ³adnie w jednej funkcji
 		renderer->Render(_characters, &_ItemGenerator.getItems(), *textGen);
 		soundEngine.Refresh();
-		
+	
 
 		//DEBUG STUFF
 		updateInfo();
@@ -211,7 +221,22 @@ void GameEngine::processInput()
 	{
 		//Closing Window
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			glfwSetWindowShouldClose(window, true);
+		{
+			if (t.delay("Escape", 0.3, false))
+			{
+				if (_gameState != State::MENU)
+					_Menu->Open();
+				else
+				{
+					_gameState = State::GAME;
+					_Menu->Close();
+				}
+
+
+			}
+			
+			//glfwSetWindowShouldClose(window, true);
+		}
 		if (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
 			soundEngine.VolumeUp();
 		if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
@@ -219,15 +244,14 @@ void GameEngine::processInput()
 		
 		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		{
-			if (t.delay("Menu", 0.3, false))
+			if (t.delay("Enter", 0.3, false))
 			{
 				if (_gameState == State::GAME)
-				{
-					_gameState = State::MENU;
-				}
+					_gameState = State::PAUSE;
 				else if (_gameState == State::MENU)
 					_Menu->enter();
-				//_gameState != State::MENU ? _gameState = State::MENU : _gameState = State::GAME;
+				else if (_gameState == State::PAUSE)
+					_gameState = State::GAME;
 			}
 		}
 		
@@ -251,7 +275,12 @@ void GameEngine::processInput()
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::UP;
 			else if (_gameState == State::MENU)
-				_Menu->moveUP();
+			{
+				if (t.delay("UP", 0.3, false))
+				{
+					_Menu->moveUP();
+				}
+			}
 		}
 		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
@@ -260,7 +289,12 @@ void GameEngine::processInput()
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::DOWN;
 			else if (_gameState == State::MENU)
-				_Menu->moveDOWN();
+			{
+				if (t.delay("Down", 0.3, false))
+				{
+					_Menu->moveDOWN();
+				}
+			}
 		}
 		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
@@ -268,6 +302,13 @@ void GameEngine::processInput()
 			//ProcessPlayerShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::LEFT;
+			else if (_gameState == State::MENU)
+			{
+				if (t.delay("Left", 0.3, false))
+				{
+					_Menu->MoveLeft();
+				}
+			}
 		}
 		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
@@ -275,6 +316,13 @@ void GameEngine::processInput()
 			//ProcessPlayerShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::RIGHT;
+			else if (_gameState == State::MENU)
+			{
+				if (t.delay("Right", 0.3, false))
+				{
+					_Menu->MoveRight();
+				}
+			}
 		}
 
 		// InGame
@@ -655,30 +703,30 @@ void GameEngine::Update()
 void GameEngine::ShowGUI(Vec2d position)
 {
 	Vec2d scale = position;
-	scale._x = (1.2  + position._x - 1) / 2;
+	scale._x = (0.3 + position._x - 1) / 2;
 	scale._y = (0.3  + position._y - 1) / 2;
-	double offsetX = 0.3;
-	double offsetY = 0.8;
+	double offsetX = 1.0;
+	double offsetY = 0.3;
 
 
 	// HP
 	textGen->setText("HP", "HP ", Vec2d(scale._x, scale._y), 0, Vec2d(0.03, 0.05));
-	textGen->setText("HP VALUE", std::to_string((GLuint)_characters[0].getHealth()), Vec2d(scale._x + offsetY, scale._y), 0, Vec2d(0.05, 0.04));
+	textGen->setText("HP VALUE", std::to_string((GLuint)_characters[0].getHealth()), Vec2d(scale._x + offsetX, scale._y), 0, Vec2d(0.05, 0.04));
 	// RANGE
-	textGen->setText("RANGE", "RANGE ", Vec2d(scale._x, scale._y + 1 * offsetX), 0, Vec2d(0.03, 0.05));
-	textGen->setText("RANGE VALUE", std::to_string((GLuint)_characters[0].getRange()) , Vec2d(scale._x + offsetY, scale._y + 1 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen->setText("RANGE", "RANGE ", Vec2d(scale._x, scale._y + 1 * offsetY), 0, Vec2d(0.03, 0.05));
+	textGen->setText("RANGE VALUE", std::to_string((GLuint)_characters[0].getRange()) , Vec2d(scale._x + offsetX, scale._y + 1 * offsetY), 0, Vec2d(0.05, 0.04));
 
 	// SPEED
-	textGen->setText("SPEED", "SPEED ", Vec2d(scale._x, scale._y + 2 * offsetX), 0, Vec2d(0.03, 0.05));
-	textGen->setText("SPEED VALUE", std::to_string((GLuint)_characters[0].getMovementSpeed()) , Vec2d(scale._x + offsetY, scale._y + 2 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen->setText("SPEED", "SPEED ", Vec2d(scale._x, scale._y + 2 * offsetY), 0, Vec2d(0.03, 0.05));
+	textGen->setText("SPEED VALUE", std::to_string((GLuint)_characters[0].getMovementSpeed()) , Vec2d(scale._x + offsetX, scale._y + 2 * offsetY), 0, Vec2d(0.05, 0.04));
 
 	// ATT S
-	textGen->setText("ATTACKS", "ATT S ", Vec2d(scale._x, scale._y + 3 * offsetX), 0, Vec2d(0.03, 0.05));
-	textGen->setText("ATTACK VALUE", std::to_string((GLuint)_characters[0].getAttackSpeed()) , Vec2d(scale._x + offsetY, scale._y + 3 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen->setText("ATTACKS", "ATT S ", Vec2d(scale._x, scale._y + 3 * offsetY), 0, Vec2d(0.03, 0.05));
+	textGen->setText("ATTACK VALUE", std::to_string((GLuint)_characters[0].getAttackSpeed()) , Vec2d(scale._x + offsetX, scale._y + 3 * offsetY), 0, Vec2d(0.05, 0.04));
 
 	// DMG
-	textGen->setText("DMG", "DMG ", Vec2d(scale._x, scale._y + 4 * offsetX), 0, Vec2d(0.03, 0.05));
-	textGen->setText("DMG VALUE", std::to_string((GLuint)_characters[0].getDamage()) , Vec2d(scale._x + offsetY, scale._y + 4 * offsetX), 0, Vec2d(0.05, 0.04));
+	textGen->setText("DMG", "DMG ", Vec2d(scale._x, scale._y + 4 * offsetY), 0, Vec2d(0.03, 0.05));
+	textGen->setText("DMG VALUE", std::to_string((GLuint)_characters[0].getDamage()) , Vec2d(scale._x + offsetX, scale._y + 4 * offsetY), 0, Vec2d(0.05, 0.04));
 
 	//textGen.setSize("HP", Vec2d(0.03, 0.05));
 	//textGen.setSize("HP VALUE", Vec2d(0.05, 0.04));

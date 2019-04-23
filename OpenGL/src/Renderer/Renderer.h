@@ -9,6 +9,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 #include "AssetManager/AssetManager.h"
+#include "Utility/Enums.h"
 
 
 class Renderer
@@ -28,7 +29,9 @@ public:
 
 	bool isDark() { return GammaRatio.x <= 1.0f - percentage; };
 	bool isBright() { return GammaRatio.x >= 1.0; };
+	float HowDark() { return GammaRatio.x; };
 	void setDelta(double delta);
+	void setGameState(State& gamestate);
 private:
 
 	void setTextureCoords(Tile& tile);
@@ -42,6 +45,7 @@ private:
 	void RenderCharacters(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item*>* items);
 	void RenderText(const TextGenerator& text);
+	void test();
 	
 
 	//Doors Stuff
@@ -65,6 +69,7 @@ private:
 	float percentage;
 	float dimmRatio;
 	double Delta;
+	State* _gamestate;
 	
 
 	//Main renderShader
@@ -91,6 +96,14 @@ private:
 		1.0f,  1.0f, 0.0f,   0.1f, 1.0f,  // top right
 		1.0f, -1.0f, 0.0f,   0.1f, 0.75f,  // bottom right
 		-1.0f, -1.0f, 0.0f,   0.0f, 0.75f,  // bottom left
+		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
+	};
+
+	float vertices2[20] = {
+		// positions          // textures coords
+		1.0f,  1.0f, 0.0f,   1.0f, 1.0f,  // top right
+		1.0f, -1.0f, 0.0f,   1.0f, 0.0f,  // bottom right
+		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // bottom left
 		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
 	};
 

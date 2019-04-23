@@ -30,11 +30,14 @@ public:
 public:
 	void Play(std::string x, bool looped=false);
 	void Refresh();
-	void Mute(bool mute) { this->mute = mute; };
+	void Mute(bool mute);
 	void VolumeUp();
 	void VolumeDown();
+	double getVolume() { return volumeLvl; };
+	bool getMute() { return mute; };
 private:
 	void Stop();
+	void PlayGameTheme();
 private:
 	std::map<std::string, snd> sounds;
 	Timer& t;

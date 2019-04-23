@@ -24,6 +24,7 @@ void AssetManager::LoadSprites()
 	load("zombie", "res/Sprites/Enemies/Zombie/zombie.png", true);
 	load("zombie2", "res/Sprites/Enemies/Zombie/zombie2.png", true);
 	load("SpeedBoots", "res/Sprites/Items/SpeedBoots.png", true);
+	load("MainMenu", "res/Sprites/Others/Menu.png", false);
 	load("items", "res/Sprites/Items/items.png", true);
 	load("Font", "res/Sprites/Font/Font.png", true);
 

@@ -8,6 +8,7 @@ Renderer::Renderer(const Camera& camera)
 	, cam(camera)
 	, percentage(1.0f)
 	, dimmRatio(0.0f)
+	, _gamestate(nullptr)
 {
 	//Ustawienie gammy na full
 	GammaRatio = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -68,6 +69,7 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*ite
 	RenderItems(items);
 	RenderCharacters(characters);
 	RenderText(text);
+	//test();
 	_SpriteSheetShader.setVec4("Gamma", GammaRatio);
 }
 
@@ -149,15 +151,17 @@ void Renderer::RenderText(const TextGenerator& text)
 				Vec2dc textPos = text.getPosition(name);
 
 				glm::vec4 tempColor = text.getColor(name);
-				if (dimmRatio > 0)
+				if (dimmRatio > 0 && text.CheckMenu(name) != true)
 				{
 					tempColor.r -= dimmRatio;
 					tempColor.g -= dimmRatio;
 					tempColor.b -= dimmRatio;
 				}
 				
-				if (tempColor.a <= 1.0f && text.getFinish(name) == false) text.setTransparency(name, tempColor.a += 0.2f * Delta);
-				else if (tempColor.a >= 0.0f && text.getFinish(name) == true) text.setTransparency(name, tempColor.a -= 0.2f * Delta);
+				if (tempColor.a <= 1.0f && text.getFinish(name) == false && *_gamestate != State::MENU && *_gamestate != State::PAUSE)
+					text.setTransparency(name, tempColor.a += 0.2f * Delta);
+				else if (tempColor.a >= 0.0f && text.getFinish(name) == true && *_gamestate != State::MENU && *_gamestate != State::PAUSE)
+					text.setTransparency(name, tempColor.a -= 0.2f * Delta);
 
 				setTextureCoords(sheetPos);
 				drawText(textPos._x + counter*text.getSize(name)._x*5, textPos._y, text.getTexture(), text.getSize(name), tempColor);
@@ -172,18 +176,18 @@ void Renderer::RenderText(const TextGenerator& text)
 void Renderer::ScreenDimm(float perc)
 {
 	percentage = perc;
-	if (GammaRatio.x > 1.0f - percentage) dimmRatio += Delta;//0.008f;
-	if (GammaRatio.x > 1.0f - percentage) GammaRatio.x -= Delta; //0.008f;
-	if (GammaRatio.y > 1.0f - percentage) GammaRatio.y -= Delta; //0.008f;
-	if (GammaRatio.z > 1.0f - percentage) GammaRatio.z -= Delta; //0.008f;
+	if (GammaRatio.x > 1.0f - percentage) dimmRatio += Delta;
+	if (GammaRatio.x > 1.0f - percentage) GammaRatio.x -= Delta; 
+	if (GammaRatio.y > 1.0f - percentage) GammaRatio.y -= Delta; 
+	if (GammaRatio.z > 1.0f - percentage) GammaRatio.z -= Delta; 
 }
 
 void Renderer::ScreenBright()
 {
-	if (GammaRatio.x < 1) dimmRatio -= Delta;// 0.008f;
-	if (GammaRatio.x < 1) GammaRatio.x += Delta; //0.008f;
-	if (GammaRatio.y < 1) GammaRatio.y += Delta; //0.008f;
-	if (GammaRatio.z < 1) GammaRatio.z += Delta; //0.008f;
+	if (GammaRatio.x < 1) dimmRatio -= Delta;
+	if (GammaRatio.x < 1) GammaRatio.x += Delta; 
+	if (GammaRatio.y < 1) GammaRatio.y += Delta; 
+	if (GammaRatio.z < 1) GammaRatio.z += Delta; 
 }
 
 void Renderer::setTextureCoords(Tile & tile)
@@ -239,6 +243,11 @@ void Renderer::setDelta(double delta)
 	Delta = delta;
 }
 
+void Renderer::setGameState(State & gamestate)
+{
+	_gamestate = &gamestate;
+}
+
 void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 {
 
@@ -263,6 +272,37 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+}
+
+void Renderer::test()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	//model = glm::translate(model, glm::vec3(-StartPosX + 1, StartPosY - 1, 0.0f));
+	//model = glm::translate(model, glm::vec3(TranslateValueX, -TranslateValueY , 0.0f));
+	//model = glm::translate(model, glm::vec3((float)cam.getTranslate()._x, (float)cam.getTranslate()._y, 0.0f));
+
+
+	//Skalowanko lepiej na koncu xD
+	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 0.0f));
+
+	_SpriteSheetShader.setFloat("offsetX", 0.0f);
+	_SpriteSheetShader.setFloat("offsetY", 0.0f);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, AssetManager::Get().getSprite("MainMenu")->getID());
+
+	_SpriteSheetShader.use();
+	_SpriteSheetShader.setMat4("model", model);
+	glBindVertexArray(*VAO);
+
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 }
 
 void Renderer::drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::vec4 color)

@@ -16,7 +16,7 @@ Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false), volumeLvl(1.
 		sounds.emplace(name,snd(sound_path+path,false,secs));
 	}
 	engine = irrklang::createIrrKlangDevice();
-	Play("main",true);
+	PlayGameTheme();
 }
 
 Sound::~Sound()
@@ -35,9 +35,15 @@ void Sound::Play(std::string x, bool looped)
 			sound.play = true;
 			engine->play2D(sound.path.c_str(), looped);
 			t.delay(x, sound.time, false);
-	
+
 		}
 	}
+
+}
+
+void Sound::PlayGameTheme()
+{
+	Play("main", true);
 }
 
 void Sound::Refresh()
@@ -51,11 +57,21 @@ void Sound::Refresh()
 	}
 }
 
+void Sound::Mute(bool mute)
+{
+	this->mute = mute;
+
+	if (this->mute == true)
+		Stop();
+	else
+		PlayGameTheme();
+}
+
 void Sound::VolumeUp()
 {
 	if (volumeLvl < 1.0)
 	{
-	volumeLvl += 0.005; 
+	volumeLvl += 0.05; 
 	engine->setSoundVolume((irrklang::ik_f32)volumeLvl); 
 	}
 }
@@ -64,7 +80,7 @@ void Sound::VolumeDown()
 {	
 	if (volumeLvl > 0.0)
 	{
-		volumeLvl -= 0.005; 
+		volumeLvl -= 0.05; 
 		engine->setSoundVolume((irrklang::ik_f32)volumeLvl); 
 	}
 }

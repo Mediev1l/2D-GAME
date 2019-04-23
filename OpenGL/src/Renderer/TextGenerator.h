@@ -117,6 +117,7 @@ public:
 	//= GET BY UNIQUE NAME
 	//================================================================
 	bool CheckDrawing(std::string name) const;
+	bool CheckMenu(std::string name) const;
 	bool getTransparency(std::string name) const;
 	bool getFinish(std::string name) const;
 	glm::vec4 getColor(std::string name) const;

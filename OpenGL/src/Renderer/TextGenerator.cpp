@@ -5,6 +5,7 @@ void TextGenerator::setText(std::string uniqueName, std::string text, Vec2d posi
 	if (_text.find(uniqueName) != _text.end())
 	{
 		_text[uniqueName].text = text;
+		_text[uniqueName].pos = position;
 		return;
 	}
 
@@ -80,6 +81,11 @@ bool TextGenerator::CheckDrawing(std::string name) const
 	}
 	else
 		return false;
+}
+
+bool TextGenerator::CheckMenu(std::string name) const
+{
+	return _text.at(name).menu;
 }
 
 
