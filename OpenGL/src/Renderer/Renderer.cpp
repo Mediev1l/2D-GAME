@@ -9,9 +9,10 @@ Renderer::Renderer(const Camera& camera)
 	, percentage(1.0f)
 	, dimmRatio(0.0f)
 	, _gamestate(nullptr)
+	, _maxgamma(1.0)
 {
 	//Ustawienie gammy na full
-	GammaRatio = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	GammaRatio = glm::vec4(_maxgamma, _maxgamma, _maxgamma, 1.0f);
 
 	glGenVertexArrays(1, VAO);
 	glGenBuffers(1, VBO);
@@ -65,12 +66,14 @@ void Renderer::Render( std::vector<Character>&characters, std::vector<Item*>*ite
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	_SpriteSheetShader.use();
+
 	RenderMap();
 	RenderItems(items);
 	RenderCharacters(characters);
 	RenderText(text);
-	//test();
 	_SpriteSheetShader.setVec4("Gamma", GammaRatio);
+	//test();
+	
 }
 
 
@@ -158,7 +161,7 @@ void Renderer::RenderText(const TextGenerator& text)
 					tempColor.b -= dimmRatio;
 				}
 				
-				if (tempColor.a <= 1.0f && text.getFinish(name) == false && *_gamestate != State::MENU && *_gamestate != State::PAUSE)
+				if (tempColor.a <= _maxgamma && text.getFinish(name) == false && *_gamestate != State::MENU && *_gamestate != State::PAUSE)
 					text.setTransparency(name, tempColor.a += 0.2f * Delta);
 				else if (tempColor.a >= 0.0f && text.getFinish(name) == true && *_gamestate != State::MENU && *_gamestate != State::PAUSE)
 					text.setTransparency(name, tempColor.a -= 0.2f * Delta);
@@ -176,18 +179,18 @@ void Renderer::RenderText(const TextGenerator& text)
 void Renderer::ScreenDimm(float perc)
 {
 	percentage = perc;
-	if (GammaRatio.x > 1.0f - percentage) dimmRatio += Delta;
-	if (GammaRatio.x > 1.0f - percentage) GammaRatio.x -= Delta; 
-	if (GammaRatio.y > 1.0f - percentage) GammaRatio.y -= Delta; 
-	if (GammaRatio.z > 1.0f - percentage) GammaRatio.z -= Delta; 
+	if (GammaRatio.x > _maxgamma - percentage) dimmRatio += Delta;
+	if (GammaRatio.x > _maxgamma - percentage) GammaRatio.x -= Delta; 
+	if (GammaRatio.y > _maxgamma - percentage) GammaRatio.y -= Delta; 
+	if (GammaRatio.z > _maxgamma - percentage) GammaRatio.z -= Delta; 
 }
 
 void Renderer::ScreenBright()
 {
-	if (GammaRatio.x < 1) dimmRatio -= Delta;
-	if (GammaRatio.x < 1) GammaRatio.x += Delta; 
-	if (GammaRatio.y < 1) GammaRatio.y += Delta; 
-	if (GammaRatio.z < 1) GammaRatio.z += Delta; 
+	if (GammaRatio.x < _maxgamma) dimmRatio -= Delta;
+	if (GammaRatio.x < _maxgamma) GammaRatio.x += Delta; 
+	if (GammaRatio.y < _maxgamma) GammaRatio.y += Delta; 
+	if (GammaRatio.z < _maxgamma) GammaRatio.z += Delta; 
 }
 
 void Renderer::setTextureCoords(Tile & tile)
@@ -322,6 +325,7 @@ void Renderer::drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::
 	_SpriteSheetShader.use();
 	_SpriteSheetShader.setMat4("model", model);
 	_SpriteSheetShader.setVec4("Gamma", color);
+	//_SpriteSheetShader.setVec4("Gamma", glm::vec4(color.r - 1.0 + GammaRatio.r, color.g - 1.0 + GammaRatio.g, color.b - 1.0 + GammaRatio.b , color.a) );
 	glBindVertexArray(*VAO);
 
 	

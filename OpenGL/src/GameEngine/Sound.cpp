@@ -1,6 +1,6 @@
 #include "Sound.h"
 
-Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false), volumeLvl(1.0)
+Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(true), volumeLvl(1.0)
 {
 	std::fstream plik;
 	plik.open(sound_path+"sounds.txt", std::ios::in);

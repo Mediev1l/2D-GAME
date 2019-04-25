@@ -45,12 +45,16 @@ void GameEngine::Game_Init()
 		//================================================================
 		//= Creating the Window
 		//================================================================
-		window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Hello World", NULL, NULL);
+		window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "THE GAME !", NULL, NULL);
+		//window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "THE GAME !", glfwGetPrimaryMonitor(), NULL);
 		if (!window)
 		{
 			glfwTerminate();
 			return; //void nie zwraca  - Twoja stara nie zwraca a nie void
 		}
+
+		// Position of the Window
+		glfwSetWindowPos(window, 500, 130);
 
 		/* Make the window's context current */
 		glfwMakeContextCurrent(window);
@@ -90,6 +94,7 @@ void GameEngine::Game_Init()
 
 
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
+
 	//HARDCODE
 	_characters[0].setRange(50);
 	Item::_texture = AssetManager::Get().getSprite("items");
@@ -132,8 +137,6 @@ void GameEngine::Game_Run()
 			// -----
 		processInput();
 
-		//GUI
-		ShowGUI({0,0});
 
 		//If In Menu
 		if (_gameState == State::MENU)
@@ -149,6 +152,9 @@ void GameEngine::Game_Run()
 		//Game Update
 		if (_gameState == State::GAME)
 		{
+			//GUI
+			ShowGUI({0,0});
+
 			t.refresh(true);
 			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
 			Update();
@@ -727,17 +733,6 @@ void GameEngine::ShowGUI(Vec2d position)
 	// DMG
 	textGen->setText("DMG", "DMG ", Vec2d(scale._x, scale._y + 4 * offsetY), 0, Vec2d(0.03, 0.05));
 	textGen->setText("DMG VALUE", std::to_string((GLuint)_characters[0].getDamage()) , Vec2d(scale._x + offsetX, scale._y + 4 * offsetY), 0, Vec2d(0.05, 0.04));
-
-	//textGen.setSize("HP", Vec2d(0.03, 0.05));
-	//textGen.setSize("HP VALUE", Vec2d(0.05, 0.04));
-	//textGen.setSize("RANGE", Vec2d(0.03, 0.05));
-	//textGen.setSize("RANGE VALUE", Vec2d(0.05, 0.04));
-	//textGen.setSize("SPEED", Vec2d(0.03, 0.05));
-	//textGen.setSize("SPEED VALUE", Vec2d(0.05, 0.04));
-	//textGen.setSize("ATTACKS", Vec2d(0.03, 0.05));
-	//textGen.setSize("ATTAK VALUE", Vec2d(0.05, 0.04));
-	//textGen.setSize("DMG", Vec2d(0.03, 0.05));
-	//textGen.setSize("DMG VALUE", Vec2d(0.05, 0.04));
 }
 
 void GameEngine::ProcessEnemiesMove(double deltaTime)

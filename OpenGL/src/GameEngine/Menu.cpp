@@ -2,9 +2,8 @@
 
 Menu::Menu(Sound & sound, State & state, GLFWwindow* window, TextGenerator& text, Renderer& renderer)
 	: _isclosing(false)
-	, mainMenu(MainMenu::MAIN_START)
-	, gameMenu(GameMenu::GAME_RESUME)
 	, position(ActualPosition::POSITION_MENU)
+	, _cursor(0)
 	, gameEngineState(state)
 	, gameSound(sound)
 	, window(window)
@@ -14,93 +13,57 @@ Menu::Menu(Sound & sound, State & state, GLFWwindow* window, TextGenerator& text
 {
 	// MENU INITIALIZATION
 
-	//================================================================
-	//= Menu
-	//================================================================
-	// RESUME - GAME MENU
-	_textgen.setText("RESUME", "RESUME", Vec2d(xratio, menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("RESUME", true);
-	_textgen.setInfinity("RESUME", false);
+	
 
-	// OPTIONS - GAME MENU
-	_textgen.setText("OPTIONS", "OPTIONS", Vec2d(xratio - 0.2, 1 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("OPTIONS", true);
-	_textgen.setInfinity("OPTIONS", false);
+	_menu.names.push_back("resume");
+	_menu.names.push_back("options");
+	_menu.names.push_back("main menu");
+	_menu.names.push_back("exit");
 
-	// BACK TO MAIN MENU
-	_textgen.setText("MAIN", "MAIN MENU", Vec2d(xratio - 0.55, 2 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("MAIN", true);
-	_textgen.setInfinity("MAIN", false);
+	_options.names.push_back("sounds");
+	_options.names.push_back("back");
 
-	// GAME EXIT
-	_textgen.setText("EXIT", "EXIT", Vec2d(xratio + 0.3, 3 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("EXIT", true);
-	_textgen.setInfinity("EXIT", false);
-
-	//================================================================
-	//= Options
-	//================================================================
-
-	// GAME SOUNDS
-	_textgen.setText("SOUND", "SOUND", Vec2d(xratio + 0.15, 1 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("SOUND", true);
-	_textgen.setInfinity("SOUND", false);
-
-	// GAME BACK
-	_textgen.setText("BACK", "BACK", Vec2d(xratio + 0.3, 2 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("BACK", true);
-	_textgen.setInfinity("BACK", false);
+	_sounds.names.push_back("mute");
+	_sounds.names.push_back("volume");
+	_sounds.names.push_back("back");
+	_sounds.names.push_back("mute value");
+	_sounds.names.push_back("volume lvl");
 
 
-	//================================================================
-	//= Sounds
-	//================================================================
 
-	// SOUND MUTE
-	_textgen.setText("MUTE", "MUTE:", Vec2d(xratio + 0.3, 1 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("MUTE", true);
-	_textgen.setInfinity("MUTE", false);
 
-	_textgen.setText("MUTE VALUE", "", Vec2d(xratio + 0.3, 1 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("MUTE VALUE", true);
-	_textgen.setInfinity("MUTE VALUE", false);
 
-	// SOUND VOLUME
-	_textgen.setText("VOLUME", "VOLUME:", Vec2d(xratio, 2 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("VOLUME", true);
-	_textgen.setInfinity("VOLUME", false);
+	_textgen.setText("options0", "", Vec2d(0,0), 0, Vec2d(0.07, 0.10));
+	_textgen.setMenu("options0", true);
+	_textgen.setInfinity("options0", false);
 
-	_textgen.setText("VOLUME LVL", "", Vec2d(xratio, 2 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("VOLUME LVL", true);
-	_textgen.setInfinity("VOLUME LVL", false);
 
-	// BACK
-	_textgen.setText("BACK", "BACK", Vec2d(xratio + 0.3, 3 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setMenu("BACK", true);
-	_textgen.setInfinity("BACK", false);
+	_textgen.setText("options1", "", Vec2d(0, 0), 0, Vec2d(0.07, 0.10));
+	_textgen.setMenu("options1", true);
+	_textgen.setInfinity("options1", false);
+
+
+	_textgen.setText("options2", "", Vec2d(0, 0), 0, Vec2d(0.07, 0.10));
+	_textgen.setMenu("options2", true);
+	_textgen.setInfinity("options2", false);
+
+	_textgen.setText("options3", "", Vec2d(0, 0), 0, Vec2d(0.07, 0.10));
+	_textgen.setMenu("options3", true);
+	_textgen.setInfinity("options3", false);
+
+	_textgen.setText("options4", "", Vec2d(0, 0), 0, Vec2d(0.07, 0.10));
+	_textgen.setMenu("options4", true);
+	_textgen.setInfinity("options4", false);
+
+	
 }
 
-void Menu::setGameMenu()
+
+void Menu::setCursor(int position)
 {
-	gameMenu = GameMenu::GAME_RESUME;
+	_cursor = 0;
 }
-
-void Menu::setMainMenu()
-{
-	mainMenu = MainMenu::MAIN_START; 
-}
-
-void Menu::setOptions()
-{
-	options = GameOptions::GAME_OPTIONS_SOUND;
-}
-
-void Menu::setSoundOptions()
-{
-	soundoptions = GameSoundOptions::GAME_SOUND_MUTE;
-}
-
-void Menu::setPosition()
+void Menu::PositionReset()
 {
 	position = ActualPosition::POSITION_MENU;
 }
@@ -111,20 +74,23 @@ void Menu::moveUP()
 
 	switch (position)
 	{
-		case POSITION_MAIN_MENU:		
-			mainMenu = static_cast<MainMenu>((mainMenu > 0 ?  mainMenu - 1 : mainMenu = static_cast<MainMenu>(MainMenu::MAIN_LAST -1)));
+		case ActualPosition::POSITION_MAIN_MENU:
+			
 			break;	
+	
+		case ActualPosition::POSITION_MENU:
 
-		case POSITION_MENU:		
-			gameMenu = static_cast<GameMenu>((gameMenu > 0 ? gameMenu - 1 : gameMenu = static_cast<GameMenu>(GameMenu::GAME_LAST - 1)));
+			_cursor > 0 ? _cursor -- : _cursor = _menu.names.size() - 1;
 			break;	
+	
+		case ActualPosition::POSITION_OPTIONS:
 
-		case POSITION_OPTIONS:		
-			options = static_cast<GameOptions>((options > 0 ? options - 1 : options = static_cast<GameOptions>(GameOptions::GAME_OPTIONS_LAST - 1)));
+			_cursor > 0 ? _cursor-- : _cursor = _options.names.size() - 1;
 			break;
 		
-		case POSITION_SOUND:		
-			soundoptions = static_cast<GameSoundOptions>((soundoptions > 0 ? soundoptions - 1 : soundoptions = static_cast<GameSoundOptions>(GameSoundOptions::GAME_SOUND_LAST - 1)));
+		case ActualPosition::POSITION_SOUND:
+
+			_cursor > 0 ? _cursor-- : _cursor = _sounds.names.size() - 3;
 			break;
 		
 	}
@@ -133,23 +99,26 @@ void Menu::moveUP()
 void Menu::moveDOWN()
 {
 	gameSound.Play("Cursor");
-
+	
 	switch (position)
 	{
-		case POSITION_MAIN_MENU:		
-			mainMenu = static_cast<MainMenu>((mainMenu + 1) % MainMenu::MAIN_LAST);
+		case ActualPosition::POSITION_MAIN_MENU:
+
 			break;
 		
-		case POSITION_MENU:		
-			gameMenu = static_cast<GameMenu>((gameMenu + 1) % GameMenu::GAME_LAST);
+		case ActualPosition::POSITION_MENU:
+
+			_cursor = (_cursor + 1) % _menu.names.size();
 			break;
 	
-		case POSITION_OPTIONS:		
-			options = static_cast<GameOptions>((options + 1) % GameOptions::GAME_OPTIONS_LAST);
+		case ActualPosition::POSITION_OPTIONS:
+
+			_cursor = (_cursor + 1) % _options.names.size();
 			break;
 		
-		case POSITION_SOUND:		
-			soundoptions = static_cast<GameSoundOptions>((soundoptions + 1) % GameSoundOptions::GAME_SOUND_LAST);
+		case ActualPosition::POSITION_SOUND:
+
+			_cursor = (_cursor + 1) % (_sounds.names.size() - 2);
 			break;
 		
 	}
@@ -157,17 +126,17 @@ void Menu::moveDOWN()
 
 void Menu::MoveLeft()
 {
-	if (position == POSITION_SOUND)
+	if (position == ActualPosition::POSITION_SOUND)
 	{
-		switch (soundoptions)
+		switch (_cursor)
 		{
-		case GAME_SOUND_MUTE:
+		case 0:
 			if (gameSound.getMute() == true)
 				gameSound.Mute(false);
 			else
 				gameSound.Mute(true);
 			break;
-		case GAME_SOUND_VOLUME:
+		case 1:
 			gameSound.VolumeDown();
 			break;
 		}
@@ -177,17 +146,17 @@ void Menu::MoveLeft()
 
 void Menu::MoveRight()
 {
-	if (position == POSITION_SOUND)
+	if (position == ActualPosition::POSITION_SOUND)
 	{
-		switch (soundoptions)
+		switch (_cursor)
 		{
-		case GAME_SOUND_MUTE:
+		case 0:
 			if (gameSound.getMute() == true)
 				gameSound.Mute(false);
 			else
 				gameSound.Mute(true);
 			break;
-		case GAME_SOUND_VOLUME:
+		case 1:
 			gameSound.VolumeUp();
 			break;
 		}
@@ -199,85 +168,88 @@ void Menu::MoveRight()
 void Menu::enter()
 {
 
-	if(position == POSITION_MAIN_MENU)
+	if(position == ActualPosition::POSITION_MAIN_MENU)
 	{
-		switch (mainMenu)
+		switch (_cursor)
 		{
-			case MAIN_START:			
+			case 0:			
 				gameEngineState = State::INIT;
 				break;
 			
-			case MAIN_OPTIONS:			
+			case 1:			
 				
 				position = ActualPosition::POSITION_OPTIONS;
 			
-			case MAIN_EXIT:
+			case 2:
 				gameEngineState = State::EXIT;
 				//glfwSetWindowShouldClose(window, true);
 				break;
 			
 		}
+
+
 	}
-	else if(position == POSITION_MENU)
+	else if(position == ActualPosition::POSITION_MENU)
 	{
-		switch (gameMenu)
+
+		switch (_cursor)
 		{
-			case GAME_RESUME:			
-				gameEngineState = State::GAME;
-				Close();
+		case 0:
+			gameEngineState = State::GAME;
+			Close();
+			break;
+
+		case 1:
+			HideMenu();
+			position = ActualPosition::POSITION_OPTIONS;
 				break;
-			
-			case GAME_OPTIONS:			
-				HideMenu();
-				setOptions();
-				position = ActualPosition::POSITION_OPTIONS;
-				break;
-			
-			case GAME_TOMAIN:
-				break;
-			
-			case GAME_EXIT:
-				gameEngineState = State::EXIT;
-				//glfwSetWindowShouldClose(window, true);
-				break;
-			
+
+		case 2:
+			break;
+
+		case 3:
+			gameEngineState = State::EXIT;
+			//glfwSetWindowShouldClose(window, true);
+			break;
+
 		}
 		
 	}
-	else if(position == POSITION_OPTIONS)
+	else if(position == ActualPosition::POSITION_OPTIONS)
 	{
-		switch (options)
+		switch (_cursor)
 		{
-			case GAME_OPTIONS_SOUND:		
-				HideOptions();
-				position = POSITION_SOUND;
+			case 0:		
+				HideMenu();
+				position = ActualPosition::POSITION_SOUND;
 				break;
 			
-			case GAME_OPTIONS_BACK:
-				HideOptions();
-				position = POSITION_MENU;
+			case 1:
+				HideMenu();
+				position = ActualPosition::POSITION_MENU;
 				break;
 			
 		}
 	}
-	else if (position == POSITION_SOUND)
+	else if (position == ActualPosition::POSITION_SOUND)
 	{
-		switch (soundoptions)
+		switch (_cursor)
 		{
-			case GAME_SOUND_MUTE:
+			case 0:
 				break;
 
-			case GAME_SOUND_VOLUME:
+			case 1:
 				break;
 
-			case GAME_SOUND_BACK:
-				HideSound();
-				position = POSITION_OPTIONS;
+			case 2:
+				HideMenu();
+				position = ActualPosition::POSITION_OPTIONS;
 				break;
 		}
 	}
 
 	gameSound.Play("Cursor");
+	setCursor(0);
 }
 
 
@@ -287,91 +259,61 @@ void Menu::ShowMenu(double x, double y)
 	menuy = y;
 
 
-	xratio = x - 0.15;
-	yratio = 0.7;
-
 	if(_gamerenderer.HowDark() > 0.7)
 		_gamerenderer.ScreenDimm(0.3f);
 
-	//HideMenu();
 
 	switch (position)
 	{
-		case POSITION_MAIN_MENU:		
+		case ActualPosition::POSITION_MAIN_MENU:
 			ShowMainMenu();
 			break;
 		
-		case POSITION_MENU:		
+		case ActualPosition::POSITION_MENU:
 			ShowGameMenu();
 			break;
 		
-		case POSITION_OPTIONS:		
+		case ActualPosition::POSITION_OPTIONS:
 			ShowOptions();
 			break;
 		
-		case POSITION_SOUND:		
+		case ActualPosition::POSITION_SOUND:
 			ShowSound();
 			break;
 		
 		
 	}
 
-		ResetColors();
 		SetColor();
 }
 
 void Menu::HideMenu()
 {
-	_textgen.setInfinity("RESUME", false);
-	_textgen.setInfinity("OPTIONS", false);
-	_textgen.setInfinity("MAIN", false);
-	_textgen.setInfinity("EXIT", false);
-		
+	_textgen.setInfinity("options0", false);
+	_textgen.setInfinity("options1", false);
+	_textgen.setInfinity("options2", false);
+	_textgen.setInfinity("options3", false);
+	_textgen.setInfinity("options4", false);	
 }
 
-void Menu::HideOptions()
-{
-	_textgen.setInfinity("SOUND", false);
-	_textgen.setInfinity("BACK", false);
-}
-
-void Menu::HideSound()
-{
-	_textgen.setInfinity("MUTE", false);
-	_textgen.setInfinity("MUTE VALUE", false);
-	_textgen.setInfinity("VOLUME", false);
-	_textgen.setInfinity("VOLUME LVL", false);
-	_textgen.setInfinity("BACK", false);
-}
 
 
 void Menu::Close()
 {
-	switch (position)
-	{
-		case POSITION_MENU:
-			HideMenu();
-			break;
-		case POSITION_OPTIONS:
-			HideOptions();
-			break;
-		case POSITION_SOUND:
-			HideSound();
-			break;
-	}
+
+	HideMenu();
 
 	_isclosing = true;
 
-	setGameMenu();
-	setOptions();
-	setSoundOptions();
-	setPosition();
+	PositionReset();
+	setCursor(0);
 }
 
 void Menu::Open()
 {
 	gameEngineState = State::MENU;
-	position = ActualPosition::POSITION_MENU;
+	PositionReset();
+	setCursor(0);
 }
 
 bool Menu::isClosed()
@@ -386,27 +328,26 @@ void Menu::setClosed(bool close)
 
 void Menu::ShowGameMenu()
 {
-	// RESUME - GAME MENU
-	_textgen.setText("RESUME", "RESUME", Vec2d(xratio, menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("RESUME", true);
+	//Skalowanko Menu
+	std::array<double, 4> menu = 
+	{
+		0,
+		-0.2,
+		-0.55,
+		0.3
+	};
 
-	// OPTIONS - GAME MENU
-	_textgen.setText("OPTIONS", "OPTIONS", Vec2d(xratio - 0.2, 1 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("OPTIONS", true);
+	double xratio = menux - 0.15;
+	double yratio = 0.7;
 
-	// BACK TO MAIN MENU
-	_textgen.setText("MAIN", "MAIN MENU", Vec2d(xratio - 0.55, 2 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("MAIN", true);
 
-	// GAME EXIT
-	_textgen.setText("EXIT", "EXIT", Vec2d(xratio + 0.3, 3 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("EXIT", true);
-
-	// GAME MENU COLOR RESET
-	_textgen.setColor("RESUME", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	_textgen.setColor("OPTIONS", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	_textgen.setColor("MAIN", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	_textgen.setColor("EXIT", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	for (int i = 0; i < _menu.names.size(); i++)
+	{	
+		_textgen.setText("options" + std::to_string(i), _menu.names.at(i));
+		_textgen.setPosition("options" + std::to_string(i), Vec2d(xratio + menu.at(i), i * yratio + menuy));
+		_textgen.setInfinity("options" + std::to_string(i), true);
+		_textgen.setColor("options" + std::to_string(i), glm::vec4(1.0, 1.0, 1.0, 1.0));
+	}
 }
 
 void Menu::ShowMainMenu()
@@ -415,17 +356,25 @@ void Menu::ShowMainMenu()
 
 void Menu::ShowOptions()
 {
-	// GAME SOUNDS
-	_textgen.setText("SOUND", "SOUND", Vec2d(xratio + 0.15, 1 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("SOUND", true);
+	//Skalowanko Opcji
+	std::array<double, 2> options =
+	{
+		0.15,
+		0.3
+	};
 
-	// GAME BACK
-	_textgen.setText("BACK", "BACK", Vec2d(xratio + 0.3, 2 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("BACK", true);
+	double xratio = menux - 0.15;
+	double yratio = 0.7;
 
-	// OPTIONS COLOR RESET
-	_textgen.setColor("SOUND", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	_textgen.setColor("BACK", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	for (int i = 0; i < _options.names.size(); i++)
+	{
+		_textgen.setText("options" + std::to_string(i), _options.names.at(i));
+		_textgen.setPosition("options" + std::to_string(i), Vec2d(xratio + options.at(i), i + 1 * yratio + menuy));
+		_textgen.setInfinity("options" + std::to_string(i), true);
+		_textgen.setColor("options" + std::to_string(i), glm::vec4(1.0, 1.0, 1.0, 1.0));
+	}
+
+
 }
 
 void Menu::ShowSound()
@@ -434,100 +383,125 @@ void Menu::ShowSound()
 
 	std::string volume = std::to_string(static_cast<int>(100*gameSound.getVolume()));
 	std::string mute;
+
 	if (gameSound.getMute() == true)
 		mute = "ON";
 	else
 		mute = "OFF";
 
-	// SOUND MUTE
-	_textgen.setText("MUTE", "MUTE:", Vec2d(xratio + 0.3, 1 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("MUTE", true);
 
-	// MUTE ON/OFF
-	_textgen.setText("MUTE VALUE", mute, Vec2d(xratio + offsetX, 1 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("MUTE VALUE", true);
-	
-	// SOUND VOLUME
-	_textgen.setText("VOLUME", "VOLUME:", Vec2d(xratio, 2 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("VOLUME", true);
+	std::array<double, 5> soundX =
+	{
+		0.3,
+		0,
+		0.3,
+		0,
+		0
+	};
 
-	// VOLUME LEVEL
-	_textgen.setText("VOLUME LVL", volume, Vec2d(xratio + offsetX, 2 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("VOLUME LVL", true);
+	std::array<double, 5> soundY =
+	{
+		0.2,
+		0.2,
+		0.2,
+		0.2,
+		0.2
+	};
 
-	// BACK
-	_textgen.setText("BACK", "BACK", Vec2d(xratio + 0.3, 3 * yratio + menuy), 0, Vec2d(0.07, 0.10));
-	_textgen.setInfinity("BACK", true);
+	double xratio = menux - 0.15;
+	double yratio = 0.7;
 
-	// SOUND COLOR RESET
-	_textgen.setColor("MUTE", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	_textgen.setColor("MUTE VALUE", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	_textgen.setColor("VOLUME", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	_textgen.setColor("VOLUME LVL", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	_textgen.setColor("BACK", glm::vec4(1.0, 1.0, 1.0, 1.0));
+
+
+	for (int i = 0; i < _sounds.names.size(); i++)
+	{
+		if (_sounds.names.at(i) == "mute value")
+		{
+			_textgen.setText("options" + std::to_string(i), mute);
+			_textgen.setPosition("options" + std::to_string(i), Vec2d(xratio + offsetX,   soundY.at(i) + 1 * yratio + menuy));
+		}
+		else if (_sounds.names.at(i) == "volume lvl")
+		{
+			_textgen.setText("options" + std::to_string(i), volume);
+			_textgen.setPosition("options" + std::to_string(i), Vec2d(xratio + offsetX, soundY.at(i) + 2 * yratio + menuy));
+		}
+		else
+		{
+			_textgen.setText("options" + std::to_string(i), _sounds.names.at(i));
+			_textgen.setPosition("options" + std::to_string(i), Vec2d(xratio + soundX.at(i), soundY.at(i) + i + 1 * yratio + menuy));
+		}
+
+
+		_textgen.setInfinity("options" + std::to_string(i), true);
+		_textgen.setColor("options" + std::to_string(i), glm::vec4(1.0, 1.0, 1.0, 1.0));
+	}
+
 }
 
-void Menu::ResetColors()
-{
 
-}
 
 void Menu::SetColor()
 {
-	if (position == POSITION_MAIN_MENU)
+
+
+
+	if (position == ActualPosition::POSITION_MAIN_MENU)
 	{
 	}
-	else if (position == POSITION_MENU)
+	else if (position == ActualPosition::POSITION_MENU)
 	{
-		switch (gameMenu)
+
+		switch (_cursor)
 		{
-			case GAME_RESUME:			
-				_textgen.setColor("RESUME", color);
+		case 0:
+			_textgen.setColor("options0", color);
+			break;
+	
+		case 1:
+			_textgen.setColor("options1", color);
+			break;
+	
+		case 2:
+			_textgen.setColor("options2", color);
+			break;
+	
+		case 3:
+			_textgen.setColor("options3", color);
+			break;
+	
+		}
+	}
+	else if (position == ActualPosition::POSITION_OPTIONS)
+	{
+		switch (_cursor)
+		{
+			case 0:	
+				_textgen.setColor("options0", color);
 				break;
 			
-			case GAME_OPTIONS:			
-				_textgen.setColor("OPTIONS", color);
-				break;
-			
-			case GAME_TOMAIN:			
-				_textgen.setColor("MAIN", color);
-				break;
-			
-			case GAME_EXIT:			
-				_textgen.setColor("EXIT", color);
+			case 1:	
+				_textgen.setColor("options1", color);
 				break;
 			
 		}
 	}
-	else if (position == POSITION_OPTIONS)
+	else if (position == ActualPosition::POSITION_SOUND)
 	{
-		switch (options)
+		switch (_cursor)
 		{
-			case GAME_OPTIONS_SOUND:	
-				_textgen.setColor("SOUND", color);
-				break;
-			
-			case GAME_OPTIONS_BACK:	
-				_textgen.setColor("BACK", color);
-				break;
-			
-		}
-	}
-	else if (position == POSITION_SOUND)
-	{
-		switch (soundoptions)
-		{
-			case GAME_SOUND_MUTE:
-				_textgen.setColor("MUTE", color);
-				_textgen.setColor("MUTE VALUE", color);
-				break;
-			case GAME_SOUND_VOLUME:
-				_textgen.setColor("VOLUME", color);
-				_textgen.setColor("VOLUME LVL", color);
-				break;
-			case GAME_SOUND_BACK:
-				_textgen.setColor("BACK", color);
-				break;
+		case 0:
+			_textgen.setColor("options0", color);
+			_textgen.setColor("options3", color);
+			break;
+
+		case 1:
+			_textgen.setColor("options1", color);
+			_textgen.setColor("options4", color);
+			break;
+		case 2:
+			_textgen.setColor("options2", color);
+			break;
+
 		}
 	}
 }

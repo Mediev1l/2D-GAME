@@ -27,8 +27,8 @@ public:
 	void ScreenDimm(float perc = 1.0f);
 	void ScreenBright();
 
-	bool isDark() { return GammaRatio.x <= 1.0f - percentage; };
-	bool isBright() { return GammaRatio.x >= 1.0; };
+	bool isDark() { return GammaRatio.x <= _maxgamma - percentage; };
+	bool isBright() { return GammaRatio.x >= _maxgamma; };
 	float HowDark() { return GammaRatio.x; };
 	void setDelta(double delta);
 	void setGameState(State& gamestate);
@@ -66,6 +66,7 @@ private:
 	double TranslateValueX;
 	double TranslateValueY;
 	glm::vec4 GammaRatio;
+	double _maxgamma;
 	float percentage;
 	float dimmRatio;
 	double Delta;

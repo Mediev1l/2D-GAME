@@ -10,20 +10,29 @@
 #include "Renderer/Renderer.h"
 #include "GameEngine/Sound.h"
 #include "Utility/Timer.h"
+#include <array>
 
 
 class Menu 
 {
 private:
+
+	struct Selection
+	{
+		std::vector<std::string> names;
+
+	};
+
+
 	//=====================
 	//Actual State
 	//=====================
 	ActualPosition position;
-	MainMenu mainMenu;
-	GameMenu gameMenu;
-	GameOptions options;
-	GameSoundOptions soundoptions;
+	Selection _menu;
+	Selection _options;
+	Selection _sounds;
 	bool _isclosing;
+	int _cursor;
 
 	//=====================
 	//Objects
@@ -40,8 +49,6 @@ private:
 	//=====================
 	double menux;
 	double menuy;
-	double xratio;
-	double yratio;
 	glm::vec4 color;
 
 public:
@@ -68,15 +75,12 @@ private:
 	void ShowSound();
 
 	void HideMenu();
-	void HideOptions();
-	void HideSound();
 
-	void ResetColors();
+
+
 	void SetColor();
-	void setPosition();
-	void setGameMenu();
-	void setMainMenu();
-	void setOptions();
-	void setSoundOptions();
+	void setCursor(int position);
+	void PositionReset();
+
 };
 #endif

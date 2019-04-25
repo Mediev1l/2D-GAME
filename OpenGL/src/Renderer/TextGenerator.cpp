@@ -130,9 +130,19 @@ void TextGenerator::setTransparency(std::string name, float value) const
 	const_cast<TextGenerator*>(this)->_text.at(name).color.a = value;
 }
 
+void TextGenerator::setText(std::string name, std::string text) const
+{
+	const_cast<TextGenerator*>(this)->_text.at(name).text = text;
+}
+
 void TextGenerator::setInfinity(std::string name, bool isConst)
 {
 	_text.at(name).constant = isConst;
+}
+
+void TextGenerator::setPosition(std::string name, Vec2d position)
+{
+	_text.at(name).pos = position;
 }
 
 

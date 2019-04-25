@@ -86,6 +86,7 @@ public:
 	void setMenu(std::string name, bool menu);
 	void setColor(std::string name, glm::vec4 col) { _text[name].color = col; };
 	void setInfinity(std::string name, bool isConst);
+	void setPosition(std::string name, Vec2d position);
 
 	//================================================================
 	//= GETTERS
@@ -129,6 +130,7 @@ public:
 	//= SET BY UNIQUE NAME
 	//================================================================
 	void setTransparency(std::string name, float value) const;
+	void setText(std::string name, std::string text) const;
 
 };
 
