@@ -28,26 +28,6 @@
 #include "GameEngine/Menu.h"
 class GameEngine
 {
-//public:
-//	//================================================================
-//	//= GAME ENUM'S
-//	//================================================================
-//
-//	enum State
-//	{
-//		INIT,
-//		GAME,
-//		MENU,
-//		EXIT
-//	};
-//
-//	enum Difficulty
-//	{
-//		START,
-//		EASY,
-//		MEDIUM,
-//		HARD
-//	};
 
 protected:
 	//================================================================
@@ -102,6 +82,7 @@ protected:
 	void Update();
 	void ShowGUI(Vec2d position);
 	void HideGUI();
+	void HideText();
 
 	void ProcessEnemiesMove(double deltaTime);
 	void Doors();

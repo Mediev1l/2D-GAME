@@ -12,7 +12,8 @@ Renderer::Renderer(const Camera& camera)
 {
 	//Ustawienie gammy na full
 	//GammaRatio = glm::vec4(_maxgamma, _maxgamma, _maxgamma, 1.0f);
-	GammaRatio = glm::vec4(_maxgamma, _maxgamma, _maxgamma, 1.0f);
+	GammaRatio = glm::vec4(0, 0, 0, 1.0f);
+	
 
 	glGenVertexArrays(1, VAO);
 	glGenBuffers(1, VBO);
@@ -215,6 +216,7 @@ void Renderer::RenderMenu()
 
 void Renderer::ScreenDimm(float percentage)
 {
+	if (Delta > 1.0) Delta = 0.1;
 	if (GammaRatio.x > _maxgamma - percentage) GammaRatio.x -= Delta; 
 	if (GammaRatio.y > _maxgamma - percentage) GammaRatio.y -= Delta; 
 	if (GammaRatio.z > _maxgamma - percentage) GammaRatio.z -= Delta; 
@@ -222,19 +224,33 @@ void Renderer::ScreenDimm(float percentage)
 
 void Renderer::ScreenDimmWithoutMenu(float percentage)
 {
-	if (GammaRatio.x > _maxgamma * ( 1 - percentage) )  dimmRatio += Delta;
-	if (GammaRatio.x > _maxgamma * ( 1 - percentage) )  GammaRatio.x -= Delta;
+	if (Delta > 1.0) Delta = 0.1;
+
+	if (GammaRatio.x > _maxgamma * (1 - percentage))
+	{
+		GammaRatio.x -= Delta;
+		dimmRatio += Delta;
+	}
 	if (GammaRatio.y > _maxgamma * ( 1 - percentage) )  GammaRatio.y -= Delta;
 	if (GammaRatio.z > _maxgamma * ( 1 - percentage) )  GammaRatio.z -= Delta;
 }
 
 void Renderer::ScreenBright()
 {
+	if (Delta > 1.0) Delta = 0.1;
 	if (GammaRatio.x < _maxgamma && dimmRatio > 0) dimmRatio -= Delta;
 	else if (dimmRatio < 0) dimmRatio = 0;
 	if (GammaRatio.x < _maxgamma) GammaRatio.x += Delta; 
 	if (GammaRatio.y < _maxgamma) GammaRatio.y += Delta; 
 	if (GammaRatio.z < _maxgamma) GammaRatio.z += Delta; 
+
+	if (GammaRatio.x > _maxgamma)
+	{
+		dimmRatio = 0;
+		GammaRatio.x = _maxgamma;
+		GammaRatio.y = _maxgamma;
+		GammaRatio.z = _maxgamma;
+	}
 }
 
 void Renderer::setTextureCoords(Tile & tile)

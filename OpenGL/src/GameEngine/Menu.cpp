@@ -12,9 +12,7 @@ Menu::Menu(Sound & sound, State & state, GLFWwindow* window, TextGenerator& text
 	, _gamerenderer(renderer)
 	, color(0.0, 0.28, 0.72, 1.0)
 {
-	// MENU INITIALIZATION
-
-	
+	// MENU INITIALIZATION na razie na sztywno pozniej z pliku @@@ nie chce mi sie teraz xd
 
 	_menu.names.push_back("resume");
 	_menu.names.push_back("options");
