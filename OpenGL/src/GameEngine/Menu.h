@@ -28,9 +28,11 @@ private:
 	//Actual State
 	//=====================
 	ActualPosition position;
+	Selection _mainmenu;
 	Selection _menu;
 	Selection _options;
 	Selection _sounds;
+	bool _onmain;
 	bool _isclosing;
 	int _cursor;
 
@@ -47,8 +49,10 @@ private:
 	//=====================
 	//SETTINGS
 	//=====================
-	double menux;
-	double menuy;
+	double _menux;
+	double _menuy;
+	double _xratio;
+	double _yratio;
 	glm::vec4 color;
 
 public:
@@ -64,9 +68,9 @@ public:
 	void ShowMenu(double x, double y);
 	void Close();
 	void Open();
+	void OnMainMenu(bool val);
+	bool ToMainMenu();
 
-	bool isClosed();
-	void setClosed(bool close);
 private:
 	
 	void ShowGameMenu();
@@ -75,7 +79,6 @@ private:
 	void ShowSound();
 
 	void HideMenu();
-
 
 
 	void SetColor();

@@ -1,6 +1,8 @@
-5
+7
 win win.wav 5
 hit hit.wav 0
 Cursor Cursor.wav 0
-start start.wav 0
+Error Error.wav 0
 main main1.wav 0
+Start Start.wav 0
+MenuTheme MenuTheme.wav 0

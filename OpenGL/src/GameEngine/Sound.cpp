@@ -1,6 +1,6 @@
 #include "Sound.h"
 
-Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(true), volumeLvl(1.0)
+Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false), volumeLvl(0.5)
 {
 	std::fstream plik;
 	plik.open(sound_path+"sounds.txt", std::ios::in);
@@ -16,6 +16,7 @@ Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(true), volumeLvl(1.0
 		sounds.emplace(name,snd(sound_path+path,false,secs));
 	}
 	engine = irrklang::createIrrKlangDevice();
+	engine->setSoundVolume((irrklang::ik_f32)volumeLvl);
 	PlayGameTheme();
 }
 
@@ -43,7 +44,8 @@ void Sound::Play(std::string x, bool looped)
 
 void Sound::PlayGameTheme()
 {
-	Play("main", true);
+	//Play("main", true);
+	Play("MenuTheme", true);
 }
 
 void Sound::Refresh()

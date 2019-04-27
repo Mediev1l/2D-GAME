@@ -4,15 +4,19 @@
 enum State
 {
 	INIT,
+	START,
 	GAME,
+	MAIN_MENU,
 	MENU,
 	PAUSE,
+	CLOSING_GAME,
+	CLOSING_MENU,
 	EXIT
 };
 
 enum Difficulty
 {
-	START,
+	BEGIN,
 	EASY,
 	MEDIUM,
 	HARD

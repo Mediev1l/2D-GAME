@@ -101,6 +101,7 @@ protected:
 	void ProcessPlayerShoot();
 	void Update();
 	void ShowGUI(Vec2d position);
+	void HideGUI();
 
 	void ProcessEnemiesMove(double deltaTime);
 	void Doors();

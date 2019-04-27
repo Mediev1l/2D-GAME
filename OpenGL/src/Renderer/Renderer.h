@@ -24,10 +24,11 @@ public:
 	void CloseDoors() { DoorState = Object::DoorClosed; };
 	void OpenDoors() { DoorState = Object::DoorOpened; };
 
-	void ScreenDimm(float perc = 1.0f);
+	void ScreenDimm(float percentage = 1.0f);
+	void ScreenDimmWithoutMenu(float percentage);
 	void ScreenBright();
 
-	bool isDark() { return GammaRatio.x <= _maxgamma - percentage; };
+	bool isDark() { return GammaRatio.x <= 0; };
 	bool isBright() { return GammaRatio.x >= _maxgamma; };
 	float HowDark() { return GammaRatio.x; };
 	void setDelta(double delta);
@@ -45,7 +46,7 @@ private:
 	void RenderCharacters(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item*>* items);
 	void RenderText(const TextGenerator& text);
-	void test();
+	void RenderMenu();
 	
 
 	//Doors Stuff
@@ -67,7 +68,6 @@ private:
 	double TranslateValueY;
 	glm::vec4 GammaRatio;
 	double _maxgamma;
-	float percentage;
 	float dimmRatio;
 	double Delta;
 	State* _gamestate;

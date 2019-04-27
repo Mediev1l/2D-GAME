@@ -16,8 +16,8 @@ GameEngine::GameEngine()
 	, camera(6,6)
 	, lvlWin(false)
 	,_lvlgen("res/Data/map.txt")
-	, _gameState(State::INIT)
-	, _gameDifficulty(Difficulty::START)
+	, _gameState(State::MAIN_MENU)
+	, _gameDifficulty(Difficulty::BEGIN)
 	, soundEngine("res/Data/Sounds/", t)
 {
 }
@@ -98,7 +98,6 @@ void GameEngine::Game_Init()
 	//HARDCODE
 	_characters[0].setRange(50);
 	Item::_texture = AssetManager::Get().getSprite("items");
-	_gameState = State::GAME;
 
 	renderer->setGameState(_gameState);
 
@@ -136,24 +135,51 @@ void GameEngine::Game_Run()
 		// input tylko jak gracz ma cos robic
 			// -----
 		processInput();
-
-
-		//If In Menu
-		if (_gameState == State::MENU)
-		{
-
-			_Menu->ShowMenu(1.8, 1.3);
-		}
-		else if (_Menu->isClosed() && !renderer->isBright())
+		//BRIGHT IF NOT FULLY BRIGHT
+		if (_gameState == State::GAME && !renderer->isBright())
 			renderer->ScreenBright();
-		else if (_Menu->isClosed() && renderer->isBright())
-			_Menu->setClosed(false);
+		if (_gameState == State::MAIN_MENU && !renderer->isBright())
+			renderer->ScreenBright();
+
+
+		//SHOW MENU
+		if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
+			_Menu->ShowMenu(1.8, 1.3);
+		
+
+		//SMOOTH CLOSING GAME
+		if (_gameState == State::CLOSING_GAME || _gameState == State::CLOSING_MENU)
+		{
+			if (!renderer->isDark())
+				renderer->ScreenDimm();
+			else if (_Menu->ToMainMenu() == false)
+				_gameState = State::EXIT;
+			else
+			{
+				HideGUI();
+				_Menu->OnMainMenu(true);
+				_gameState = State::MAIN_MENU;
+			}
+		}
+		
+		
+
+
+		//SMOOTH MAIN MENU TO GAME
+		if (!renderer->isDark() && _gameState == State::START)
+			renderer->ScreenDimm(1.0f);
+		else 
+			if (_gameState == State::START || _gameState == State::GAME)
+				_gameState = State::GAME;
+
+		
 
 		//Game Update
-		if (_gameState == State::GAME)
+		if (_gameState == State::GAME && renderer->isBright())
 		{
 			//GUI
-			ShowGUI({0,0});
+			
+				ShowGUI({ 0,0 });
 
 			t.refresh(true);
 			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
@@ -215,6 +241,9 @@ void GameEngine::Game_Run()
 		glfwPollEvents();
 	}
 
+	while (!renderer->isDark())
+		renderer->ScreenDimm();
+
 	glfwTerminate();
 }
 
@@ -230,14 +259,17 @@ void GameEngine::processInput()
 		{
 			if (t.delay("Escape", 0.3, false))
 			{
-				if (_gameState != State::MENU)
+				if (_gameState == State::GAME || _gameState == State::PAUSE)
 					_Menu->Open();
-				else
+				else if (_gameState == State::MENU)
 				{
 					_gameState = State::GAME;
 					_Menu->Close();
 				}
+				else if (_gameState == State::MAIN_MENU)
+				{
 
+				}
 
 			}
 			
@@ -254,7 +286,7 @@ void GameEngine::processInput()
 			{
 				if (_gameState == State::GAME)
 					_gameState = State::PAUSE;
-				else if (_gameState == State::MENU)
+				else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
 					_Menu->enter();
 				else if (_gameState == State::PAUSE)
 					_gameState = State::GAME;
@@ -280,7 +312,7 @@ void GameEngine::processInput()
 			//ProcessPlayerShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::UP;
-			else if (_gameState == State::MENU)
+			else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
 			{
 				if (t.delay("UP", 0.3, false))
 				{
@@ -294,7 +326,7 @@ void GameEngine::processInput()
 			//ProcessPlayerShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::DOWN;
-			else if (_gameState == State::MENU)
+			else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
 			{
 				if (t.delay("Down", 0.3, false))
 				{
@@ -308,7 +340,7 @@ void GameEngine::processInput()
 			//ProcessPlayerShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::LEFT;
-			else if (_gameState == State::MENU)
+			else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
 			{
 				if (t.delay("Left", 0.3, false))
 				{
@@ -322,7 +354,7 @@ void GameEngine::processInput()
 			//ProcessPlayerShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::RIGHT;
-			else if (_gameState == State::MENU)
+			else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
 			{
 				if (t.delay("Right", 0.3, false))
 				{
@@ -352,7 +384,6 @@ void GameEngine::processInput()
 			//PickupItems
 			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && _gameState == State::GAME)
 			{
-				textGen->setColor("HP", glm::vec4(0.0, 0.0, 1.0, 0.5));
 
 				if (_canPickup)
 				{
@@ -717,22 +748,50 @@ void GameEngine::ShowGUI(Vec2d position)
 
 	// HP
 	textGen->setText("HP", "HP ", Vec2d(scale._x, scale._y), 0, Vec2d(0.03, 0.05));
+	textGen->setInfinity("HP", true);
 	textGen->setText("HP VALUE", std::to_string((GLuint)_characters[0].getHealth()), Vec2d(scale._x + offsetX, scale._y), 0, Vec2d(0.05, 0.04));
+	textGen->setInfinity("HP VALUE", true);
 	// RANGE
 	textGen->setText("RANGE", "RANGE ", Vec2d(scale._x, scale._y + 1 * offsetY), 0, Vec2d(0.03, 0.05));
+	textGen->setInfinity("RANGE", true);
 	textGen->setText("RANGE VALUE", std::to_string((GLuint)_characters[0].getRange()) , Vec2d(scale._x + offsetX, scale._y + 1 * offsetY), 0, Vec2d(0.05, 0.04));
+	textGen->setInfinity("RANGE VALUE", true);
 
 	// SPEED
 	textGen->setText("SPEED", "SPEED ", Vec2d(scale._x, scale._y + 2 * offsetY), 0, Vec2d(0.03, 0.05));
+	textGen->setInfinity("SPEED", true);
 	textGen->setText("SPEED VALUE", std::to_string((GLuint)_characters[0].getMovementSpeed()) , Vec2d(scale._x + offsetX, scale._y + 2 * offsetY), 0, Vec2d(0.05, 0.04));
+	textGen->setInfinity("SPEED VALUE", true);
 
 	// ATT S
 	textGen->setText("ATTACKS", "ATT S ", Vec2d(scale._x, scale._y + 3 * offsetY), 0, Vec2d(0.03, 0.05));
+	textGen->setInfinity("ATTACKS", true);
 	textGen->setText("ATTACK VALUE", std::to_string((GLuint)_characters[0].getAttackSpeed()) , Vec2d(scale._x + offsetX, scale._y + 3 * offsetY), 0, Vec2d(0.05, 0.04));
+	textGen->setInfinity("ATTACK VALUE", true);
 
 	// DMG
 	textGen->setText("DMG", "DMG ", Vec2d(scale._x, scale._y + 4 * offsetY), 0, Vec2d(0.03, 0.05));
+	textGen->setInfinity("DMG", true);
 	textGen->setText("DMG VALUE", std::to_string((GLuint)_characters[0].getDamage()) , Vec2d(scale._x + offsetX, scale._y + 4 * offsetY), 0, Vec2d(0.05, 0.04));
+	textGen->setInfinity("DMG VALUE", true);
+}
+
+void GameEngine::HideGUI()
+{
+	textGen->setInfinity("HP", false);
+	textGen->setInfinity("HP VALUE", false);
+
+	textGen->setInfinity("RANGE", false);
+	textGen->setInfinity("RANGE VALUE", false);
+
+	textGen->setInfinity("SPEED", false);
+	textGen->setInfinity("SPEED VALUE", false);
+
+	textGen->setInfinity("ATTACKS", false);
+	textGen->setInfinity("ATTACK VALUE", false);
+
+	textGen->setInfinity("DMG", false);
+	textGen->setInfinity("DMG VALUE", false);
 }
 
 void GameEngine::ProcessEnemiesMove(double deltaTime)
