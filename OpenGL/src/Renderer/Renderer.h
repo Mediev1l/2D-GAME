@@ -27,11 +27,16 @@ public:
 	void ScreenDimm(float percentage = 1.0f);
 	void ScreenDimmWithoutMenu(float percentage);
 	void ScreenBright();
+	void setGamma(double gamma);
+	void GammaUp();
+	void GammaDown();
 
 	bool isDark() { return GammaRatio.x <= 0; };
 	bool isBright() { return GammaRatio.x >= _maxgamma; };
 	float HowDark() { return GammaRatio.x; };
+	double getMaxGamma();
 	void setDelta(double delta);
+	void setPictureId(GLuint id);
 	void setGameState(State& gamestate);
 private:
 
@@ -71,6 +76,7 @@ private:
 	float dimmRatio;
 	double Delta;
 	State* _gamestate;
+	GLuint _pictureid;
 	
 
 	//Main renderShader

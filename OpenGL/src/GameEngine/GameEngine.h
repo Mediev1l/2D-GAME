@@ -47,6 +47,7 @@ protected:
 	Renderer* renderer;
 	TextGenerator* textGen;
 	Sound soundEngine;
+	Sound effectEngine;
 	Menu* _Menu;
 	//================================================================
 	//= GLOBALSETTINGS

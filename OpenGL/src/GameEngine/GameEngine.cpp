@@ -18,7 +18,8 @@ GameEngine::GameEngine()
 	,_lvlgen("res/Data/map.txt")
 	, _gameState(State::MAIN_MENU)
 	, _gameDifficulty(Difficulty::BEGIN)
-	, soundEngine("res/Data/Sounds/", t)
+	, soundEngine("res/Data/Sounds/","sounds.txt", t)
+	, effectEngine("res/Data/Sounds/","effects.txt", t)
 {
 }
 
@@ -73,7 +74,7 @@ void GameEngine::Game_Init()
 
 		renderer = new Renderer(camera);
 		textGen = new TextGenerator(10.0, 10.0, t);
-		_Menu = new Menu(soundEngine, _gameState, window , *textGen, *renderer);
+		_Menu = new Menu(soundEngine, effectEngine, _gameState, window , *textGen, *renderer);
 		_map = renderer->getMap();
 		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 	}
@@ -164,11 +165,20 @@ void GameEngine::Game_Run()
 		// input tylko jak gracz ma cos robic
 			// -----
 		processInput();
-		//BRIGHT IF NOT FULLY BRIGHT
+
+
+		//IF NOT FULLY BRIGHT
 		if (_gameState == State::GAME && !renderer->isBright())
 			renderer->ScreenBright();
-		if (_gameState == State::MAIN_MENU && !renderer->isBright())
+		if (_gameState == State::MAIN_MENU && !renderer->isBright() && _Menu->getDimm() != true)
 			renderer->ScreenBright();
+
+		//IF VOLUME NOT ON MAX
+		if (_Menu->getSoundStatus() == false)
+			if (soundEngine.isPlaying() == false || soundEngine.isFull() == false)
+				soundEngine.UpToMax();
+
+
 
 
 		//SHOW MENU
@@ -180,7 +190,10 @@ void GameEngine::Game_Run()
 		if (_gameState == State::CLOSING_GAME || _gameState == State::CLOSING_MENU)
 		{
 			if (!renderer->isDark())
+			{
 				renderer->ScreenDimm();
+				soundEngine.DownToZero();
+			}
 			else if (_Menu->ToMainMenu() == false)
 				_gameState = State::EXIT;
 			else
@@ -188,6 +201,8 @@ void GameEngine::Game_Run()
 				HideGUI();
 				HideText();
 				_Menu->OnMainMenu(true);
+				_Menu->setSoundStatus(false);
+				_Menu->ChangeMusic();
 				_gameState = State::MAIN_MENU;
 			}
 		}
@@ -197,12 +212,24 @@ void GameEngine::Game_Run()
 
 		//SMOOTH MAIN MENU TO GAME
 		if (!renderer->isDark() && _gameState == State::START)
+		{
 			renderer->ScreenDimm(1.0f);
-		else 
+			soundEngine.DownToZero();
+		}
+		else
+		{
 			if (_gameState == State::START || _gameState == State::GAME)
+			{
 				_gameState = State::GAME;
+				if (_Menu->getSoundStatus())
+				{
+					_Menu->ChangeMusic();
+					_Menu->setSoundStatus(false);
+				}
+			}
 
-		
+		}
+
 
 		//Game Update
 		if (_gameState == State::GAME && renderer->isBright())
@@ -225,7 +252,7 @@ void GameEngine::Game_Run()
 		{
 			if (lvlWin == true && !renderer->isDark())
 			{
-				soundEngine.Play("win");
+				effectEngine.Play("win");
 				renderer->ScreenDimm(1.0f);
 			}
 			else
@@ -258,6 +285,7 @@ void GameEngine::Game_Run()
 		//Renderowanie ³adnie w jednej funkcji
 		renderer->Render(_characters, &_ItemGenerator.getItems(), *textGen);
 		soundEngine.Refresh();
+		effectEngine.Refresh();
 	
 
 		//DEBUG STUFF
@@ -1122,7 +1150,7 @@ bool GameEngine::CheckCollisionsBullet(Projectile & bullet, GLuint index, double
 	{
 		if (ShapeOverlap_DIAGS(tmp, _characters[j].getOrigin()))
 		{
-			soundEngine.Play("hit");
+			effectEngine.Play("hit");
 			if (_characters[j].TakeDamage(bullet))
 			{
 				_characters.erase(_characters.begin() + j);

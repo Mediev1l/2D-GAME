@@ -25,7 +25,7 @@ public:
 	};
 public:
 	Sound() = delete;
-	Sound(std::string sound_path, Timer& t);
+	Sound(std::string sound_path, std::string file_name, Timer& t);
 	~Sound();
 public:
 	void Play(std::string x, bool looped=false);
@@ -35,15 +35,19 @@ public:
 	void VolumeDown();
 	double getVolume() { return volumeLvl; };
 	bool getMute() { return mute; };
-private:
+	bool isPlaying();
+	bool isFull();
+	void PlayGameTheme(std::string sound_name);
+	void DownToZero();
+	void UpToMax();
 	void Stop();
-	void PlayGameTheme();
 private:
 	std::map<std::string, snd> sounds;
 	Timer& t;
 	irrklang::ISoundEngine* engine;
 	bool mute;
 	double volumeLvl;
+	double _volumecopy;
 };
 
 #endif

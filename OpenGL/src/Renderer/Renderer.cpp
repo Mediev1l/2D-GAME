@@ -169,6 +169,8 @@ void Renderer::RenderText(const TextGenerator& text)
 					tempColor.g += dimmRatio;
 					tempColor.b += dimmRatio;
 				}
+
+
 				
 				if (tempColor.a <= _maxgamma && text.getFinish(name) == false && *_gamestate != State::MENU && *_gamestate != State::PAUSE)
 					text.setTransparency(name, tempColor.a += 0.2f * Delta);
@@ -201,7 +203,7 @@ void Renderer::RenderMenu()
 	_SpriteSheetShader.setFloat("offsetY", 0.0f);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, AssetManager::Get().getSprite("MainMenu")->getID());
+	glBindTexture(GL_TEXTURE_2D, _pictureid);
 
 	_SpriteSheetShader.use();
 	_SpriteSheetShader.setMat4("model", model);
@@ -253,6 +255,36 @@ void Renderer::ScreenBright()
 	}
 }
 
+void Renderer::setGamma(double gamma)
+{
+	_maxgamma = gamma;
+	GammaRatio = glm::vec4(_maxgamma, _maxgamma, _maxgamma, 1.0f);
+}
+
+void Renderer::GammaUp()
+{
+	if (_maxgamma < 1.0)
+		_maxgamma += 0.05;
+	if (_maxgamma > 1.0)
+		_maxgamma = 1.0;
+
+	//if (dimmRatio > 0)
+	//	dimmRatio += dimmRatio * 0.05;
+
+}
+
+void Renderer::GammaDown()
+{
+	if (_maxgamma > 0)
+		_maxgamma -= 0.05;
+	if (_maxgamma < 0)
+		_maxgamma = 0;
+
+	//if (dimmRatio > 0)
+	//	dimmRatio -= dimmRatio * 0.05;
+
+}
+
 void Renderer::setTextureCoords(Tile & tile)
 {
 	GLuint nr = tile.getTextureNumber();
@@ -301,9 +333,19 @@ void Renderer::setTextureCoords(Vec2i pos)
 	_SpriteSheetShader.setFloat("offsetY", offsety);
 }
 
+double Renderer::getMaxGamma()
+{
+	return _maxgamma;
+}
+
 void Renderer::setDelta(double delta)
 {
 	Delta = delta;
+}
+
+void Renderer::setPictureId(GLuint id)
+{
+	_pictureid = id;
 }
 
 void Renderer::setGameState(State & gamestate)

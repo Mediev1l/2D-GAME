@@ -24,7 +24,20 @@ void AssetManager::LoadSprites()
 	load("zombie", "res/Sprites/Enemies/Zombie/zombie.png", true);
 	load("zombie2", "res/Sprites/Enemies/Zombie/zombie2.png", true);
 	load("SpeedBoots", "res/Sprites/Items/SpeedBoots.png", true);
-	load("MainMenu", "res/Sprites/Others/Menu.png", false);
+	load("Menu1", "res/Sprites/Others/Menu1.png", false);
+	load("Menu2", "res/Sprites/Others/Menu2.png", false);
+	load("Menu3", "res/Sprites/Others/Menu3.png", false);
+	load("Menu4", "res/Sprites/Others/Menu4.png", false);
+	load("Menu5", "res/Sprites/Others/Menu5.png", false);
+	load("Menu6", "res/Sprites/Others/Menu6.png", false);
+	load("Menu7", "res/Sprites/Others/Menu7.png", false);
+	load("Menu8", "res/Sprites/Others/Menu8.png", false);
+	load("Menu9", "res/Sprites/Others/Menu9.png", false);
+	load("Menu10", "res/Sprites/Others/Menu10.png", false);
+	load("Menu11", "res/Sprites/Others/Menu11.png", false);
+	load("Menu12", "res/Sprites/Others/Menu12.png", false);
+	load("Menu13", "res/Sprites/Others/Menu13.png", false);
+	load("Menu14", "res/Sprites/Others/Menu14.png", false);
 	load("items", "res/Sprites/Items/items.png", true);
 	load("Font", "res/Sprites/Font/Font.png", true);
 

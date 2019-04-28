@@ -1,9 +1,9 @@
 #include "Sound.h"
 
-Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false), volumeLvl(0.5)
+Sound::Sound(std::string sound_path, std::string file_name, Timer& t) :t(t) , mute(false), volumeLvl(0.5), _volumecopy(volumeLvl)
 {
 	std::fstream plik;
-	plik.open(sound_path+"sounds.txt", std::ios::in);
+	plik.open(sound_path+file_name, std::ios::in);
 	size_t nSounds;
 	plik >> nSounds;
 
@@ -17,7 +17,6 @@ Sound::Sound(std::string sound_path, Timer& t) :t(t) , mute(false), volumeLvl(0.
 	}
 	engine = irrklang::createIrrKlangDevice();
 	engine->setSoundVolume((irrklang::ik_f32)volumeLvl);
-	PlayGameTheme();
 }
 
 Sound::~Sound()
@@ -42,10 +41,29 @@ void Sound::Play(std::string x, bool looped)
 
 }
 
-void Sound::PlayGameTheme()
+void Sound::PlayGameTheme(std::string sound_name)
 {
-	//Play("main", true);
-	Play("MenuTheme", true);
+	Play(sound_name, true);
+}
+
+void Sound::DownToZero()
+{
+	if (volumeLvl > 0)
+		volumeLvl -= 0.005;
+	if (volumeLvl < 0)
+		volumeLvl = 0;
+
+	engine->setSoundVolume((irrklang::ik_f32)volumeLvl);
+}
+
+void Sound::UpToMax()
+{
+	if (volumeLvl < _volumecopy)
+		volumeLvl += 0.002;
+	if (volumeLvl > _volumecopy)
+		volumeLvl = _volumecopy;
+
+	engine->setSoundVolume((irrklang::ik_f32)volumeLvl);
 }
 
 void Sound::Refresh()
@@ -65,8 +83,7 @@ void Sound::Mute(bool mute)
 
 	if (this->mute == true)
 		Stop();
-	else
-		PlayGameTheme();
+	
 }
 
 void Sound::VolumeUp()
@@ -76,6 +93,7 @@ void Sound::VolumeUp()
 	volumeLvl += 0.05; 
 	engine->setSoundVolume((irrklang::ik_f32)volumeLvl); 
 	}
+	_volumecopy = volumeLvl;
 }
 
 void Sound::VolumeDown()
@@ -85,6 +103,25 @@ void Sound::VolumeDown()
 		volumeLvl -= 0.05; 
 		engine->setSoundVolume((irrklang::ik_f32)volumeLvl); 
 	}
+	_volumecopy = volumeLvl;
+}
+
+bool Sound::isPlaying()
+{
+	if (volumeLvl > 0)
+		return true;
+	else
+		return false;
+
+
+}
+
+bool Sound::isFull()
+{
+	if (volumeLvl < _volumecopy)
+		return false;
+	else
+		return true;
 }
 
 void Sound::Stop()

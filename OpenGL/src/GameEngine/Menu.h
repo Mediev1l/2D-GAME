@@ -20,6 +20,7 @@ private:
 	struct Selection
 	{
 		std::vector<std::string> names;
+		size_t pos = 1;
 
 	};
 
@@ -28,12 +29,18 @@ private:
 	//Actual State
 	//=====================
 	ActualPosition position;
+	Selection _picture;
 	Selection _mainmenu;
 	Selection _menu;
 	Selection _options;
+	Selection _game;
 	Selection _sounds;
+	Selection _menutheme;
+	Selection _gametheme;
+	bool _dimm;
 	bool _onmain;
 	bool _isclosing;
+	bool _ismuting;
 	int _cursor;
 
 	//=====================
@@ -42,6 +49,7 @@ private:
 	Texture* texture;
 	State& gameEngineState;
 	Sound& gameSound;
+	Sound& gameEffectSound;
 	Renderer& _gamerenderer;
 	GLFWwindow* window; //moze na pozniej
 	TextGenerator& _textgen;
@@ -58,18 +66,25 @@ private:
 public:
 	Menu() = delete;
 	Menu(const Menu& cpy) = delete;
-	Menu(Sound& sound, State& state, GLFWwindow* window, TextGenerator& text, Renderer& renderer);
+	Menu(Sound& sound, Sound& effect, State& state, GLFWwindow* window, TextGenerator& text, Renderer& renderer);
 
 	void moveUP();
 	void moveDOWN();
 	void MoveLeft();
 	void MoveRight();
 	void enter();
+
 	void ShowMenu(double x, double y);
 	void Close();
 	void Open();
+
+	void ChangeMusic();
 	void OnMainMenu(bool val);
 	bool ToMainMenu();
+	bool getDimm();
+	bool getSoundStatus();
+	void setSoundStatus(bool ismuting);
+	GLuint getTextureId() const;
 
 private:
 	
@@ -77,11 +92,13 @@ private:
 	void ShowMainMenu();
 	void ShowOptions();
 	void ShowSound();
+	void ShowGame();
 
 	void HideMenu();
-
+	
 
 	void SetColor();
+	void setPicture();
 	void setCursor(int position);
 	void PositionReset();
 
