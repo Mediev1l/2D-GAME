@@ -249,9 +249,9 @@ void Renderer::ScreenBright()
 	if (GammaRatio.x > _maxgamma)
 	{
 		dimmRatio = 0;
-		GammaRatio.x = _maxgamma;
-		GammaRatio.y = _maxgamma;
-		GammaRatio.z = _maxgamma;
+		GammaRatio.x = _maxgamma + 0.001;
+		GammaRatio.y = _maxgamma + 0.001;
+		GammaRatio.z = _maxgamma + 0.001;
 	}
 }
 
