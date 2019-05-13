@@ -71,47 +71,47 @@ void DebugInfo::DrawClear()
 	{
 		size_t startx = (i%3) * 30;
 
-		localStart.X = startx;
-		localStart.Y = cY.Y;
+		localStart.X = (SHORT)startx;
+		localStart.Y = (SHORT)cY.Y;
 		SetConsoleCursorPosition(hn, localStart);
 		//Wypisywanie poszczegolnych
 			std::cout << std::setw(15) << std::setprecision(5) <<*(info[i].name);
-			localStart.X = startx; localStart.Y += 1;
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout<< std::setw(15) << "PosX: " << std::setw(1) << info[i].pos->_x;
-			localStart.X = startx; localStart.Y += 1;
+			std::cout << std::setw(15) << "PosX: ";
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout << std::setw(15) << "PosY: " << std::setw(1) << info[i].pos->_y;
-			localStart.X = startx; localStart.Y += 1;
+			std::cout << std::setw(15) << "PosY: ";
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout << std::setw(15) << "Health: " << std::setw(1) << *(info[i].health);
-			localStart.X = startx; localStart.Y += 1;
+			std::cout << std::setw(15) << "Health: ";
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout << std::setw(15) << "Shield: " << std::setw(1) << *(info[i].shield);
-			localStart.X = startx; localStart.Y += 1;
+			std::cout << std::setw(15) << "Shield: ";
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout << std::setw(15) << "Range: " << std::setw(1) << *(info[i].range);
-			localStart.X = startx; localStart.Y += 1;
+			std::cout << std::setw(15) << "Range: ";
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout << std::setw(15) << "Speed: " << std::setw(1) << *(info[i].speed);
-			localStart.X = startx; localStart.Y += 1;
+			std::cout << std::setw(15) << "Speed: ";
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout << std::setw(15) << "AttackSpeed: " << std::setw(1) << *(info[i].att_speed);
-			localStart.X = startx; localStart.Y += 1;
+			std::cout << std::setw(15) << "AttackSpeed: ";
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout << std::setw(15) << "Dmg: " << std::setw(1) << *(info[i].damage);
-			localStart.X = startx; localStart.Y += 1;
+			std::cout << std::setw(15) << "Dmg: ";
+			localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 			SetConsoleCursorPosition(hn, localStart);
 
-			std::cout << std::setw(15) << "Anim x,y: " << std::setw(1) << info[i].anim._x << " " << info[i].anim._y;
+			std::cout << std::setw(15) << "Anim x,y: ";
 
 		if ((i + 1) % 3 == 0) cY.Y += 12;//?
 	}
@@ -126,44 +126,44 @@ void DebugInfo::Draw()
 	{
 		size_t startx = (i % 3) * 30 + 16;
 
-		localStart.X = startx;
+		localStart.X = (SHORT)startx;
 		localStart.Y = cY.Y;
 		//SetConsoleCursorPosition(hn, localStart);
 		//Wypisywanie poszczegolnych
 		//std::cout << std::setw(15) << std::setprecision(5) << info[i].name;
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout<< std::setw(1) << info[i].pos->_x;
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout << std::setw(1) << info[i].pos->_y;
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout << std::setw(1) << *(info[i].health);
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout << std::setw(1) << *(info[i].shield);
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout <<  std::setw(1) << *(info[i].range);
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout <<  std::setw(1) << *(info[i].speed);
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout <<  std::setw(1) << *(info[i].att_speed);
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout << std::setw(1) << *(info[i].damage);
-		localStart.X = startx; localStart.Y += 1;
+		localStart.X = (SHORT)startx; localStart.Y += (SHORT)1;
 		SetConsoleCursorPosition(hn, localStart);
 
 		std::cout << std::setw(1) << info[i].anim._x << " " << info[i].anim._y;

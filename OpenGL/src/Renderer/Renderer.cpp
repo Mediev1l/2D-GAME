@@ -113,20 +113,14 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 	//Rysowanie od ty³u = gracz zawsze na wierzchu
 	for(int i = (int)characters.size()-1; i>-1;--i)
 	{
-		if (i == 0)
-		{
-			for (int i = (int)characters[0].getPifPafSize() - 1; i > -1; --i)
+			for (int j = (int)characters[i].getPifPafSize() - 1; j > -1; --j)
 			{
-				if (characters[0].getOnepiFpaF(i).getExistance() == true)
+				if (characters[i].getOnepiFpaF(j).getExistance() == true)
 				{
-					setTextureCoords(characters[0].getOnepiFpaF(i));
-					draw(characters[0].getOnepiFpaF(i)._position.getX(), characters[0].getOnepiFpaF(i)._position.getY(), characters[0].getPifPafTexture(),0.05);
+					setTextureCoords(characters[i].getOnepiFpaF(j));
+					draw(characters[i].getOnepiFpaF(j)._position.getX(), characters[i].getOnepiFpaF(j)._position.getY(), characters[i].getPifPafTexture(),0.05);
 				}
 			}
-			setTextureCoords(characters[i]);
-			draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture());
-			break;
-		}
 		setTextureCoords(characters[i]);
 		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture());
 	}
@@ -173,9 +167,9 @@ void Renderer::RenderText(const TextGenerator& text)
 
 				
 				if (tempColor.a <= _maxgamma && text.getFinish(name) == false && *_gamestate != State::MENU && *_gamestate != State::PAUSE)
-					text.setTransparency(name, tempColor.a += 0.2f * Delta);
+					text.setTransparency(name, tempColor.a += float(0.2f * Delta));
 				else if (tempColor.a >= 0.0f && text.getFinish(name) == true && *_gamestate != State::MENU && *_gamestate != State::PAUSE)
-					text.setTransparency(name, tempColor.a -= 0.2f * Delta);
+					text.setTransparency(name, tempColor.a -= float(0.2f * Delta));
 
 				setTextureCoords(sheetPos);
 				drawText(textPos._x + counter*text.getSize(name)._x*5, textPos._y, text.getTexture(), text.getSize(name), tempColor);
@@ -219,9 +213,9 @@ void Renderer::RenderMenu()
 void Renderer::ScreenDimm(float percentage)
 {
 	if (Delta > 1.0) Delta = 0.1;
-	if (GammaRatio.x > _maxgamma - percentage) GammaRatio.x -= Delta; 
-	if (GammaRatio.y > _maxgamma - percentage) GammaRatio.y -= Delta; 
-	if (GammaRatio.z > _maxgamma - percentage) GammaRatio.z -= Delta; 
+	if (GammaRatio.x > _maxgamma - percentage) GammaRatio.x -= (float)Delta; 
+	if (GammaRatio.y > _maxgamma - percentage) GammaRatio.y -= (float)Delta;
+	if (GammaRatio.z > _maxgamma - percentage) GammaRatio.z -= (float)Delta;
 }
 
 void Renderer::ScreenDimmWithoutMenu(float percentage)
@@ -230,28 +224,28 @@ void Renderer::ScreenDimmWithoutMenu(float percentage)
 
 	if (GammaRatio.x > _maxgamma * (1 - percentage))
 	{
-		GammaRatio.x -= Delta;
-		dimmRatio += Delta;
+		GammaRatio.x -= (float)Delta;
+		dimmRatio += (float)Delta;
 	}
-	if (GammaRatio.y > _maxgamma * ( 1 - percentage) )  GammaRatio.y -= Delta;
-	if (GammaRatio.z > _maxgamma * ( 1 - percentage) )  GammaRatio.z -= Delta;
+	if (GammaRatio.y > _maxgamma * ( 1 - percentage) )  GammaRatio.y -= (float)Delta;
+	if (GammaRatio.z > _maxgamma * ( 1 - percentage) )  GammaRatio.z -= (float)Delta;
 }
 
 void Renderer::ScreenBright()
 {
 	if (Delta > 1.0) Delta = 0.1;
-	if (GammaRatio.x < _maxgamma && dimmRatio > 0) dimmRatio -= Delta;
+	if (GammaRatio.x < _maxgamma && dimmRatio > 0) dimmRatio -= (float)Delta;
 	else if (dimmRatio < 0) dimmRatio = 0;
-	if (GammaRatio.x < _maxgamma) GammaRatio.x += Delta; 
-	if (GammaRatio.y < _maxgamma) GammaRatio.y += Delta; 
-	if (GammaRatio.z < _maxgamma) GammaRatio.z += Delta; 
+	if (GammaRatio.x < _maxgamma) GammaRatio.x += (float)Delta;
+	if (GammaRatio.y < _maxgamma) GammaRatio.y += (float)Delta;
+	if (GammaRatio.z < _maxgamma) GammaRatio.z += (float)Delta;
 
 	if (GammaRatio.x > _maxgamma)
 	{
 		dimmRatio = 0;
-		GammaRatio.x = _maxgamma + 0.001;
-		GammaRatio.y = _maxgamma + 0.001;
-		GammaRatio.z = _maxgamma + 0.001;
+		GammaRatio.x = (float)_maxgamma + 0.001f;
+		GammaRatio.y = (float)_maxgamma + 0.001f;
+		GammaRatio.z = (float)_maxgamma + 0.001f;
 	}
 }
 

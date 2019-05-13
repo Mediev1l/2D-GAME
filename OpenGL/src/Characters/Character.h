@@ -10,6 +10,7 @@
 #include "Items/Item.h"
 #include "Weapons/Projectile.h"
 #include "Basics/Animation.h"
+#include "Utility/Timer.h"
 #include <vector>
 
 class AssetManager;
@@ -20,8 +21,7 @@ public:
 //================================================================
 //= Konstruktory
 //================================================================
-	Character(std::string name, double x, double y, Vec2d OriSize, GLuint nFrames);
-	
+	Character(std::string name, double x, double y, Vec2d OriSize, GLuint nFrames, Timer& t);
 //================================================================
 //= Gettery
 //================================================================
@@ -37,16 +37,23 @@ public:
 	Vec2d& getCurrVelocity() { return _curVelocity; }
 	Origin& getOrigin() { return _ori; };
 	Vec2i getFrameIndex();
+	bool isTouchable() { return t->getDelay(timername) > 0 ? false : true; }
+	bool isTransparent();
 //================================================================
 // Interakcja
 //================================================================
 	void consumeItem(const Item* item);
 	bool TakeDamage(const Projectile& bullet)
 	{
-		m_health -= 20;
+		m_health -= (long)bullet.getDMG();
 		return !(m_health > 0);
 	};
 	void updateAnimation(std::pair<Animation::Direction,Animation::Direction> dir, double deltaTime);
+
+	void setTimer(std::string name, double sec) { 
+		timername = name;
+		t->delay(name, sec, true); };
+	void Blink(double delta);
 //================================================================
 // Settery
 //================================================================
@@ -72,6 +79,7 @@ public:
 		_curVelocity._y = y;
 	}
 
+	void Untouchable() { t->delay(timername, 1.0, true); }
 	//virtual void Bechaviour(const Character& player, double deltaTime) = 0;
 
 protected:
@@ -94,5 +102,9 @@ protected:
 	//Textury
 	Texture* _PifPafTexture;
 	Texture* _texture;
+	Timer* t;
+	std::string timername;
+	glm::vec4 color;
+	float _ratio;
 };
 #endif

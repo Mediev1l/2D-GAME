@@ -12,12 +12,12 @@ void TextGenerator::setText(std::string uniqueName, std::string text, Vec2d posi
 
 	if (duration == 0)
 	{
-		if (_timer.delay(uniqueName, duration, true))
+		if (_timer.delay(uniqueName, (float)duration, true))
 			_text.emplace(uniqueName, params{ text, position, size, true });
 	}
 	else
 	{
-		if (_timer.delay(uniqueName, duration + 2, true))
+		if (_timer.delay(uniqueName, (float)duration + 2, true))
 			_text.emplace(uniqueName, params{ text, position, size });
 	}
 

@@ -34,7 +34,7 @@ void Sound::Play(std::string x, bool looped)
 		{
 			sound.play = true;
 			engine->play2D(sound.path.c_str(), looped);
-			t.delay(x, sound.time, false);
+			t.delay(x, (double)sound.time, false);
 
 		}
 	}

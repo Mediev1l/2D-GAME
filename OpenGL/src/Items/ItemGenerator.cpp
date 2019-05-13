@@ -11,7 +11,7 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y)
 		while (_used.size() != items.size())
 		{
 			int random = rand() % items.size();
-			int dist = std::distance(itStart, AssetManager::Get().getItems().end());
+			int dist = (int)std::distance(itStart, AssetManager::Get().getItems().end());
 			if (dist == 1)
 				itStart = AssetManager::Get().getItems().begin();
 			if (dist - random > 0 || dist == 6)

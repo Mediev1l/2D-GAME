@@ -5,6 +5,7 @@ Item::Item()
 	: 
 	  Stats() 
 	 , onMap(true)
+	 , _ori(4,Vec2d(1.0,1.0),Vec2d(0,0))
 	{}
 
 void Item::Create(std::string itemdatapath)

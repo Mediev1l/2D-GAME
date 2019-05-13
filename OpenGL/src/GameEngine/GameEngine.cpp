@@ -86,11 +86,14 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
-	_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9));
-	_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
-	_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
-	_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
+	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9,t));
+	_characters[0].setTimer("puntouch", 2.0);
+	_characters[0].setDamage(50);
+	_characters[0].setAttackSpeed(0.25);
+	_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9, t));
+	_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8, t));
+	_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9, t));
+	_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4, t));
 
 	//GUI INITIALIZATION
 	// HP
@@ -130,7 +133,7 @@ void GameEngine::Game_Init()
 	Item::_texture = AssetManager::Get().getSprite("items");
 
 	renderer->setGameState(_gameState);
-
+	initInfo();
 }
 
 void GameEngine::Game_Run()
@@ -160,13 +163,13 @@ void GameEngine::Game_Run()
 		//Updating Label name
 		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
 		glfwSetWindowTitle(window, a.c_str());
-		
+		textGen->setText("fps", "FPS: " + (std::to_string(1/t.getDelta())), Vec2d(3,0), 0, Vec2d(0.03, 0.05));
 
 		// input tylko jak gracz ma cos robic
 			// -----
 		processInput();
 
-
+		_characters[0].Blink(t.getDelta());
 		//IF NOT FULLY BRIGHT
 		if (_gameState == State::GAME && !renderer->isBright())
 			renderer->ScreenBright();
@@ -183,7 +186,10 @@ void GameEngine::Game_Run()
 
 		//SHOW MENU
 		if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
+		{
+			//ShowGUI({ 0,0 });
 			_Menu->ShowMenu(1.8, 1.3);
+		}
 		
 
 		//SMOOTH CLOSING GAME
@@ -259,12 +265,11 @@ void GameEngine::Game_Run()
 			{
 				if (!renderer->isBright() && lvlWin)
 				{
-					
 					_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
 					//Tutaj funkcja do generowanie enemisuf
-					_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));
-					_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9));
-					_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9));
+					_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9,t));
+					_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9,t));
+					_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9,t));
 					_characters[0]._position._x = _map->getWidth() / 2;
 					_characters[0]._position._y = _map->getHeight() / 2;
 					camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
@@ -281,7 +286,29 @@ void GameEngine::Game_Run()
 			}
 		}
 
-		
+		if (_gameState==State::GAMEOVER)
+		{
+
+			//_Menu->Open();
+			_Menu->ShowMenu(1.8, 1.3);
+			_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
+			//Tutaj funkcja do generowanie enemisuf
+			_characters.clear();
+			_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9, t));
+			_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9, t));
+			_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9, t));
+			_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9, t));
+			_characters[0]._position._x = _map->getWidth() / 2;
+			_characters[0]._position._y = _map->getHeight() / 2;
+			camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
+			t.Reset();
+			lvlWin = false;
+			//Doors();
+			debuginfo.Init(_characters);
+			_gameState = State::MAIN_MENU;
+		}
+
+
 		//Renderowanie ³adnie w jednej funkcji
 		renderer->Render(_characters, &_ItemGenerator.getItems(), *textGen);
 		soundEngine.Refresh();
@@ -338,6 +365,11 @@ void GameEngine::processInput()
 		if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
 			soundEngine.VolumeDown();
 		
+		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		{
+			_characters[0].getHealth() += 500;
+		}
+
 		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		{
 			if (t.delay("Enter", 0.3, false))
@@ -367,7 +399,7 @@ void GameEngine::processInput()
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::UP);
-			//ProcessPlayerShoot();
+			//ProcessShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::UP;
 			else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
@@ -381,7 +413,7 @@ void GameEngine::processInput()
 		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::DOWN);
-			//ProcessPlayerShoot();
+			//ProcessShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::DOWN;
 			else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
@@ -395,7 +427,7 @@ void GameEngine::processInput()
 		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::LEFT);
-			//ProcessPlayerShoot();
+			//ProcessShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::LEFT;
 			else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
@@ -409,7 +441,7 @@ void GameEngine::processInput()
 		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
 			//_characters[0].setSide(Animation::RIGHT);
-			//ProcessPlayerShoot();
+			//ProcessShoot();
 			if (_gameState == State::GAME)
 				dirShoot.first = Animation::Direction::RIGHT;
 			else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
@@ -479,7 +511,7 @@ void GameEngine::processInput()
 			}
 			_characters[0].setSide((Animation::Direction)dirShoot.first);
 			ProcessPlayerMove(deltaTime, dirMove);
-			ProcessPlayerShoot();
+			ProcessShoot(_characters[0]);
 		}
 	}
 
@@ -525,17 +557,17 @@ void GameEngine::scroll_callback(double xoffset, double yoffset)
 void GameEngine::initInfo()
 {
 
-	//debuginfo.Init(_characters);
+	debuginfo.Init(_characters);
 }
 
 void GameEngine::updateInfo()
 {
-	//debuginfo.Update(_characters);
+	debuginfo.Update(_characters);
 }
 
 void GameEngine::drawInfo()
 {
-	//debuginfo.Draw();
+	debuginfo.Draw();
 }
 
 void GameEngine::ProcessPlayerMove(double deltaTime, std::pair<Animation::Direction, Animation::Direction> dir)
@@ -596,19 +628,61 @@ void GameEngine::ProcessPlayerMove(double deltaTime, std::pair<Animation::Direct
 	//CheckColissions(_characters[0], 0, newX, newY);
 	_characters[0].updateAnimation({ Animation::Direction(dir.first),Animation::Direction(dir.second) }, deltaTime);
 
-	if (!CheckColissions(_characters[0], 0, newX, newY))
+	int Both = CheckColissions(_characters[0], 0, newX, newY);
+	int axisY = CheckColissions(_characters[0], 0, px, newY);
+	int axisX = CheckColissions(_characters[0], 0, newX, py);
+	if (Both==-1 || (!_characters[0].isTouchable() && Both!=0))
 	{
 		_characters[0].setX(newX);
 		_characters[0].setY(newY);
 	}
-	else if (!CheckColissions(_characters[0], 0, px, newY))
+	else
+	{
+		if (Both != 0)
+		{
+			if (_characters[0].isTouchable())
+			{
+				effectEngine.Play("hit");
+				_characters[0].getHealth() -= (long)ceil(_characters[Both].getDamage());
+				_characters[0].Untouchable();
+			}
+
+		}
+	}
+	if (axisY==-1|| ( !_characters[0].isTouchable() && axisY != 0))
 	{
 		_characters[0].setY(newY);
 	}
-	else if (!CheckColissions(_characters[0], 0, newX,py))
+	else
+	{
+		if (axisY != 0)
+		{
+			if (_characters[0].isTouchable())
+			{
+				effectEngine.Play("hit");
+				_characters[0].getHealth() -= (long)ceil(_characters[axisY].getDamage());
+				_characters[0].Untouchable();
+			}
+		}
+	}
+	if (axisX==-1 || (!_characters[0].isTouchable() && axisX != 0))
 	{
 		_characters[0].setX(newX);
 	}
+	else
+	{
+		if (axisX != 0)
+		{
+			if (_characters[0].isTouchable())
+			{
+				effectEngine.Play("hit");
+				_characters[0].getHealth() -= (long)ceil(_characters[axisX].getDamage());
+				_characters[0].Untouchable();
+			}
+		}
+	}
+
+	if (_characters[0].getHealth() <= 0) _gameState = State::GAMEOVER;
 
 	//Czy pozycja gracza == pozycja drzwi
 
@@ -660,47 +734,50 @@ void GameEngine::ProcessItemPickup()
 	if (nearestid != -1)
 	{
 		auto item = _ItemGenerator.getItems()[nearestid];
-		textGen->setText(item->sName, item->sName, { camera.getFov()._x/2.0, 2 }, 1);
-		textGen->setText(item->sName+"desc", item->getDescription(), { camera.getFov()._x / 2.0, 5 }, 1);
-		_characters[0].consumeItem(item);
-		_ItemGenerator.getItems()[nearestid]->setOnMap(false);
+		if (ShapeOverlap_DIAGS(_characters[0].getOrigin(), item->getOrigin() ))
+		{
+			textGen->setText(item->sName, item->sName, { camera.getFov()._x / 2.0, 2 }, 1);
+			textGen->setText(item->sName + "desc", item->getDescription(), { camera.getFov()._x / 2.0, 5 }, 1);
+			_characters[0].consumeItem(item);
+			_ItemGenerator.getItems()[nearestid]->setOnMap(false);
+		}
 	}
 
 
 }
 
-void GameEngine::ProcessPlayerShoot()
+void GameEngine::ProcessShoot(Character& ch)
 {
-	double px = _characters[0]._position._x;
-	double py = _characters[0]._position._y;
+	double px = ch._position._x;
+	double py = ch._position._y;
 	
-	Animation::Direction  pdir = _characters[0].getSide();
-	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
+	Animation::Direction  pdir = ch.getSide();
+	std::vector<Projectile>& temp = ch.getpiFpaF();
 
 
 
-	if (t.delay("Shoot", 0, true))
+	if (t.delay("Shoot"+ch.sName, ch.getAttackSpeed(), true))
 	{
 		switch (pdir)
 		{
 		case Animation::Direction::UP:
 		{
-			temp.emplace_back(Vec2d(0.2,0.2), px, py - 0.1, 2, 0, Animation::Direction::UP, true, _characters[0].getCurrVelocity(),6);
+			temp.emplace_back(Vec2d(0.2, 0.2), px, py - 0.1, 2, 0, Animation::Direction::UP, true, ch.getCurrVelocity(), 6, ch.getDamage());
 			break;
 		}
 		case Animation::Direction::DOWN:
 		{
-			temp.emplace_back(Vec2d(0.2, 0.2), px, py + 0.1, 2, 0, Animation::Direction::DOWN, true, _characters[0].getCurrVelocity(),6);
+			temp.emplace_back(Vec2d(0.2, 0.2), px, py + 0.1, 2, 0, Animation::Direction::DOWN, true, ch.getCurrVelocity(),6, ch.getDamage());
 			break;
 		}
 		case Animation::Direction::LEFT:
 		{
-			temp.emplace_back(Vec2d(0.2, 0.2), px - 0.1, py-0.1, 2, 0, Animation::Direction::LEFT, true, _characters[0].getCurrVelocity(),6);
+			temp.emplace_back(Vec2d(0.2, 0.2), px - 0.1, py-0.1, 2, 0, Animation::Direction::LEFT, true, ch.getCurrVelocity(),6, ch.getDamage());
 			break;
 		}
 		case Animation::Direction::RIGHT:
 		{
-			temp.emplace_back(Vec2d(0.2, 0.2), px + 0.1, py-0.1, 2, 0, Animation::Direction::RIGHT, true, _characters[0].getCurrVelocity(),6);
+			temp.emplace_back(Vec2d(0.2, 0.2), px + 0.1, py-0.1, 2, 0, Animation::Direction::RIGHT, true, ch.getCurrVelocity(),6, ch.getDamage());
 			break;
 		}
 
@@ -711,86 +788,90 @@ void GameEngine::ProcessPlayerShoot()
 
 void GameEngine::Update()
 {
-	// Update pociskow
-	std::vector<Projectile>& temp = _characters[0].getpiFpaF();
-	double deltaTime = t.getDelta();
 
-
-	for (int i = 0; i < temp.size(); i++)
+	for (int j = 0; j < _characters.size(); ++j)
 	{
-		Animation::Direction pdir = temp[i].getSide();
-		
-		double tempV = temp[i].Velocity;
-		Vec2d pvel = temp[i].getObjVel();
+		// Update pociskow
+		std::vector<Projectile>& temp = _characters[j].getpiFpaF();
+		double deltaTime = t.getDelta();
 
-		Animation::Direction p[2];
-		p[0] = pvel._y > 0 ? Animation::Direction::DOWN : Animation::Direction::UP;
-		p[1] = pvel._x > 0 ? Animation::Direction::RIGHT : Animation::Direction::LEFT;
 
-		pvel._x = abs(pvel._x);
-		pvel._y = abs(pvel._y);
-
-		for (GLuint j = 0; j < 2; ++j)
+		for (int i = 0; i < temp.size(); i++)
 		{
-			if (p[j] == Animation::Direction::NONE) continue;
+			Animation::Direction pdir = temp[i].getSide();
 
-			if (pdir == Animation::Direction::LEFT && p[j] == Animation::Direction::LEFT) tempV += pvel._x;
-			else if (pdir == Animation::Direction::LEFT && p[j] == Animation::Direction::RIGHT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+			double tempV = temp[i].Velocity;
+			Vec2d pvel = temp[i].getObjVel();
 
-			else if (pdir == Animation::Direction::RIGHT && p[j] == Animation::Direction::LEFT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
-			else if (pdir == Animation::Direction::RIGHT && p[j] == Animation::Direction::RIGHT) tempV += pvel._x;
+			Animation::Direction p[2];
+			p[0] = pvel._y > 0 ? Animation::Direction::DOWN : Animation::Direction::UP;
+			p[1] = pvel._x > 0 ? Animation::Direction::RIGHT : Animation::Direction::LEFT;
 
-			else if (pdir == Animation::Direction::UP && p[j] == Animation::Direction::UP) tempV += pvel._y;
-			else if (pdir == Animation::Direction::UP && p[j] == Animation::Direction::DOWN) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+			pvel._x = abs(pvel._x);
+			pvel._y = abs(pvel._y);
 
-			else if (pdir == Animation::Direction::DOWN && p[j] == Animation::Direction::UP) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
-			else if (pdir == Animation::Direction::DOWN && p[j] == Animation::Direction::DOWN) tempV += pvel._y;
-		}
-
-		
-		if (temp[i].getElapdedDistance() < _characters[0].getRange() / 10)
-		{
-			temp[i].UpdateAnimation(deltaTime);
-			switch (pdir)
+			for (GLuint j = 0; j < 2; ++j)
 			{
+				if (p[j] == Animation::Direction::NONE) continue;
+
+				if (pdir == Animation::Direction::LEFT && p[j] == Animation::Direction::LEFT) tempV += pvel._x;
+				else if (pdir == Animation::Direction::LEFT && p[j] == Animation::Direction::RIGHT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+
+				else if (pdir == Animation::Direction::RIGHT && p[j] == Animation::Direction::LEFT) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+				else if (pdir == Animation::Direction::RIGHT && p[j] == Animation::Direction::RIGHT) tempV += pvel._x;
+
+				else if (pdir == Animation::Direction::UP && p[j] == Animation::Direction::UP) tempV += pvel._y;
+				else if (pdir == Animation::Direction::UP && p[j] == Animation::Direction::DOWN) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+
+				else if (pdir == Animation::Direction::DOWN && p[j] == Animation::Direction::UP) (tempV > pvel._x / 4) ? tempV -= pvel._x / 4 : tempV;
+				else if (pdir == Animation::Direction::DOWN && p[j] == Animation::Direction::DOWN) tempV += pvel._y;
+			}
+
+
+			if (temp[i].getElapdedDistance() < _characters[j].getRange() / 10)
+			{
+				temp[i].UpdateAnimation(deltaTime);
+				switch (pdir)
+				{
 				case Animation::Direction::UP:
 				{
-					temp[i]._position.setY(temp[i]._position.getY() - deltaTime * tempV) ;
+					temp[i]._position.setY(temp[i]._position.getY() - deltaTime * tempV);
 					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case Animation::Direction::DOWN:
 				{
-					temp[i]._position.setY(temp[i]._position.getY ()+deltaTime * tempV) ;
+					temp[i]._position.setY(temp[i]._position.getY() + deltaTime * tempV);
 					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case Animation::Direction::LEFT:
 				{
-					temp[i]._position.setX(temp[i]._position.getX()- deltaTime * tempV) ;
+					temp[i]._position.setX(temp[i]._position.getX() - deltaTime * tempV);
 					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
 				case Animation::Direction::RIGHT:
 				{
-					temp[i]._position.setX(temp[i]._position.getX() + deltaTime * tempV) ;
+					temp[i]._position.setX(temp[i]._position.getX() + deltaTime * tempV);
 					temp[i].setElapsedDistance(temp[i].getElapdedDistance() + deltaTime * tempV);
 					break;
 				}
-				
+
+				}
+				if (CheckCollisionsBullet(temp[i], j, temp[i].getX(), temp[i].getY()))
+				{
+					temp[i].setExistance(false);
+					temp.erase(temp.begin() + i);
+					i -= 1;
+				}
+
 			}
-			if (CheckCollisionsBullet(temp[i], 0, temp[i].getX(), temp[i].getY()))
+			else
 			{
 				temp[i].setExistance(false);
 				temp.erase(temp.begin() + i);
-				i -= 1;
 			}
-
-		}
-		else
-		{
-			temp[i].setExistance(false);
-			temp.erase(temp.begin() + i);
 		}
 	}
 }
@@ -806,34 +887,34 @@ void GameEngine::ShowGUI(Vec2d position)
 	// HP
 	textGen->setPosition("HP", Vec2d(scale._x, scale._y));
 	textGen->setPosition("HP VALUE", Vec2d(scale._x + offsetX, scale._y));
-	textGen->setText("HP VALUE", std::to_string((GLuint)_characters[0].getHealth()));
+	textGen->setText("HP VALUE", std::to_string((long)_characters[0].getHealth()));
 	textGen->setInfinity("HP", true);
 	textGen->setInfinity("HP VALUE", true);
 	// RANGE
 	textGen->setPosition("RANGE", Vec2d(scale._x, scale._y + 1 * offsetY));
 	textGen->setPosition("RANGE VALUE", Vec2d(scale._x + offsetX, scale._y + 1 * offsetY));
-	textGen->setText("RANGE VALUE", std::to_string((GLuint)_characters[0].getRange()));
+	textGen->setText("RANGE VALUE", std::to_string((long)_characters[0].getRange()));
 	textGen->setInfinity("RANGE", true);
 	textGen->setInfinity("RANGE VALUE", true);
 	
 	// SPEED
 	textGen->setPosition("SPEED", Vec2d(scale._x, scale._y + 2 * offsetY));
 	textGen->setPosition("SPEED VALUE", Vec2d(scale._x + offsetX, scale._y + 2 * offsetY));
-	textGen->setText("SPEED VALUE", std::to_string((GLuint)_characters[0].getMovementSpeed()));
+	textGen->setText("SPEED VALUE", std::to_string((long)_characters[0].getMovementSpeed()));
 	textGen->setInfinity("SPEED", true);
 	textGen->setInfinity("SPEED VALUE", true);
 	
 	// ATT S
 	textGen->setPosition("ATTACKS", Vec2d(scale._x, scale._y + 3 * offsetY));
 	textGen->setPosition("ATTACK VALUE", Vec2d(scale._x + offsetX, scale._y + 3 * offsetY));
-	textGen->setText("ATTACK VALUE", std::to_string((GLuint)_characters[0].getAttackSpeed()));
+	textGen->setText("ATTACK VALUE", std::to_string((long)_characters[0].getAttackSpeed()));
 	textGen->setInfinity("ATTACKS", true);
 	textGen->setInfinity("ATTACK VALUE", true);
 	
 	// DMG
 	textGen->setPosition("DMG", Vec2d(scale._x, scale._y + 4 * offsetY));
 	textGen->setPosition("DMG VALUE", Vec2d(scale._x + offsetX, scale._y + 4 * offsetY));
-	textGen->setText("DMG VALUE", std::to_string((GLuint)_characters[0].getDamage()));
+	textGen->setText("DMG VALUE", std::to_string((long)_characters[0].getDamage()));
 	textGen->setInfinity("DMG", true);
 	textGen->setInfinity("DMG VALUE", true);
 
@@ -880,8 +961,8 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 		Vec2d Move(mx - px, my - py);
 		
 		//Potrzebne zmienne
-		bool move1 = true;
-		bool move2 = true;
+		int move1;
+		int move2;
 		double newX = mx;
 		double newY = my;
 
@@ -934,52 +1015,66 @@ void GameEngine::ProcessEnemiesMove(double deltaTime)
 		if (newX > _map->getWidth() - 1) newX = _map->getWidth();
 		if (newY > _map->getHeight() - 1) newY = _map->getHeight();
 		//Check in X
-		move1 = !CheckColissions(_characters[i], i, newX, my);
+		move1 = CheckColissions(_characters[i], i, newX, my);
 		//Check in Y
-		move2 = !CheckColissions(_characters[i], i, mx, newY);
+		move2 = CheckColissions(_characters[i], i, mx, newY);
 
 		//Wykonaj ruch
-			if (move1 && newX!=mx)
+			if (move1==-1 && newX!=mx)
 			{
 				//Je¿eli w drug¹ stronie nie ma ruchu
-				if (!move2)
+				if (move2!=-1)
 				{
 					//Policz czy jest sens i dodaj do pierwotnego kierunku
 					double value = mv * deltaTime;
 					if (dir[0] == Animation::Direction::LEFT)
 					{
-						if(!CheckColissions(_characters[i],i,mx-value,my)) newX = mx-value;
+						if(CheckColissions(_characters[i],i,mx-value,my)==-1) newX = mx-value;
 					}
 					else
 					{
-						if (!CheckColissions(_characters[i], i, mx + value, my)) newX = mx+ value;
+						if (CheckColissions(_characters[i], i, mx + value, my)==-1) newX = mx+ value;
 					}
 				}
-				_characters[i].setX(newX);
-				
+
+				_characters[i].setX(newX);	
 				if (HowMuchInY < HowMuchInX )_characters[i].updateAnimation({ Animation::Direction::NONE,(Animation::Direction)dir[0]}, deltaTime);
+				_characters[i].setSide((Animation::Direction)dir[0]);
+				ProcessShoot(_characters[i]);
 			}
-			if (move2&&newY!=my)
+			if (move2==-1&&newY!=my)
 			{
-				if (!move1)
-				{
-					double value = mv * deltaTime;
-					if (dir[1] == Animation::Direction::UP)
+					if (move1!=-1)
 					{
-						if (!CheckColissions(_characters[i], i, mx, my-value)) newY = my-value;
+						
+						double value = mv * deltaTime;
+						if (dir[1] == Animation::Direction::UP)
+						{
+							if (CheckColissions(_characters[i], i, mx, my-value)==-1) newY = my-value;
+						}
+						else
+						{
+							if (CheckColissions(_characters[i], i, mx, my+value)==-1) newY = my+value;
+						}
+						//_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
 					}
-					else
-					{
-						if (!CheckColissions(_characters[i], i, mx, my+value)) newY = my+value;
-					}
-					//_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
-				}
-				_characters[i].setY(newY);
-				
-				if(HowMuchInY>HowMuchInX)_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
+					_characters[i].setY(newY);
+					if (HowMuchInY > HowMuchInX)_characters[i].updateAnimation({ (Animation::Direction)dir[1],Animation::Direction::NONE }, deltaTime);
+					_characters[i].setSide((Animation::Direction)dir[1]);
+					ProcessShoot(_characters[i]);
 			}
+
+			if (move1 == 0 || move2 == 0)
+			{
+					if (_characters[0].isTouchable())
+					{
+						effectEngine.Play("hit");
+						_characters[0].getHealth() -= (long)ceil(_characters[i].getDamage());
+						_characters[0].Untouchable();
+					}
+			}
+				
 	}
-	
 }
 
 void GameEngine::Doors()
@@ -1031,7 +1126,7 @@ Animation::Direction GameEngine::CalculateDirection(double x, bool pionowo, doub
 	}
 }
 
-bool GameEngine::CheckColissions(Character & obj, GLuint index, double x, double y)
+int GameEngine::CheckColissions(Character & obj, GLuint index, double x, double y)
 {
 	//Some utility variables
 	auto getIndex = [&](GLuint x, GLuint y) { return y * _map->getWidth() + x; };
@@ -1060,16 +1155,16 @@ bool GameEngine::CheckColissions(Character & obj, GLuint index, double x, double
 	for (GLuint i = 0; i < indexes.size(); ++i)
 	{
 		//std::cout << "Kolizja!" << '\n';
-		if (_map->getTile(indexes[i]).GetSolid()) return true;
+		if (_map->getTile(indexes[i]).GetSolid()) return index;
 	}
 
 	//a teraz kolizje z innymi characterami
 	for (GLuint j = 0; j < _characters.size(); ++j)
 	{
-		if (j != index) if (ShapeOverlap_DIAGS(tmp, _characters[j].getOrigin())) return true;
+		if (j != index) if (ShapeOverlap_DIAGS(tmp, _characters[j].getOrigin())) return j;
 	}
 
-	return false;
+	return -1;
 }
 
 //One Lone Coder Overlapping Algorithm
@@ -1133,7 +1228,7 @@ bool GameEngine::CheckCollisionsBullet(Projectile & bullet, GLuint index, double
 	Origin tmp((GLuint)4,bullet.getOrigin().getSize(), Vec2d(x, y));
 	for (GLuint i = 0; i < indexesToCheck.size(); ++i)
 	{
-		if (ShapeOverlap_DIAGS(tmp, _map->getTile(indexesToCheck[i]>0?indexesToCheck[i]:0).getOrigin()))
+		if (ShapeOverlap_DIAGS(tmp, _map->getTile(indexesToCheck[i]>0?(indexesToCheck[i] < (int)_map->getSize()? indexesToCheck[i]:0):0).getOrigin()))
 		{
 			indexes.push_back(indexesToCheck[i]);
 		}
@@ -1146,25 +1241,47 @@ bool GameEngine::CheckCollisionsBullet(Projectile & bullet, GLuint index, double
 	}
 
 	//a teraz kolizje z innymi characterami
-	for (GLuint j = 1; j < _characters.size(); ++j)
+	for (GLuint j = 0; j < _characters.size(); ++j)
 	{
-		if (ShapeOverlap_DIAGS(tmp, _characters[j].getOrigin()))
+		if (j != index)
 		{
-			effectEngine.Play("hit");
-			if (_characters[j].TakeDamage(bullet))
+			if (ShapeOverlap_DIAGS(tmp, _characters[j].getOrigin()))
 			{
-				_characters.erase(_characters.begin() + j);
-				j -= 1;
-
-				//Win condition check
-				if (_characters.size() == 1)
+				if (index != 0 && j == 0)
 				{
-					lvlWin = true;
-					Doors();
+					
+					if (_characters[0].isTouchable())
+					{
+						effectEngine.Play("hit");
+						//_characters[0].getHealth() -= (long)ceil(_characters[index].getDamage());
+						if (_characters[0].TakeDamage(bullet))
+						{
+							_gameState = State::GAMEOVER;
+						}
+						_characters[0].Untouchable();
+					}
+					return true;
+				}
+				else if (index == 0)
+				{
+					effectEngine.Play("hit");
+					if (_characters[j].TakeDamage(bullet))
+					{
+						_characters.erase(_characters.begin() + j);
+						j -= 1;
+
+						//Win condition check
+						if (_characters.size() == 1)
+						{
+							lvlWin = true;
+							Doors();
+						}
+
+					}
+					return true;
 				}
 				
 			}
-			return true;
 		}
 	}
 

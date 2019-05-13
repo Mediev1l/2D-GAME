@@ -12,6 +12,7 @@
 class Projectile : public Coords
 {
 protected:
+	double dmg;
 	double  size;
 	double elapsedDistance;
 	bool exist;
@@ -23,7 +24,7 @@ public:
 	double Velocity;
 
 	Projectile();
-	Projectile(Vec2d OriSize, double x, double y, double vel, double  distance, Animation::Direction side, bool exist, Vec2d& objVel,GLuint nFrames);
+	Projectile(Vec2d OriSize, double x, double y, double vel, double  distance, Animation::Direction side, bool exist, Vec2d& objVel,GLuint nFrames, double dmg);
 
 
 	void UpdateAnimation(double dt) { _animation.UpdateAnimation({ Animation::DOWN,Animation::NONE },dt); }
@@ -35,6 +36,7 @@ public:
 	double getSize() { return size; };
 	double getElapdedDistance() { return elapsedDistance; };
 	bool getExistance() { return exist; };
+	double getDMG()const { return dmg; };
 
 	double getX()const { return _position._x; };
 	double getY()const { return _position._y; };

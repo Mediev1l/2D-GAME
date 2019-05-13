@@ -11,7 +11,7 @@ Projectile::Projectile()
 {
 }
 
-Projectile::Projectile(Vec2d OriSize, double x, double y, double vel, double  distance, Animation::Direction side, bool exist, Vec2d &objVel, GLuint nFrames)
+Projectile::Projectile(Vec2d OriSize, double x, double y, double vel, double  distance, Animation::Direction side, bool exist, Vec2d &objVel, GLuint nFrames, double dmg)
 	: 
 	 size(size)
 	, Coords{ x, y}
@@ -22,5 +22,6 @@ Projectile::Projectile(Vec2d OriSize, double x, double y, double vel, double  di
 	, Velocity(vel)
 	,_animation(nFrames,1.0/nFrames)
 	, _ori(4, OriSize, {x,y})
+	,dmg(dmg)
 {
 }

@@ -11,7 +11,8 @@ enum State
 	PAUSE,
 	CLOSING_GAME,
 	CLOSING_MENU,
-	EXIT
+	EXIT,
+	GAMEOVER
 };
 
 enum Difficulty

@@ -122,26 +122,26 @@ void Menu::moveUP()
 	switch (position)
 	{
 		case ActualPosition::POSITION_MAIN_MENU:
-			_cursor > 0 ? _cursor-- : _cursor = _mainmenu.names.size() - 1;
+			_cursor > 0 ? _cursor-- : _cursor = (int)_mainmenu.names.size() - 1;
 			break;	
 	
 		case ActualPosition::POSITION_MENU:
 
-			_cursor > 0 ? _cursor -- : _cursor = _menu.names.size() - 1;
+			_cursor > 0 ? _cursor -- : _cursor = (int)_menu.names.size() - 1;
 			break;	
 	
 		case ActualPosition::POSITION_OPTIONS:
 
-			_cursor > 0 ? _cursor-- : _cursor = _options.names.size() - 1;
+			_cursor > 0 ? _cursor-- : _cursor = (int)_options.names.size() - 1;
 			break;
 		
 		case ActualPosition::POSITION_SOUND:
 
-			_cursor > 0 ? _cursor-- : _cursor = _sounds.names.size() - 4;
+			_cursor > 0 ? _cursor-- : _cursor = (int)_sounds.names.size() - 4;
 			break;
 		case ActualPosition::POSITION_GAME:
 
-			_cursor > 0 ? _cursor-- : _cursor = _game.names.size() - 3;
+			_cursor > 0 ? _cursor-- : _cursor = (int)_game.names.size() - 3;
 			break;
 	}
 }

@@ -79,7 +79,7 @@ protected:
 
 	void ProcessPlayerMove(double deltaTime,std::pair<Animation::Direction, Animation::Direction> dir);
 	void ProcessItemPickup();
-	void ProcessPlayerShoot();
+	void ProcessShoot(Character& ch);
 	void Update();
 	void ShowGUI(Vec2d position);
 	void HideGUI();
@@ -88,7 +88,7 @@ protected:
 	void ProcessEnemiesMove(double deltaTime);
 	void Doors();
 	Animation::Direction CalculateDirection(double x, bool pionowo, double margin);
-	bool CheckColissions(Character& obj, GLuint index, double x, double y);
+	int CheckColissions(Character& obj, GLuint index, double x, double y);
 	bool ShapeOverlap_DIAGS(Origin &r1, Origin &r2);
 
 	bool CheckCollisionsBullet(Projectile& bullet, GLuint index, double x, double y);

@@ -24,15 +24,15 @@ public:
 private:
 	struct CharInfo
 	{
-		CharInfo(std::string* n, Vec2d* p, GLuint* h, GLuint* sh, GLuint* ran, double* spd, double* atspd, double* dmg, Vec2i a) 
+		CharInfo(std::string* n, Vec2d* p, long* h, long* sh, long* ran, double* spd, double* atspd, double* dmg, Vec2i a)
 			:
 			name(n), pos(p), health(h),shield(sh),range(ran),speed(spd),att_speed(atspd),damage(dmg), anim(a)
 		{};
 		std::string* name;
 		Vec2d* pos;
-		GLuint* health;
-		GLuint* shield; // albo tylko hp
-		GLuint* range;
+		long* health;
+		long* shield; // albo tylko hp
+		long* range;
 		double* speed;
 		double* att_speed;
 		double* damage;
