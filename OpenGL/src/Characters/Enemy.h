@@ -10,7 +10,7 @@ Enemy
 class Enemy: public Character
 {
 public:
-	Enemy(std::string name, double x, double y, double vel, Vec2d OriSize, GLuint nFrames,Timer& t);
+	Enemy(std::string name, double x, double y, double vel, Vec2d OriSize, GLuint nFrames);
 	void Bechaviour(const Character& player, double deltaTime);
 private:
 };

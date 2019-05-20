@@ -1,6 +1,6 @@
 #include "LvlGenerator.h"
 
-LvlGenerator::LvlGenerator(std::string BlockListPath)
+LvlGenerator::LvlGenerator(std::string BlockListPath):device(),eng(device())
 {
 	std::fstream plik;
 	plik.open(BlockListPath, std::ios::in);
@@ -26,32 +26,117 @@ LvlGenerator::~LvlGenerator()
 {
 }
 
-std::vector<std::pair<int,bool>> LvlGenerator::generateLevel(GLuint width, GLuint height)
+std::vector<std::pair<int,bool>> LvlGenerator::generateLevel(Map* map,Difficulty diff)
 {
+	switch (diff)
+	{
+		case BEGIN:
+		case EASY:
+		{
+			std::uniform_int_distribution<GLuint> xDist(6, 10);
+			std::uniform_int_distribution<GLuint> yDist(6, 10);
+			width = xDist(eng);
+			height = yDist(eng);
+			break;
+		}
+		case MEDIUM:
+		{
+			std::uniform_int_distribution<GLuint> xDist(10, 25);
+			std::uniform_int_distribution<GLuint> yDist(10, 25);
+			width = xDist(eng);
+			height = yDist(eng);
+			break;
+		}
+		case HARD:
+		{
+			std::uniform_int_distribution<GLuint> xDist(25, 40);
+			std::uniform_int_distribution<GLuint> yDist(25, 40);
+			width = xDist(eng);
+			height = yDist(eng);
+			break;
+		}
+		default:
+		{
+			width = 5;
+			height = 5;
+		}
+	}
+
+	map->setWidth(width);
+	map->setHeight(height);
 	srand((GLuint)time(NULL));
 
 	GLuint x = (GLuint)ceil(width / 2.0) - 1;
 	GLuint y = (GLuint)ceil(height / 2.0) - 1;
-	GLuint id[] = { x,0,0,y,width - 1,y };
+	
+	doorpos[0] = { x };
+	doorpos[1] = { 0 };
+	doorpos[2] = { 0 };
+	doorpos[3] = { y };
+	doorpos[4] = { width - 1 };
+	doorpos[5] = { y };
 
-	auto Doors = [&](GLuint x, GLuint y) -> bool
-	{
-		for (GLuint i = 0; i < 6; i += 2)
-		{
-			if (x == id[i] || y == id[i + 1]) return true;
-		}
-		return false;
-	};
+	
+	std::vector<std::pair<int, bool>> genlevel(width*height,std::make_pair(0,false));
+	//genlevel.reserve((width)*(height));
 
-	std::vector<std::pair<int, bool>> genlevel;
-	genlevel.reserve((width - 2)*(height - 2));
+	//Border
+		//top
+	for (int w = 0, ew = width; w < ew; ++w) genlevel[w] = { 1,true };
+		//Bottom
+	for (int w = 0, ew = width; w < ew; ++w) genlevel[(height-1)*width+w] = { 1,true };
+		//Left
+	for (int h = 0, ew = height; h < ew; ++h) genlevel[h*width] = { 1,true };
+		//Right
+	for (int h = 0, ew = height; h < ew; ++h) genlevel[h*width+(width-1)] = { 1,true };
+		
 
-	for(GLuint y=1;y<height-1;++y)
-		for (GLuint x = 1; x < width-1; ++x)
+	//Srodek mapy
+	for(GLuint yp=1;yp<height-1;++yp)
+		for (GLuint xp = 1; xp < width-1; ++xp)
 		{
 			GLuint xd = rand() % _leveldata.size();
-			if (!Doors(x, y)) genlevel.emplace_back(_leveldata[xd].first, _leveldata[xd].second);
-			else genlevel.emplace_back(9,false);
+			if (!Doors(xp, yp)) genlevel[yp*width + xp] = { _leveldata[xd].first, _leveldata[xd].second };
+			else genlevel[yp*width+xp] = { 9,false };
 		}
 	return genlevel;
+}
+
+void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff)
+{
+	std::uniform_int_distribution<GLuint> xDist(0, width-1);
+	std::uniform_int_distribution<GLuint> yDist(0, height-1);
+
+	switch (diff)
+	{
+		case EASY:
+		{	
+			ch.push_back( Enemy("boss", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9) );
+			break;
+		}
+		case MEDIUM:
+		{
+			ch.push_back(Enemy("boss", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
+			ch.push_back(Enemy("skelly2", xDist(eng), doorpos[4], 1.0, { 0.5,0.9 }, 9));
+			break;
+		}
+		case HARD:
+		{
+			ch.push_back(Enemy("boss", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
+			ch.push_back(Enemy("skelly2", xDist(eng), doorpos[3], 1.0, { 0.5,0.9 }, 9));
+			ch.push_back(Enemy("bae", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
+			break;
+		}
+		
+		case BEGIN:
+		{
+			ch.push_back(Enemy("skelly2", 5, 2, 1.0, { 0.5,0.9 }, 9));
+			ch[1].setDamage(0);
+			break;
+		}
+		default:
+		{
+			return;
+		}
+	}
 }

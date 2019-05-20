@@ -76,7 +76,7 @@ void GameEngine::Game_Init()
 		textGen = new TextGenerator(10.0, 10.0, t);
 		_Menu = new Menu(soundEngine, effectEngine, _gameState, window , *textGen, *renderer);
 		_map = renderer->getMap();
-		_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
+		_map->LoadLevel(_lvlgen.generateLevel(_map,_gameDifficulty));
 	}
 	catch (std::runtime_error &e)
 	{
@@ -86,14 +86,16 @@ void GameEngine::Game_Init()
 	}
 
 	//PLAYER ADDED HERE
-	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9,t));
+	Character::t = &t;
+	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
+	GenNextLevel();
 	_characters[0].setTimer("puntouch", 2.0);
 	_characters[0].setDamage(50);
 	_characters[0].setAttackSpeed(0.25);
-	_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9, t));
-	_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8, t));
-	_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9, t));
-	_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4, t));
+	//_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9));
+	//_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
+	//_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
+	//_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
 
 	//GUI INITIALIZATION
 	// HP
@@ -268,21 +270,7 @@ void GameEngine::Game_Run()
 			}
 			else
 			{
-				if (!renderer->isBright() && lvlWin)
-				{
-					_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
-					//Tutaj funkcja do generowanie enemisuf
-					_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9,t));
-					_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9,t));
-					_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9,t));
-					_characters[0]._position._x = _map->getWidth() / 2;
-					_characters[0]._position._y = _map->getHeight() / 2;
-					camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
-					t.Reset();
-					lvlWin = false;
-					Doors();
-					debuginfo.Init(_characters);
-				}
+				if (!renderer->isBright() && lvlWin) GenNextLevel();
 				if(!renderer->isBright())renderer->ScreenBright();
 				if (renderer->isBright())
 				{
@@ -296,13 +284,13 @@ void GameEngine::Game_Run()
 
 			//_Menu->Open();
 			_Menu->ShowMenu(1.8, 1.3);
-			_map->LoadLevel(_lvlgen.generateLevel(_map->getWidth(), _map->getHeight()));
+			_map->LoadLevel(_lvlgen.generateLevel(_map,_gameDifficulty));
 			//Tutaj funkcja do generowanie enemisuf
 			_characters.clear();
-			_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9, t));
-			_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9, t));
-			_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9, t));
-			_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9, t));
+			_characters.push_back(Hero("player", _map->getWidth()/2, _map->getHeight()/2, 3.0, { 0.4,0.75 }, 9));
+			_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));
+			_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9));
+			_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9));
 			_characters[0]._position._x = _map->getWidth() / 2;
 			_characters[0]._position._y = _map->getHeight() / 2;
 			camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
@@ -691,24 +679,27 @@ void GameEngine::ProcessPlayerMove(double deltaTime, std::pair<Animation::Direct
 
 	//Czy pozycja gracza == pozycja drzwi
 
-	GLuint x = (GLuint)floor(_map->getWidth() / 2.0);
-	GLuint y = (GLuint)floor(_map->getHeight() / 2.0);
+	GLuint x = (GLuint)ceil(_map->getWidth() / 2.0)-1;
+	GLuint y = (GLuint)ceil(_map->getHeight() / 2.0)-1;
 	
 		//drzwi lewe
 	if (_characters[0].getPos().getX() < 0.1 && _characters[0].getPos().getY() > y - 0.2 && _characters[0].getPos().getY() < y + 0.2 && lvlWin == true)
 	{
 		_gameState = State::INIT;
+		_gameDifficulty = EASY;
 	}
 		//drzwi gorne
 	else if (_characters[0].getPos().getX() > x - 0.2 && _characters[0].getPos().getX() < x + 0.2 && _characters[0].getPos().getY() < 0.1 && lvlWin == true)
 	{
 		_gameState = State::INIT;
+		_gameDifficulty = Difficulty::MEDIUM;
+
 	}
 		//drzwi prawe
 	else if (_characters[0].getPos().getX() > _map->getWidth() - 1.2 && _characters[0].getPos().getY() > y - 0.2 && _characters[0].getPos().getY() < y + 0.2 && lvlWin == true)
-	{
+	{ 
 		_gameState = State::INIT;
-
+		_gameDifficulty = HARD;
 	}
 
 
@@ -953,6 +944,32 @@ void GameEngine::HideText()
 	t.Reset();
 }
 
+void GameEngine::GenNextLevel()
+{
+	//Generuj mape
+	_map->LoadLevel(_lvlgen.generateLevel(_map, _gameDifficulty));
+	//Tutaj funkcja do generowanie enemisuf
+	_lvlgen.PopulateDynamics(_characters,_gameDifficulty);
+	
+	//Fix Player position and Camera
+	_characters[0]._position._x = ceil(_map->getWidth() / 2.0) - 1;
+	_characters[0]._position._y = ceil(_map->getHeight() / 2.0) - 1;
+	camera.initCamera(_characters[0].getPos(), _map->getWidth(), _map->getHeight());
+	
+	//Delete non picked up items
+	_ItemGenerator.Clear();
+
+	//Reset all Timers
+	t.Reset();
+	//Reset win boolean
+	lvlWin = false;
+	//Close opened Doors
+	Doors();
+
+	//Debug
+	debuginfo.Init(_characters);
+}
+
 void GameEngine::ProcessEnemiesMove(double deltaTime)
 {
 	//Zmienne upraszczaj¹ce kod
@@ -1095,7 +1112,7 @@ void GameEngine::Doors()
 			_map->getTile(id[i], id[i + 1]).setSolid(false);
 		}
 		renderer->OpenDoors();
-		_ItemGenerator.GenerateItem(5, 6);
+		_ItemGenerator.GenerateItem(ceil(_map->getWidth()/2.0)-1, ceil(_map->getHeight() / 2.0) - 1);
 	}
 
 	else
