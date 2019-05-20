@@ -365,13 +365,18 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale, glm::vec4
 	glBindTexture(GL_TEXTURE_2D, IdTexture);
 
 	_SpriteSheetShader.use();
-	_SpriteSheetShader.setVec4("Gamma", color);
+
+	float temp = GammaRatio.a;
+	GammaRatio.a = color.a;
+	
+	_SpriteSheetShader.setVec4("Gamma", GammaRatio);
 	_SpriteSheetShader.setMat4("model", model);
 	glBindVertexArray(*VAO);
 	
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+	GammaRatio.a = temp;
 }
 
 

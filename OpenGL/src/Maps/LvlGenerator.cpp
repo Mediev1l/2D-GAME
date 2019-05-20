@@ -104,8 +104,8 @@ std::vector<std::pair<int,bool>> LvlGenerator::generateLevel(Map* map,Difficulty
 
 void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff)
 {
-	std::uniform_int_distribution<GLuint> xDist(0, width-1);
-	std::uniform_int_distribution<GLuint> yDist(0, height-1);
+	std::uniform_int_distribution<GLuint> xDist(1, width-2);
+	std::uniform_int_distribution<GLuint> yDist(1, height-2);
 
 	switch (diff)
 	{
