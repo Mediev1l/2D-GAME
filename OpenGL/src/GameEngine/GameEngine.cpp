@@ -92,10 +92,6 @@ void GameEngine::Game_Init()
 	_characters[0].setTimer("puntouch", 2.0);
 	_characters[0].setDamage(50);
 	_characters[0].setAttackSpeed(0.25);
-	//_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.4,0.8 }, 9));
-	//_characters.push_back(Enemy("bae",3.0, 5.0, 1.0, { 0.4,0.8 },8));
-	//_characters.push_back(Enemy("skelly2",1.0, 5.0, 1.0, { 0.4,0.8 },9));
-	//_characters.push_back(Enemy("boy",5.0, 8.0, 1.0, { 0.4,0.8 },4));
 
 	//GUI INITIALIZATION
 	// HP
@@ -385,7 +381,6 @@ void GameEngine::processInput()
 		//}
 
 
-
 		std::pair<Animation::Direction, Animation::Direction> dirMove{ Animation::Direction::NONE,Animation::Direction::NONE};
 		std::pair<Animation::Direction, Animation::Direction> dirShoot{ Animation::Direction::NONE,Animation::Direction::NONE};
 
@@ -447,7 +442,7 @@ void GameEngine::processInput()
 		}
 
 		// InGame
-		if (_gameState == State::GAME)
+		if (_gameState == State::GAME && renderer->isBright())
 		{
 			//Debug info
 			if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
@@ -1112,7 +1107,7 @@ void GameEngine::Doors()
 			_map->getTile(id[i], id[i + 1]).setSolid(false);
 		}
 		renderer->OpenDoors();
-		_ItemGenerator.GenerateItem(ceil(_map->getWidth()/2.0)-1, ceil(_map->getHeight() / 2.0) - 1);
+		_ItemGenerator.GenerateItem((GLuint)ceil(_map->getWidth()/2.0)-1, (GLuint)ceil(_map->getHeight() / 2.0) - 1);
 	}
 
 	else
