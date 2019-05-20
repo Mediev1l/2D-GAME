@@ -32,3 +32,8 @@ void ItemGenerator::GenerateItem(GLuint x, GLuint y)
 		}
 	
 }
+
+void ItemGenerator::Clear()
+{
+	if(_items.size()>0) _items[_items.size() - 1]->setOnMap(false);
+}

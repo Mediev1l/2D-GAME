@@ -18,10 +18,11 @@ class Character: public Stats, public Dynamic
 {
 public:
 
+	static Timer* t;
 //================================================================
 //= Konstruktory
 //================================================================
-	Character(std::string name, double x, double y, Vec2d OriSize, GLuint nFrames, Timer& t);
+	Character(std::string name, double x, double y, Vec2d OriSize, GLuint nFrames);
 //================================================================
 //= Gettery
 //================================================================
@@ -102,7 +103,6 @@ protected:
 	//Textury
 	Texture* _PifPafTexture;
 	Texture* _texture;
-	Timer* t;
 	std::string timername;
 	glm::vec4 color;
 	float _ratio;

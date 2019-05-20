@@ -24,6 +24,7 @@ public:
 
 	std::vector<Item*> getItems() { return _items; };
 	void GenerateItem(GLuint x, GLuint y);
+	void Clear();
 
 
 

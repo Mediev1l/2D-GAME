@@ -1,8 +1,8 @@
 #include "Enemy.h"
 
-Enemy::Enemy(std::string name, double x, double y, double vel, Vec2d OriSize, GLuint nFrames, Timer& t)
+Enemy::Enemy(std::string name, double x, double y, double vel, Vec2d OriSize, GLuint nFrames)
 	:
-	Character(name,x,y,OriSize,nFrames,t)
+	Character(name,x,y,OriSize,nFrames)
 {
 	m_speed = vel;
 }

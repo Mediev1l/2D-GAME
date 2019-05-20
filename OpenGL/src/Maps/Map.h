@@ -32,6 +32,8 @@ public:
 	//= Podstawowe Settery
 	//================================================================
 	void LoadLevel(std::vector<std::pair<int, bool>> lvl);
+	void setWidth(GLuint w) { _width = w; }
+	void setHeight(GLuint w) { _height = w; }
 
 
 private:

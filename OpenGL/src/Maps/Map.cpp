@@ -48,12 +48,16 @@ void Map::Create(std::string name, std::string lvldatapath, Texture* text)
 
 void Map::LoadLevel(std::vector<std::pair<int, bool>> lvl)
 {
+	_Tiles.clear();
+	for (GLuint y = 0; y < _height; ++y)
+		for (GLuint x = 0; x < _width; ++x)
+			_Tiles.emplace_back(false, x, y, 1, Vec2d(1.0, 1.0));
 	//Sprawdzic to
-	for(GLuint y=1;y<_height-1;++y)
-		for (GLuint x = 1; x < _width - 1; ++x)
+	for(GLuint y=0;y<_height;++y)
+		for (GLuint x = 0; x < _width; ++x)
 		{
-			GLuint index = (y - 1)*(_width - 2) + (x - 1);
-			_Tiles[y*_width + x].setTextureIDandSolid(lvl[index].first,lvl[index].second);
+			//GLuint index = (y - 1)*(_width - 2) + (x - 1);
+			_Tiles[y*_width + x].setTextureIDandSolid(lvl[y*_width + x].first,lvl[y*_width + x].second);
 		}
 }
 
