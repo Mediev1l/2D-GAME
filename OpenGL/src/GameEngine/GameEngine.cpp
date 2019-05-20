@@ -161,7 +161,7 @@ void GameEngine::Game_Run()
 		//Updating Label name
 		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
 		glfwSetWindowTitle(window, a.c_str());
-		textGen->setText("fps", "FPS: " + (std::to_string(1/t.getDelta())), Vec2d(3,0), 0, Vec2d(0.03, 0.05));
+	//	textGen->setText("fps", "FPS: " + (std::to_string(1/t.getDelta())), Vec2d(3,0), 0, Vec2d(0.03, 0.05));
 
 		// input tylko jak gracz ma cos robic
 			// -----
