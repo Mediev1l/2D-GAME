@@ -169,7 +169,7 @@ void GameEngine::Game_Run()
 			// -----
 		processInput();
 
-		_characters[0].Blink(t.getDelta());
+		
 		//IF NOT FULLY BRIGHT
 		if (_gameState == State::GAME && !renderer->isBright())
 			renderer->ScreenBright();
@@ -248,6 +248,11 @@ void GameEngine::Game_Run()
 			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
 			Update();
 			ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
+
+			if (!_characters[0].isTouchable() || _characters[0].isTransparent())
+				_characters[0].Blink();
+			
+			
 		}
 		//else if
 

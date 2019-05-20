@@ -37,6 +37,7 @@ public:
 	Vec2d& getCurrVelocity() { return _curVelocity; }
 	Origin& getOrigin() { return _ori; };
 	Vec2i getFrameIndex();
+	glm::vec4 getColor() { return color; };
 	bool isTouchable() { return t->getDelay(timername) > 0 ? false : true; }
 	bool isTransparent();
 //================================================================
@@ -53,7 +54,7 @@ public:
 	void setTimer(std::string name, double sec) { 
 		timername = name;
 		t->delay(name, sec, true); };
-	void Blink(double delta);
+	void Blink();
 //================================================================
 // Settery
 //================================================================

@@ -122,7 +122,7 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 				}
 			}
 		setTextureCoords(characters[i]);
-		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture());
+		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(), 0.0, characters[i].getColor());
 	}
 }
 
@@ -347,7 +347,7 @@ void Renderer::setGameState(State & gamestate)
 	_gamestate = &gamestate;
 }
 
-void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
+void Renderer::draw(double x, double y,GLuint IdTexture, double scale, glm::vec4 color)
 {
 
 	//Eksperymentalnie udowodniono ze dziala xD
@@ -365,6 +365,7 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale)
 	glBindTexture(GL_TEXTURE_2D, IdTexture);
 
 	_SpriteSheetShader.use();
+	_SpriteSheetShader.setVec4("Gamma", color);
 	_SpriteSheetShader.setMat4("model", model);
 	glBindVertexArray(*VAO);
 	

@@ -45,7 +45,7 @@ private:
 	void setTextureCoords(Projectile& proj);
 	void setTextureCoords(GLuint x);
 	void setTextureCoords(Vec2i pos);
-	void draw(double x, double y, GLuint IdTexture, double scale=0.0 );
+	void draw(double x, double y, GLuint IdTexture, double scale=0.0, glm::vec4 color = glm::vec4(1.0) );
 	void drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::vec4 color);
 	void RenderMap();
 	void RenderCharacters(std::vector<Character>& _characters);
