@@ -42,7 +42,7 @@ void AssetManager::LoadSprites()
 	load("Font", "res/Sprites/Font/Font.png", true);
 
 	//Map
-	load("Basement", "res/Sprites/Map/Basement/Basement.jpg", false);
+	//load("Basement", "res/Sprites/Map/Basement/Basement.jpg", false);
 	load("Basement2", "res/Sprites/Map/Basement/basementNew.png", true);
 }
 

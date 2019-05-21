@@ -35,7 +35,7 @@ Texture::Texture(const std::string & Path, bool transparent)
 	}
 	else
 	{
-		throw std::runtime_error("Failed to load texture: " + std::to_string(ID));
+		throw std::runtime_error("Failed to load texture: " + Path);
 	}
 	stbi_image_free(data);
 }
@@ -67,7 +67,7 @@ Texture::Texture(const std::string & Path, bool transparent, GLuint pwidth, GLui
 	}
 	else
 	{
-		throw std::runtime_error("Failed to load texture: " + std::to_string(ID));
+		throw std::runtime_error("Failed to load texture: " + Path);
 	}
 	stbi_image_free(data);
 }

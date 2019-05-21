@@ -13,6 +13,7 @@
 #include "Items/ItemGenerator.h"
 #include "Renderer/TextGenerator.h"
 #include "GameEngine/Sound.h"
+#include "Maps/Sonar.h"
 
 #include "Utility/DebugInfo.h"
 
@@ -49,6 +50,7 @@ protected:
 	Sound soundEngine;
 	Sound effectEngine;
 	Menu* _Menu;
+	Sonar s;
 	//================================================================
 	//= GLOBALSETTINGS
 	//================================================================

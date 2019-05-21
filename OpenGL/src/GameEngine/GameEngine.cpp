@@ -20,6 +20,7 @@ GameEngine::GameEngine()
 	, _gameDifficulty(Difficulty::BEGIN)
 	, soundEngine("res/Data/Sounds/","sounds.txt", t)
 	, effectEngine("res/Data/Sounds/","effects.txt", t)
+	, s()
 {
 }
 
@@ -960,6 +961,9 @@ void GameEngine::GenNextLevel()
 	lvlWin = false;
 	//Close opened Doors
 	Doors();
+
+	//Create new Graph for lvl data
+	s.createGraph(_map);
 
 	//Debug
 	debuginfo.Init(_characters);

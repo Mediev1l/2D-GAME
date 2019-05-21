@@ -82,7 +82,7 @@ public:
 	}
 
 	void Untouchable() { t->delay(timername, 1.0, true); }
-	//virtual void Bechaviour(const Character& player, double deltaTime) = 0;
+	virtual void Behaviour(const Character& player, double deltaTime) {};
 
 protected:
 	//Mozna skopiowaæ do Hero kwestia przekminy

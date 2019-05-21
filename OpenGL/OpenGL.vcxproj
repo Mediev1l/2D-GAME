@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Maps\Sonar.cpp" />
     <ClCompile Include="src\Utility\Bar.cpp" />
     <ClCompile Include="src\Utility\DebugInfo.cpp" />
     <ClCompile Include="src\GameEngine\Menu.cpp" />
@@ -168,6 +169,7 @@
     <None Include="src\Shaders\vs.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Maps\Sonar.h" />
     <ClInclude Include="src\Utility\Bar.h" />
     <ClInclude Include="src\Utility\DebugInfo.h" />
     <ClInclude Include="src\GameEngine\Menu.h" />
