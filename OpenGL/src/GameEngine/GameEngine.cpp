@@ -20,7 +20,7 @@ GameEngine::GameEngine()
 	, _gameDifficulty(Difficulty::BEGIN)
 	, soundEngine("res/Data/Sounds/","sounds.txt", t)
 	, effectEngine("res/Data/Sounds/","effects.txt", t)
-	, s()
+	//, s()
 {
 }
 
@@ -168,7 +168,6 @@ void GameEngine::Game_Run()
 			// -----
 		processInput();
 
-		
 		//IF NOT FULLY BRIGHT
 		if (_gameState == State::GAME && !renderer->isBright())
 			renderer->ScreenBright();
@@ -213,20 +212,21 @@ void GameEngine::Game_Run()
 				_Menu->setSoundStatus(false);
 				_Menu->ChangeMusic();
 				_gameState = State::MAIN_MENU;
+				Generate();
 			}
 		}
 
 		if (_gameState == State::PAUSE)
 		{
-			textGen->setText("PAUSE", "PAUSED", Vec2d(2, 2), 0, Vec2d(0.03, 0.05));
+			textGen->setText("PAUSE", "PAUSED", Vec2d(1.75, 2), 0, Vec2d(0.07, 0.10));
 			textGen->setMenu("PAUSE", true);
 			textGen->setInfinity("PAUSE", true);
 		}
 		
 		if (_gameState == State::GAMEOVER)
 		{
-			textGen->setText("OVER", "GAME OVER", Vec2d(2, 2), 0, Vec2d(0.03, 0.05));
-			textGen->setText("PRESS", "PRESS ENTER TO EXIT", Vec2d(2, 2), 0, Vec2d(0.03, 0.05));
+			textGen->setText("OVER", "GAME OVER", Vec2d(1.20, 2), 0, Vec2d(0.07, 0.10));
+			textGen->setText("PRESS", "PRESS ENTER TO EXIT", Vec2d(0.30, 3), 0, Vec2d(0.05, 0.07));
 			textGen->setMenu("OVER", true);
 			textGen->setMenu("PRESS", true);
 			textGen->setInfinity("OVER", true);
@@ -295,27 +295,7 @@ void GameEngine::Game_Run()
 			}
 		}
 
-		if (_gameState==State::GAMEOVER)
-		{
 
-			//_Menu->Open();
-			_Menu->ShowMenu(1.8, 1.3);
-			_map->LoadLevel(_lvlgen.generateLevel(_map,_gameDifficulty));
-			//Tutaj funkcja do generowanie enemisuf
-			_characters.clear();
-			_characters.push_back(Hero("player", _map->getWidth()/2, _map->getHeight()/2, 3.0, { 0.4,0.75 }, 9));
-			_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));
-			_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9));
-			_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9));
-			_characters[0]._position._x = _map->getWidth() / 2;
-			_characters[0]._position._y = _map->getHeight() / 2;
-			camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
-			t.Reset();
-			lvlWin = false;
-			//Doors();
-			debuginfo.Init(_characters);
-			_gameState = State::MAIN_MENU;
-		}
 
 
 		//Renderowanie ³adnie w jednej funkcji
@@ -398,6 +378,15 @@ void GameEngine::processInput()
 					_gameState = State::GAME;
 					textGen->setMenu("PAUSE", false);
 					textGen->setInfinity("PAUSE", false);
+				}
+				else if (_gameState == State::GAMEOVER)
+				{
+					_Menu->ToMenu();
+					_gameState = State::CLOSING_GAME;
+					textGen->setInfinity("OVER", false);
+					textGen->setInfinity("PRESS", false);
+					textGen->setMenu("OVER", false);
+					textGen->setMenu("PRESS", false);
 				}
 			}
 		}
@@ -969,6 +958,26 @@ void GameEngine::HideText()
 	t.Reset();
 }
 
+void GameEngine::Generate()
+{
+	//_Menu->Open();
+//_Menu->ShowMenu(1.8, 1.3);
+	_map->LoadLevel(_lvlgen.generateLevel(_map, _gameDifficulty));
+	//Tutaj funkcja do generowanie enemisuf
+	_characters.clear();
+	_characters.push_back(Hero("player", _map->getWidth() / 2, _map->getHeight() / 2, 3.0, { 0.4,0.75 }, 9));
+	_characters.push_back(Enemy("boss", 5.0, 1.0, 1.0, { 0.5,0.9 }, 9));
+	_characters.push_back(Enemy("skelly2", 1.0, 5.0, 1.0, { 0.5,0.9 }, 9));
+	_characters.push_back(Enemy("bae", 3.0, 5.0, 1.0, { 0.5,0.9 }, 9));
+	_characters[0]._position._x = _map->getWidth() / 2;
+	_characters[0]._position._y = _map->getHeight() / 2;
+	camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
+	t.Reset();
+	lvlWin = false;
+	//Doors();
+	debuginfo.Init(_characters);
+}
+
 void GameEngine::GenNextLevel()
 {
 	//Generuj mape
@@ -992,7 +1001,7 @@ void GameEngine::GenNextLevel()
 	Doors();
 
 	//Create new Graph for lvl data
-	s.createGraph(_map);
+//	s.createGraph(_map);
 
 	//Debug
 	debuginfo.Init(_characters);

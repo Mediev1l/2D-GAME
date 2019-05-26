@@ -13,7 +13,7 @@ public:
 	Enemy(std::string name, double x, double y, double vel, Vec2d OriSize, GLuint nFrames);
 	void Behaviour(const Character& player, double deltaTime);
 private:
-	Sonar s;
+	//Sonar s;
 };
 
 #endif

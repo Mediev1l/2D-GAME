@@ -328,9 +328,7 @@ void Menu::enter()
 			HideMenu();
 			position = ActualPosition::POSITION_MAIN_MENU;
 			gameEngineState = State::CLOSING_GAME;
-			_onmain = true;
-			_isclosing = true;
-			
+			ToMenu();	
 			break;
 
 		case 3:
@@ -502,6 +500,12 @@ void Menu::OnMainMenu(bool val)
 bool Menu::ToMainMenu()
 {
 	return _isclosing;
+}
+
+void Menu::ToMenu()
+{
+	_onmain = true;
+	_isclosing = true;
 }
 
 bool Menu::getDimm()

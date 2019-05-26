@@ -50,7 +50,7 @@ protected:
 	Sound soundEngine;
 	Sound effectEngine;
 	Menu* _Menu;
-	Sonar s;
+	//Sonar s;
 	//================================================================
 	//= GLOBALSETTINGS
 	//================================================================
@@ -86,6 +86,7 @@ protected:
 	void ShowGUI(Vec2d position);
 	void HideGUI();
 	void HideText();
+	void Generate();
 
 	void GenNextLevel();
 

@@ -1,4 +1,4 @@
-#ifndef SONAR_H
+/*#ifndef SONAR_H
 #define SONAR_H
 #include <vector>
 #include "Maps/Map.h"
@@ -142,4 +142,4 @@ public:
 private:
 };
 
-#endif
+#endif*/

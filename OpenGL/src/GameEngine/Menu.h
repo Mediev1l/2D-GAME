@@ -81,6 +81,7 @@ public:
 	void ChangeMusic();
 	void OnMainMenu(bool val);
 	bool ToMainMenu();
+	void ToMenu();
 	bool getDimm();
 	bool getSoundStatus();
 	void setSoundStatus(bool ismuting);
