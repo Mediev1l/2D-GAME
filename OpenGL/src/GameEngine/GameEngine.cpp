@@ -175,6 +175,10 @@ void GameEngine::Game_Run()
 		if (_gameState == State::MAIN_MENU && !renderer->isBright() && _Menu->getDimm() != true)
 			renderer->ScreenBright();
 
+		//IF DIMM NEEDED
+		if (_gameState == State::PAUSE || _gameState == State::GAMEOVER)
+			renderer->ScreenDimmWithoutMenu(0.7f);
+
 		//IF VOLUME NOT ON MAX
 		if (_Menu->getSoundStatus() == false)
 			if (soundEngine.isPlaying() == false || soundEngine.isFull() == false)
@@ -211,8 +215,23 @@ void GameEngine::Game_Run()
 				_gameState = State::MAIN_MENU;
 			}
 		}
+
+		if (_gameState == State::PAUSE)
+		{
+			textGen->setText("PAUSE", "PAUSED", Vec2d(2, 2), 0, Vec2d(0.03, 0.05));
+			textGen->setMenu("PAUSE", true);
+			textGen->setInfinity("PAUSE", true);
+		}
 		
-		
+		if (_gameState == State::GAMEOVER)
+		{
+			textGen->setText("OVER", "GAME OVER", Vec2d(2, 2), 0, Vec2d(0.03, 0.05));
+			textGen->setText("PRESS", "PRESS ENTER TO EXIT", Vec2d(2, 2), 0, Vec2d(0.03, 0.05));
+			textGen->setMenu("OVER", true);
+			textGen->setMenu("PRESS", true);
+			textGen->setInfinity("OVER", true);
+			textGen->setInfinity("PRESS", true);
+		}
 
 
 		//SMOOTH MAIN MENU TO GAME
@@ -334,8 +353,14 @@ void GameEngine::processInput()
 		{
 			if (t.delay("Escape", 0.3, false))
 			{
-				if (_gameState == State::GAME || _gameState == State::PAUSE)
+				if (_gameState == State::GAME)
 					_Menu->Open();
+				else if(_gameState == State::PAUSE)
+				{
+					_Menu->Open();
+					textGen->setMenu("PAUSE", false);
+					textGen->setInfinity("PAUSE", false);
+				}
 				else if (_gameState == State::MENU)
 				{
 					_gameState = State::GAME;
@@ -369,7 +394,11 @@ void GameEngine::processInput()
 				else if (_gameState == State::MENU || _gameState == State::MAIN_MENU)
 					_Menu->enter();
 				else if (_gameState == State::PAUSE)
+				{
 					_gameState = State::GAME;
+					textGen->setMenu("PAUSE", false);
+					textGen->setInfinity("PAUSE", false);
+				}
 			}
 		}
 		
