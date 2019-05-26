@@ -412,7 +412,7 @@ void Menu::ShowMenu(double x, double y)
 	_xratio = _menux - 0.15;
 	_yratio = 0.7;
 
-	if(gameEngineState == State::MENU)
+	if(gameEngineState == State::MENU || gameEngineState == State::GAMEOVER || gameEngineState == State::PAUSE)
 		_gamerenderer.ScreenDimmWithoutMenu(0.3f);
 
 	//Dimm ONLY BACKGROUND
