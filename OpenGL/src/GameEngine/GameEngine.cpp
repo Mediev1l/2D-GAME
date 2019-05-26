@@ -211,6 +211,7 @@ void GameEngine::Game_Run()
 				_Menu->OnMainMenu(true);
 				_Menu->setSoundStatus(false);
 				_Menu->ChangeMusic();
+				_Menu->PositionMain();
 				_gameState = State::MAIN_MENU;
 				Generate();
 			}

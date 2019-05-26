@@ -523,6 +523,11 @@ void Menu::setSoundStatus(bool ismuting)
 	_ismuting = ismuting;
 }
 
+void Menu::PositionMain()
+{
+	position = ActualPosition::POSITION_MAIN_MENU;
+}
+
 GLuint Menu::getTextureId() const
 {
 	return texture->getID();

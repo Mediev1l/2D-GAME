@@ -85,6 +85,7 @@ public:
 	bool getDimm();
 	bool getSoundStatus();
 	void setSoundStatus(bool ismuting);
+	void PositionMain();
 	GLuint getTextureId() const;
 
 private:
@@ -94,6 +95,7 @@ private:
 	void ShowOptions();
 	void ShowSound();
 	void ShowGame();
+	void PositionReset();
 
 	void HideMenu();
 	
@@ -101,7 +103,6 @@ private:
 	void SetColor();
 	void setPicture();
 	void setCursor(int position);
-	void PositionReset();
 
 };
 #endif
