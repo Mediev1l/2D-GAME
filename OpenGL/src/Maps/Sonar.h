@@ -84,7 +84,7 @@ public:
 			}
 		}
 
-		for (GLuint i = 0, e = S.size(); i < e; ++i)
+		for (size_t i = 0, e = S.size(); i < e; ++i)
 		{
 			if (S[i].ID == end) return &S[i];
 		}
@@ -96,7 +96,7 @@ public:
 	};
 	static void loadEdge(GLuint ID, GLuint IDDest, long long cost)
 	{
-		for (GLuint i = 0, e = Q.size(); i < e; ++i)
+		for (size_t i = 0, e = Q.size(); i < e; ++i)
 		{
 			if (Q[i].ID == ID)
 			{
@@ -124,11 +124,6 @@ public:
 	static GLuint nVertex;
 	static GLuint nEdges;
 };
-std::vector<Dijkstra::Vertex> Dijkstra::Q;
-std::vector<Dijkstra::Vertex> Dijkstra::S;
-GLuint Dijkstra::nVertex = 0;
-GLuint Dijkstra::nEdges = 0;
-const long long Dijkstra::MAX_INT = 4000000000000000000;
 
 
 class Sonar

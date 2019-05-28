@@ -7,7 +7,7 @@
 #include "Renderer/Renderer.h"
 #include "Utility/Timer.h"
 #include "Characters/Hero.h"
-//#include "Characters/Enemy.h"
+#include "Characters/Enemy.h"
 #include "Renderer/Camera.h"
 #include "Maps/LvlGenerator.h"
 #include "Items/ItemGenerator.h"
