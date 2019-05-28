@@ -299,6 +299,11 @@ void GameEngine::Game_Run()
 		}
 
 
+			//_Menu->Open();
+			_Menu->ShowMenu(1.8, 1.3);
+			GenNextLevel();
+			_gameState = State::MAIN_MENU;
+		}
 
 
 		//Renderowanie ³adnie w jednej funkcji
@@ -1004,13 +1009,25 @@ void GameEngine::GenNextLevel()
 void GameEngine::ProcessEnemiesMove(double deltaTime)
 {
 	//Zmienne upraszczaj¹ce kod
-	double px = _characters[0]._position._x;
-	double py = _characters[0]._position._y;
+	double px = _characters[0].getPos()._x;
+	double py = _characters[0].getPos()._y;
+
 	for (GLuint i = 1; i < (GLuint)_characters.size(); ++i)
 	{
+
 		double mx = _characters[i]._position._x;
 		double my = _characters[i]._position._y;
 		double mv = _characters[i].getVelocity();
+
+		
+		/*if (_map->getTile((GLuint)ceil(my) *_map->getWidth() + (GLuint)ceil(mx)).GetSolid() == false && (GLuint)(mx) != (GLuint)(px) && (GLuint)(my) != (GLuint)(py) and _map->getTile((GLuint)ceil(py) *_map->getWidth() + (GLuint)ceil(px)).GetSolid() == false)
+		{
+			std::vector<GLuint> path = s.getPathFor((GLuint)ceil(_characters[i].getPos()._y)*_map->getWidth() + (GLuint)ceil(_characters[i].getPos()._x), (GLuint)ceil(py)*_map->getWidth() + (GLuint)ceil(px));
+			px = (double)(path[0] % _map->getWidth()) + 0.5;
+			py = double(path[0] / _map->getWidth()) + 0.5;
+		}*/
+				
+		//Calculate move for tile to move
 		Vec2d Move(mx - px, my - py);
 		
 		//Potrzebne zmienne
