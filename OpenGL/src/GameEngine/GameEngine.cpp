@@ -88,12 +88,7 @@ void GameEngine::Game_Init()
 
 	//PLAYER ADDED HERE
 	Character::t = &t;
-	_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
 	GenNextLevel();
-	_characters[0].setTimer("puntouch", 2.0);
-	_characters[0].setDamage(50);
-	_characters[0].setAttackSpeed(0.25);
-
 	//GUI INITIALIZATION
 	// HP
 	textGen->setText("HP", "HP ", Vec2d(0, 0), 0, Vec2d(0.03, 0.05));
@@ -128,7 +123,6 @@ void GameEngine::Game_Init()
 	camera.initCamera(_characters[0].getPos(),_map->getWidth(),_map->getHeight());
 
 	//HARDCODE
-	_characters[0].setRange(50);
 	Item::_texture = AssetManager::Get().getSprite("items");
 
 	renderer->setGameState(_gameState);
@@ -162,10 +156,10 @@ void GameEngine::Game_Run()
 		//Updating Label name
 		std::string a = WindowName + " FPS: " + std::to_string((int)round(1 / t.getDelta()));
 		glfwSetWindowTitle(window, a.c_str());
-	//	textGen->setText("fps", "FPS: " + (std::to_string(1/t.getDelta())), Vec2d(3,0), 0, Vec2d(0.03, 0.05));
+		//	textGen->setText("fps", "FPS: " + (std::to_string(1/t.getDelta())), Vec2d(3,0), 0, Vec2d(0.03, 0.05));
 
-		// input tylko jak gracz ma cos robic
-			// -----
+			// input tylko jak gracz ma cos robic
+				// -----
 		processInput();
 
 		//IF NOT FULLY BRIGHT
@@ -192,7 +186,7 @@ void GameEngine::Game_Run()
 			//ShowGUI({ 0,0 });
 			_Menu->ShowMenu(1.8, 1.3);
 		}
-		
+
 
 		//SMOOTH CLOSING GAME
 		if (_gameState == State::CLOSING_GAME || _gameState == State::CLOSING_MENU)
@@ -214,7 +208,6 @@ void GameEngine::Game_Run()
 				_Menu->PositionMain();
 				_gameState = State::MAIN_MENU;
 				_gameDifficulty = Difficulty::BEGIN;
-				Generate();
 				GenNextLevel();
 			}
 		}
@@ -225,7 +218,7 @@ void GameEngine::Game_Run()
 			textGen->setMenu("PAUSE", true);
 			textGen->setInfinity("PAUSE", true);
 		}
-		
+
 		if (_gameState == State::GAMEOVER)
 		{
 			textGen->setText("OVER", "GAME OVER", Vec2d(1.20, 2), 0, Vec2d(0.07, 0.10));
@@ -234,6 +227,7 @@ void GameEngine::Game_Run()
 			textGen->setMenu("PRESS", true);
 			textGen->setInfinity("OVER", true);
 			textGen->setInfinity("PRESS", true);
+			_gameDifficulty = Difficulty::BEGIN;
 		}
 
 
@@ -262,18 +256,18 @@ void GameEngine::Game_Run()
 		if (_gameState == State::GAME && renderer->isBright())
 		{
 			//GUI
-			
-				ShowGUI({ 0,0 });
+
+			ShowGUI({ 0,0 });
 
 			t.refresh(true);
-			camera.UpdateCamera(_characters[0].getPos(),_characters[0].getOrigin().getSize()/2.0);
+			camera.UpdateCamera(_characters[0].getPos(), _characters[0].getOrigin().getSize() / 2.0);
 			Update();
-			ProcessEnemiesMove(t.getDelta()<1.0?t.getDelta():0.01);
+			ProcessEnemiesMove(t.getDelta() < 1.0 ? t.getDelta() : 0.01);
 
 			if (!_characters[0].isTouchable() || _characters[0].isTransparent())
 				_characters[0].Blink();
-			
-			
+
+
 		}
 		//else if
 
@@ -290,7 +284,7 @@ void GameEngine::Game_Run()
 			else
 			{
 				if (!renderer->isBright() && lvlWin) GenNextLevel();
-				if(!renderer->isBright())renderer->ScreenBright();
+				if (!renderer->isBright())renderer->ScreenBright();
 				if (renderer->isBright())
 				{
 					_gameState = State::GAME;
@@ -299,11 +293,6 @@ void GameEngine::Game_Run()
 		}
 
 
-			//_Menu->Open();
-			_Menu->ShowMenu(1.8, 1.3);
-			GenNextLevel();
-			_gameState = State::MAIN_MENU;
-		}
 
 
 		//Renderowanie ³adnie w jednej funkcji
@@ -391,6 +380,7 @@ void GameEngine::processInput()
 				{
 					_Menu->ToMenu();
 					_gameState = State::CLOSING_GAME;
+					_gameDifficulty = Difficulty::BEGIN;
 					textGen->setInfinity("OVER", false);
 					textGen->setInfinity("PRESS", false);
 					textGen->setMenu("OVER", false);
@@ -966,21 +956,25 @@ void GameEngine::HideText()
 	t.Reset();
 }
 
-void GameEngine::Generate()
-{
-
-	_characters.clear();
-	_characters.push_back(Hero("player", (GLuint)ceil(_map->getWidth() / 2.0), (GLuint)ceil(_map->getHeight() / 2.0), 3.0, { 0.4,0.75 }, 9));
-	//_characters.push_back(Enemy("skelly2", (GLuint)ceil(_map->getWidth() / 2.0) - 1 , (GLuint)ceil(_map->getHeight() / 2.0) - 2, 1.0, { 0.5,0.9 }, 9));
-	//_characters[1].setDamage(0);
-
-	debuginfo.Init(_characters);
-}
-
 void GameEngine::GenNextLevel()
 {
+	
 	//Generuj mape
 	_map->LoadLevel(_lvlgen.generateLevel(_map, _gameDifficulty));
+
+	//Dodaj gracz
+	if (_gameDifficulty == Difficulty::BEGIN)
+	{
+		_characters.clear();
+		_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
+		_characters[0].setRange(50);
+		_characters[0].setTimer("puntouch", 2.0);
+		_characters[0].setDamage(50);
+		_characters[0].setAttackSpeed(0.25);
+		_characters[0]._position._x = ceil(_map->getWidth() / 2.0) - 1;
+		_characters[0]._position._y = ceil(_map->getHeight() / 2.0) - 1;
+	}
+
 	//Tutaj funkcja do generowanie enemisuf
 	_lvlgen.PopulateDynamics(_characters,_gameDifficulty);
 	

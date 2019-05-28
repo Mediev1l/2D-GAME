@@ -86,7 +86,6 @@ protected:
 	void ShowGUI(Vec2d position);
 	void HideGUI();
 	void HideText();
-	void Generate();
 
 	void GenNextLevel();
 
