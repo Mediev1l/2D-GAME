@@ -26,7 +26,7 @@ LvlGenerator::~LvlGenerator()
 {
 }
 
-std::vector<std::pair<int,bool>> LvlGenerator::generateLevel(Map* map,Difficulty diff)
+std::vector<std::pair<int,bool>> LvlGenerator::generateLevel(Map* map,Difficulty diff, Scenario s)
 {
 	switch (diff)
 	{
@@ -91,52 +91,117 @@ std::vector<std::pair<int,bool>> LvlGenerator::generateLevel(Map* map,Difficulty
 	for (int h = 0, ew = height; h < ew; ++h) genlevel[h*width+(width-1)] = { 1,true };
 		
 
-	//Srodek mapy
-	for(GLuint yp=1;yp<height-1;++yp)
-		for (GLuint xp = 1; xp < width-1; ++xp)
-		{
-			GLuint xd = rand() % _leveldata.size();
-			if (!Doors(xp, yp)) genlevel[yp*width + xp] = { _leveldata[xd].first, _leveldata[xd].second };
-			else genlevel[yp*width+xp] = { 9,false };
-		}
+	if (s != Scenario::BossFight)
+	{
+		std::uniform_int_distribution<GLuint> Distro(1, 100);
+		//Srodek mapy
+		for (GLuint yp = 1; yp < height - 1; ++yp)
+			for (GLuint xp = 1; xp < width - 1; ++xp)
+			{
+				GLuint xd = rand() % _leveldata.size();
+				if (!Doors(xp, yp))
+				{
+					if (Distro(eng) > 50) genlevel[yp * width + xp] = { _leveldata[xd].first, _leveldata[xd].second };
+					else genlevel[yp * width + xp] = { 9,false };
+				}
+				else genlevel[yp * width + xp] = { 9,false };
+
+			}
+	}
+	else
+	{
+		for (GLuint yp = 1; yp < height - 1; ++yp)
+			for (GLuint xp = 1; xp < width - 1; ++xp)
+			{
+				genlevel[yp * width + xp] = { 9,false };
+			}
+	}
 	return genlevel;
 }
 
-void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff)
+void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff, Scenario s)
 {
 	std::uniform_int_distribution<GLuint> xDist(1, width-2);
 	std::uniform_int_distribution<GLuint> yDist(1, height-2);
 
-	switch (diff)
+	if (s != Scenario::BossFight)
 	{
-		case EASY:
-		{	
-			ch.push_back( Enemy("boss", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9) );
-			break;
-		}
-		case MEDIUM:
+		switch (diff)
 		{
-			ch.push_back(Enemy("boss", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
-			ch.push_back(Enemy("skelly2", xDist(eng), doorpos[3], 1.0, { 0.5,0.9 }, 9));
-			break;
+			case EASY:
+			{
+				ch.push_back(Enemy("boy", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 4));
+				ch[1].setDamage(5.0);
+				break;
+			}
+			case MEDIUM:
+			{
+				ch.push_back(Enemy("boy", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 4));
+				ch.push_back(Enemy("skelly2", xDist(eng), doorpos[3], 1.0, { 0.5,0.9 }, 9));
+				ch[1].setDamage(10.0);
+				ch[2].setDamage(10.0);
+				break;
+			}
+			case HARD:
+			{
+				//ch.push_back(Enemy("boy", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 4));
+				ch.push_back(Enemy("skelly2", xDist(eng), doorpos[3], 2.5, { 0.5,0.9 }, 9));
+				//ch.push_back(Enemy("bae", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
+				ch[1].setDamage(15.0);
+				ch[2].setDamage(15.0);
+				ch[3].setDamage(15.0);
+				break;
+			}
+
+			case BEGIN:
+			{
+				ch.push_back(Enemy("boy", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 4));
+				ch[1].setDamage(0);
+				break;
+			}
+			default:
+			{
+				return;
+			}
 		}
-		case HARD:
+	}
+	else
+	{
+		switch (diff)
 		{
-			ch.push_back(Enemy("boss", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
-			ch.push_back(Enemy("skelly2", xDist(eng), doorpos[3], 1.0, { 0.5,0.9 }, 9));
-			ch.push_back(Enemy("bae", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
-			break;
-		}
-		
-		case BEGIN:
-		{
-			ch.push_back(Enemy("skelly2", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
-			ch[1].setDamage(0);
-			break;
-		}
-		default:
-		{
-			return;
+			case EASY:
+			{
+				double m = 1.0;
+				ch.push_back(Enemy("boss", doorpos[0], 4, 1.0, { m*0.5,m * 0.9 }, 9));
+				ch[1].setDamage(5.0);
+				ch[1].setHealth(100);
+				ch[1].setRange(50);
+				ch[1].m_size = m;
+				break;
+			}
+			case MEDIUM:
+			{
+				double m = 2.0;
+				ch.push_back(Enemy("boss", 3, 4, 1.0, { m * 0.5,m * 0.9 }, 9));
+				ch[1].setDamage(10.0);
+				ch[1].setHealth(300);
+				ch[1].setRange(100);
+				ch[1].m_size = m;
+				break;
+			}
+			case HARD:
+			{
+				double m = 3.0;
+				ch.push_back(Enemy("boss", 3, 4, 1.0, { m * 0.5,m * 0.9 }, 9));
+				ch[1].setDamage(20.0);
+				ch[1].setHealth(500);
+				ch[1].setRange(150);
+				ch[1].m_size = m;
+			}
+			default:
+			{
+				return;
+			}
 		}
 	}
 }

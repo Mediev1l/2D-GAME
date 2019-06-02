@@ -42,6 +42,8 @@ public:
 	void setRange(GLuint range) { m_range = range; };
 	void setDamage(double d) { m_damage = d; };
 	void setAttackSpeed(double sec) { m_att_speed = sec; };
+	void setHealth(long h) { m_health = h; };
+	void setSpeed(double s) { m_speed = s; };
 
 };
 

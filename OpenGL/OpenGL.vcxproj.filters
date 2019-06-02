@@ -296,5 +296,6 @@
     <Text Include="res\Data\Items\Dzban.txt" />
     <Text Include="res\Data\Items\Wfis.txt" />
     <Text Include="res\Data\Items\Yamaha.txt" />
+    <Text Include="res\Itemy.txt" />
   </ItemGroup>
 </Project>

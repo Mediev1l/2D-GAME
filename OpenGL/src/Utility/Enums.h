@@ -33,6 +33,12 @@ enum class ActualPosition
 	POSITION_LAST 
 };
 
+enum class Scenario
+{
+	Normal_Level,
+	BossFight
+};
+
 
 
 
