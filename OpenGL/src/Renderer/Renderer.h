@@ -38,6 +38,8 @@ public:
 	void setDelta(double delta);
 	void setPictureId(GLuint id);
 	void setGameState(State& gamestate);
+	void drawSelf(double x, double y, GLuint IdTexture, double scaleX = 0.0, double scaleY = 0.0, glm::vec4 color = glm::vec4(1.0));
+	void drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::vec4 color);
 private:
 
 	void setTextureCoords(Tile& tile);
@@ -46,11 +48,10 @@ private:
 	void setTextureCoords(GLuint x);
 	void setTextureCoords(Vec2i pos);
 	void draw(double x, double y, GLuint IdTexture, double scale=0.0, glm::vec4 color = glm::vec4(1.0) );
-	void drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::vec4 color);
 	void RenderMap();
+	void RenderText(const TextGenerator& text);
 	void RenderCharacters(std::vector<Character>& _characters);
 	void RenderItems(std::vector<Item*>* items);
-	void RenderText(const TextGenerator& text);
 	void RenderMenu();
 	
 

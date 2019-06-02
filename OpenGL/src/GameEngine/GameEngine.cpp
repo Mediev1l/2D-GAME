@@ -20,6 +20,7 @@ GameEngine::GameEngine()
 	, _gameDifficulty(Difficulty::BEGIN)
 	, soundEngine("res/Data/Sounds/","sounds.txt", t)
 	, effectEngine("res/Data/Sounds/","effects.txt", t)
+	, _hpbar()
 	//, s()
 {
 }
@@ -75,6 +76,7 @@ void GameEngine::Game_Init()
 
 		renderer = new Renderer(camera);
 		textGen = new TextGenerator(10.0, 10.0, t);
+		_hpbar.Init(renderer);
 		_Menu = new Menu(soundEngine, effectEngine, _gameState, window , *textGen, *renderer);
 		_map = renderer->getMap();
 		_map->LoadLevel(_lvlgen.generateLevel(_map,_gameDifficulty));
@@ -267,6 +269,12 @@ void GameEngine::Game_Run()
 			if (!_characters[0].isTouchable() || _characters[0].isTransparent())
 				_characters[0].Blink();
 
+			_hpbar.setCurrent(_characters[0].getHealth());
+			_hpbar.setCoords(3, 0);
+			_hpbar.setMax(50);
+
+		
+
 
 		}
 		//else if
@@ -299,7 +307,7 @@ void GameEngine::Game_Run()
 		renderer->Render(_characters, &_ItemGenerator.getItems(), *textGen);
 		soundEngine.Refresh();
 		effectEngine.Refresh();
-	
+		_hpbar.DrawSelf();
 
 		//DEBUG STUFF
 		updateInfo();

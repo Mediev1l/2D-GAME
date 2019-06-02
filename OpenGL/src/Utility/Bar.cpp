@@ -2,13 +2,15 @@
 
 Bar::Bar()
 	:_texture(nullptr)
+	,_renderer(nullptr)
 	,_width(5.0)
 	,_height(0.5)
 	,_currentvalue(0.0)
 	,_maxvalue(1.0)
 	,_visible(false)
+	//Coords(0,0)
 {
-
+	
 }
 
 Bar::~Bar()
@@ -17,12 +19,12 @@ Bar::~Bar()
 
 double Bar::getX()
 {
-	return _x;
+	return Coords::_position._x;
 }
 
 double Bar::getY()
 {
-	return _y;
+	return Coords::_position._y;
 }
 
 double Bar::getWidth()
@@ -57,12 +59,18 @@ Texture * Bar::getTexture()
 
 void Bar::setX(double x)
 {
-	_x = x;
+	Coords::_position._x = x;
 }
 
 void Bar::setY(double y)
 {
-	_y = y;
+	Coords::_position._y = y;
+}
+
+void Bar::setCoords(double x, double y)
+{
+	Coords::_position._x = x;
+	Coords::_position._y = y;
 }
 
 void Bar::setWidth(double width)
@@ -85,6 +93,12 @@ void Bar::setMax(double max)
 	_maxvalue = max;
 }
 
+void Bar::Init(Renderer * renderer)
+{
+	_renderer = renderer;
+	_texture = AssetManager::Get().getSprite("hp");
+}
+
 void Bar::ShowBar()
 {
 	_visible = true;
@@ -93,4 +107,14 @@ void Bar::ShowBar()
 void Bar::Hidebar()
 {
 	_visible = false;
+}
+
+void Bar::DrawSelf()
+{
+	double moveX = 0;
+	if (_currentvalue / 2 < _maxvalue / 2)
+		moveX = (_maxvalue / 2 - _currentvalue / 2) * 0.06;
+	
+	_renderer->drawText(Coords::_position._x + 0.2 - moveX, Coords::_position._y, AssetManager::Get().getSprite("frame")->getID(), { _currentvalue , _height  *0.1 }, glm::vec4(1.0));
+	_renderer->drawSelf(Coords::_position._x + 0.2 - moveX , Coords::_position._y, _texture->getID(), _currentvalue * 0.01, _height * 0.1, glm::vec4(1.0, 0.0, 0.0, 1.0));
 }

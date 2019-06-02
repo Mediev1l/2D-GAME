@@ -38,6 +38,8 @@ void AssetManager::LoadSprites()
 	load("Menu12", "res/Sprites/Others/Menu12.png", false);
 	load("Menu13", "res/Sprites/Others/Menu13.png", false);
 	load("Menu14", "res/Sprites/Others/Menu14.png", false);
+	load("hp", "res/Sprites/Others/Bar.png", false);
+	load("frame", "res/Sprites/Others/frame.png", true);
 	load("items", "res/Sprites/Items/items.png", true);
 	load("Font", "res/Sprites/Font/Font.png", true);
 

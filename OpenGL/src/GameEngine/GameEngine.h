@@ -14,6 +14,7 @@
 #include "Renderer/TextGenerator.h"
 #include "GameEngine/Sound.h"
 #include "Maps/Sonar.h"
+#include "Utility/Bar.h"
 
 #include "Utility/DebugInfo.h"
 
@@ -50,6 +51,8 @@ protected:
 	Sound soundEngine;
 	Sound effectEngine;
 	Menu* _Menu;
+	// jak na razie tutaj a pozniej w kazdym characterze
+	Bar _hpbar;
 	//Sonar s;
 	//================================================================
 	//= GLOBALSETTINGS

@@ -379,6 +379,37 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale, glm::vec4
 	GammaRatio.a = temp;
 }
 
+void Renderer::drawSelf(double x, double y, GLuint IdTexture, double scaleX, double scaleY, glm::vec4 color)
+{
+
+	//Eksperymentalnie udowodniono ze dziala xD
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-StartPosX, StartPosY, 0.0f));
+	model = glm::translate(model, glm::vec3(TranslateValueX*x, -TranslateValueY * y, 0.0f));
+
+
+	//Skalowanko lepiej na koncu xD
+	model = glm::scale(model, glm::vec3(scaleX > 0 ? scaleX : ScaleFactorX, scaleY > 0 ? scaleY : ScaleFactorY, 0.0f));
+
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, IdTexture);
+
+	_SpriteSheetShader.use();
+
+	//float temp = GammaRatio.a;
+	//GammaRatio.a = color.a;
+
+	_SpriteSheetShader.setVec4("Gamma", glm::vec4(color.r - 1.0 + GammaRatio.r, color.g - 1.0 + GammaRatio.g, color.b - 1.0 + GammaRatio.b, color.a));
+	_SpriteSheetShader.setMat4("model", model);
+	glBindVertexArray(*VAO);
+
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	//GammaRatio.a = temp;
+}
+
 
 void Renderer::drawText(double x, double y, GLuint IdTexture, Vec2d scale, glm::vec4 color)
 {
