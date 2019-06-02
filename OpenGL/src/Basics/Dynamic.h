@@ -15,10 +15,10 @@ class Dynamic : public Coords
 {
 public:
 	std::string sName;
-	int m_size;
+	double m_size;
 public:
-	Dynamic() {};
-	Dynamic(std::string name, double x, double y) : Coords(x, y), sName(name) {};
+	Dynamic(): sName(""), m_size(0.0) {};
+	Dynamic(std::string name, double x, double y) : Coords(x, y), sName(name), m_size(1.0) {};
 };
 
 #endif 

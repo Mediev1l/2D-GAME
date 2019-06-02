@@ -242,6 +242,7 @@
     <Text Include="res\Data\map.txt" />
     <Text Include="res\Data\Items\SpeedBoots.txt" />
     <Text Include="res\Data\Map\Basement.txt" />
+    <Text Include="res\Itemy.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

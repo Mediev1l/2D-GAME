@@ -15,8 +15,8 @@ class LvlGenerator
 public:
 	LvlGenerator(std::string BlockListPath);
 	~LvlGenerator();
-	std::vector<std::pair<int, bool>> generateLevel(Map* map, Difficulty diff);
-	void PopulateDynamics(std::vector<Character>& ch, Difficulty diff);
+	std::vector<std::pair<int, bool>> generateLevel(Map* map, Difficulty diff, Scenario s);
+	void PopulateDynamics(std::vector<Character>& ch, Difficulty diff, Scenario s);
 
 	bool Doors(GLuint x, GLuint y)
 	{

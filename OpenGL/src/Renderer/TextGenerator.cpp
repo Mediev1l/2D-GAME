@@ -183,6 +183,7 @@ Vec2d TextGenerator::getSize(size_t index) const
 	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		return _text.at(ind).size;
+	return { -1,-1 };
 }
 
 bool TextGenerator::getMenu(std::string name) const
@@ -195,6 +196,7 @@ std::string TextGenerator::getText(size_t index) const
 	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		return _text.at(ind).text;
+	return { "" };
 }
 
 Vec2i TextGenerator::getSheetPosition(char letter) const
@@ -246,7 +248,7 @@ Vec2d TextGenerator::getPosition(size_t index) const
 	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		return _text.at(ind).pos;
-
+	return { -1,-1 };
 }
 
 std::string TextGenerator::getName(size_t index) const
@@ -263,6 +265,7 @@ glm::vec4 TextGenerator::getColor(size_t index) const
 	std::string ind = FindIndex(index);
 	if (ind != "_ERROR")
 		return _text.at(ind).color;
+	return glm::vec4(-1, -1, -1,-1);
 }
 
 bool TextGenerator::getFinish(size_t index) const
@@ -276,5 +279,6 @@ bool TextGenerator::getFinish(size_t index) const
 		else
 			return false;
 	}
+	return false;
 }
 

@@ -118,11 +118,12 @@ void Renderer::RenderCharacters( std::vector<Character>& characters)
 				if (characters[i].getOnepiFpaF(j).getExistance() == true)
 				{
 					setTextureCoords(characters[i].getOnepiFpaF(j));
-					draw(characters[i].getOnepiFpaF(j)._position.getX(), characters[i].getOnepiFpaF(j)._position.getY(), characters[i].getPifPafTexture(),0.05);
+					draw(characters[i].getOnepiFpaF(j)._position.getX(), characters[i].getOnepiFpaF(j)._position.getY(), characters[i].getPifPafTexture(),characters[i].m_size*0.05);
 				}
 			}
 		setTextureCoords(characters[i]);
-		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(), 0.0, characters[i].getColor());
+		draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),0.0, characters[i].getColor(),characters[i].m_size);
+		//draw(characters[i].getPos()._x, characters[i].getPos()._y, characters[i].getTexture(),characters[i].m_size, characters[i].getColor());
 	}
 }
 
@@ -347,7 +348,7 @@ void Renderer::setGameState(State & gamestate)
 	_gamestate = &gamestate;
 }
 
-void Renderer::draw(double x, double y,GLuint IdTexture, double scale, glm::vec4 color)
+void Renderer::draw(double x, double y,GLuint IdTexture, double scale, glm::vec4 color,double big)
 {
 
 	//Eksperymentalnie udowodniono ze dziala xD
@@ -359,7 +360,8 @@ void Renderer::draw(double x, double y,GLuint IdTexture, double scale, glm::vec4
 
 	//Skalowanko lepiej na koncu xD
 	model = glm::scale(model, glm::vec3(scale > 0 ? scale:ScaleFactorX, scale > 0 ? scale : ScaleFactorY, 0.0f));
-
+	//model = glm::scale(model, glm::vec3(scale*ScaleFactorX, scale*ScaleFactorY, 0.0f));
+	if(big!=1.0)model = glm::scale(model, glm::vec3(big));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, IdTexture);

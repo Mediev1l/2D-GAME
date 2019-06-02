@@ -61,8 +61,11 @@ protected:
 	bool firstMouse;
 	bool _canPickup;
 	bool lvlWin;
+	char lvlCounter;
+	char lvlPoints;
 	State _gameState;
 	Difficulty _gameDifficulty;
+	Scenario _scenario;
 	//================================================================
 	//= Game Objects
 	//================================================================

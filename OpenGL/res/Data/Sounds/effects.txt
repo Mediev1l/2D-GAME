@@ -1,6 +1,7 @@
-5
+6
 win win.wav 5
 hit hit.wav 0
 Cursor Cursor.wav 0
 Error Error.wav 0
 Start Start.wav 0
+doors doors.wav 0

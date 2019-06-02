@@ -41,6 +41,7 @@ public:
 	glm::vec4 getColor() { return color; };
 	bool isTouchable() { return t->getDelay(timername) > 0 ? false : true; }
 	bool isTransparent();
+	void ClearPifPaf() { _piFpaF.clear(); };
 //================================================================
 // Interakcja
 //================================================================

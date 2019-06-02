@@ -1,0 +1,8 @@
+ID
+NAZWA
+OPIS
+ZYCKO
+TARCZA
+SZYBKOSC CHODZENIA
+SZYBKOSC ATAKU (Bazowa - tawartosc) wiec nie moze byc jakos za duze
+DAMAGE

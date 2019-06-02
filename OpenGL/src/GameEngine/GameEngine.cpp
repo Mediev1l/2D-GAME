@@ -20,6 +20,11 @@ GameEngine::GameEngine()
 	, _gameDifficulty(Difficulty::BEGIN)
 	, soundEngine("res/Data/Sounds/","sounds.txt", t)
 	, effectEngine("res/Data/Sounds/","effects.txt", t)
+	,_map(nullptr)
+	,_canPickup(false)
+	,_scenario(Scenario::Normal_Level)
+	,lvlCounter(0)
+	,lvlPoints(0)
 	//, s()
 {
 }
@@ -77,7 +82,7 @@ void GameEngine::Game_Init()
 		textGen = new TextGenerator(10.0, 10.0, t);
 		_Menu = new Menu(soundEngine, effectEngine, _gameState, window , *textGen, *renderer);
 		_map = renderer->getMap();
-		_map->LoadLevel(_lvlgen.generateLevel(_map,_gameDifficulty));
+		_map->LoadLevel(_lvlgen.generateLevel(_map,_gameDifficulty, _scenario));
 	}
 	catch (std::runtime_error &e)
 	{
@@ -228,6 +233,8 @@ void GameEngine::Game_Run()
 			textGen->setInfinity("OVER", true);
 			textGen->setInfinity("PRESS", true);
 			_gameDifficulty = Difficulty::BEGIN;
+			_scenario = Scenario::Normal_Level;
+			lvlPoints = 0;
 		}
 
 
@@ -770,22 +777,22 @@ void GameEngine::ProcessShoot(Character& ch)
 		{
 		case Animation::Direction::UP:
 		{
-			temp.emplace_back(Vec2d(0.2, 0.2), px, py - 0.1, 2, 0, Animation::Direction::UP, true, ch.getCurrVelocity(), 6, ch.getDamage());
+			temp.emplace_back(Vec2d(ch.m_size*0.2, ch.m_size * 0.2), px, py - 0.1, 2, 0, Animation::Direction::UP, true, ch.getCurrVelocity(), 6, ch.getDamage());
 			break;
 		}
 		case Animation::Direction::DOWN:
 		{
-			temp.emplace_back(Vec2d(0.2, 0.2), px, py + 0.1, 2, 0, Animation::Direction::DOWN, true, ch.getCurrVelocity(),6, ch.getDamage());
+			temp.emplace_back(Vec2d(ch.m_size * 0.2, ch.m_size * 0.2), px, py + 0.1, 2, 0, Animation::Direction::DOWN, true, ch.getCurrVelocity(),6, ch.getDamage());
 			break;
 		}
 		case Animation::Direction::LEFT:
 		{
-			temp.emplace_back(Vec2d(0.2, 0.2), px - 0.1, py-0.1, 2, 0, Animation::Direction::LEFT, true, ch.getCurrVelocity(),6, ch.getDamage());
+			temp.emplace_back(Vec2d(ch.m_size * 0.2, ch.m_size * 0.2), px - 0.1, py-0.1, 2, 0, Animation::Direction::LEFT, true, ch.getCurrVelocity(),6, ch.getDamage());
 			break;
 		}
 		case Animation::Direction::RIGHT:
 		{
-			temp.emplace_back(Vec2d(0.2, 0.2), px + 0.1, py-0.1, 2, 0, Animation::Direction::RIGHT, true, ch.getCurrVelocity(),6, ch.getDamage());
+			temp.emplace_back(Vec2d(ch.m_size * 0.2, ch.m_size * 0.2), px + 0.1, py-0.1, 2, 0, Animation::Direction::RIGHT, true, ch.getCurrVelocity(),6, ch.getDamage());
 			break;
 		}
 
@@ -958,9 +965,38 @@ void GameEngine::HideText()
 
 void GameEngine::GenNextLevel()
 {
-	
+	if (lvlCounter == 5)
+	{
+		lvlCounter = 0;
+		_scenario = Scenario::BossFight;
+		switch (int((lvlPoints-3)/5.0))
+		{
+		case 0:
+			_gameDifficulty = EASY;
+			break;
+		case 1:
+			_gameDifficulty = MEDIUM;
+			break;
+		case 2:
+			_gameDifficulty = HARD;
+			break;
+		}
+		soundEngine.Stop();
+		soundEngine.Play("boss");
+	}
+	else
+	{
+		lvlPoints += _gameDifficulty;
+		lvlCounter++;
+		_scenario = Scenario::Normal_Level;
+		if (lvlCounter <= 1&& _gameDifficulty != BEGIN)
+		{
+			soundEngine.Stop();
+			soundEngine.Play("GameTheme1");
+		}
+	}
 	//Generuj mape
-	_map->LoadLevel(_lvlgen.generateLevel(_map, _gameDifficulty));
+	_map->LoadLevel(_lvlgen.generateLevel(_map, _gameDifficulty,_scenario));
 
 	//Dodaj gracz
 	if (_gameDifficulty == Difficulty::BEGIN)
@@ -969,19 +1005,21 @@ void GameEngine::GenNextLevel()
 		_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
 		_characters[0].setRange(50);
 		_characters[0].setTimer("puntouch", 2.0);
-		_characters[0].setDamage(50);
+		_characters[0].setDamage(10);
 		_characters[0].setAttackSpeed(0.25);
 		_characters[0]._position._x = ceil(_map->getWidth() / 2.0) - 1;
 		_characters[0]._position._y = ceil(_map->getHeight() / 2.0) - 1;
 	}
 
 	//Tutaj funkcja do generowanie enemisuf
-	_lvlgen.PopulateDynamics(_characters,_gameDifficulty);
+	_lvlgen.PopulateDynamics(_characters,_gameDifficulty,_scenario);
 	
 	//Fix Player position and Camera
 	_characters[0]._position._x = ceil(_map->getWidth() / 2.0) - 1;
 	_characters[0]._position._y = ceil(_map->getHeight() / 2.0) - 1;
 	camera.initCamera(_characters[0].getPos(), _map->getWidth(), _map->getHeight());
+	_characters[0].ClearPifPaf();
+	_characters[0].Untouchable();
 	
 	//Delete non picked up items
 	_ItemGenerator.Clear();
@@ -1154,6 +1192,8 @@ void GameEngine::Doors()
 			_map->getTile(id[i], id[i + 1]).setSolid(false);
 		}
 		renderer->OpenDoors();
+		effectEngine.Play("doors", false);
+		if(_scenario == Scenario::BossFight || _gameDifficulty == BEGIN)
 		_ItemGenerator.GenerateItem((GLuint)ceil(_map->getWidth()/2.0)-1, (GLuint)ceil(_map->getHeight() / 2.0) - 1);
 	}
 
