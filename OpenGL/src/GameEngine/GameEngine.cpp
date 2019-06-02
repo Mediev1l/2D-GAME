@@ -991,6 +991,7 @@ void GameEngine::GenNextLevel()
 		}
 		soundEngine.Stop();
 		soundEngine.Play("boss");
+		lvlPoints = 0;
 	}
 	else
 	{

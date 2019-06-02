@@ -144,9 +144,9 @@ void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff,
 			}
 			case HARD:
 			{
-				//ch.push_back(Enemy("boy", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 4));
-				ch.push_back(Enemy("skelly2", xDist(eng), doorpos[3], 2.5, { 0.5,0.9 }, 9));
-				//ch.push_back(Enemy("bae", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
+				ch.push_back(Enemy("boy", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 4));
+				ch.push_back(Enemy("skelly2", xDist(eng), doorpos[3], 1.0, { 0.5,0.9 }, 9));
+				ch.push_back(Enemy("bae", doorpos[0], yDist(eng), 1.0, { 0.5,0.9 }, 9));
 				ch[1].setDamage(15.0);
 				ch[2].setDamage(15.0);
 				ch[3].setDamage(15.0);
