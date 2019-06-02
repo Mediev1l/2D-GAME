@@ -1,6 +1,6 @@
 #include "LvlGenerator.h"
 
-LvlGenerator::LvlGenerator(std::string BlockListPath):device(),eng(device())
+LvlGenerator::LvlGenerator(std::string BlockListPath):device(),eng(device()), bar(nullptr)
 {
 	std::fstream plik;
 	plik.open(BlockListPath, std::ios::in);
@@ -177,6 +177,9 @@ void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff,
 				ch[1].setHealth(100);
 				ch[1].setRange(50);
 				ch[1].m_size = m;
+				bar->setMax(100);
+				bar->setCurrent(100);
+				bar->ShowBar();
 				break;
 			}
 			case MEDIUM:
@@ -187,6 +190,9 @@ void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff,
 				ch[1].setHealth(300);
 				ch[1].setRange(100);
 				ch[1].m_size = m;
+				bar->setMax(300);
+				bar->setCurrent(300);
+				bar->ShowBar();
 				break;
 			}
 			case HARD:
@@ -197,6 +203,9 @@ void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff,
 				ch[1].setHealth(500);
 				ch[1].setRange(150);
 				ch[1].m_size = m;
+				bar->setMax(500);
+				bar->setCurrent(300);
+				bar->ShowBar();
 			}
 			default:
 			{
@@ -204,4 +213,9 @@ void LvlGenerator::PopulateDynamics(std::vector<Character>& ch, Difficulty diff,
 			}
 		}
 	}
+}
+
+void LvlGenerator::AddBar(Bar & bar)
+{
+	this->bar = &bar;
 }

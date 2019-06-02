@@ -9,6 +9,7 @@
 #include "Map.h"
 #include "Characters/Enemy.h"
 #include "Utility/Enums.h"
+#include "Utility/Bar.h"
 
 class LvlGenerator
 {
@@ -17,6 +18,7 @@ public:
 	~LvlGenerator();
 	std::vector<std::pair<int, bool>> generateLevel(Map* map, Difficulty diff, Scenario s);
 	void PopulateDynamics(std::vector<Character>& ch, Difficulty diff, Scenario s);
+	void AddBar(Bar& bar);
 
 	bool Doors(GLuint x, GLuint y)
 	{
@@ -34,5 +36,6 @@ private:
 	//std::uniform_int_distribution<GLuint> dist;
 	GLuint width;
 	GLuint height;
+	Bar* bar;
 };
 #endif

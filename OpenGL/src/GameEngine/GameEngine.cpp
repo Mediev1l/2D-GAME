@@ -23,8 +23,8 @@ GameEngine::GameEngine()
 	,_map(nullptr)
 	,_canPickup(false)
 	,_scenario(Scenario::Normal_Level)
-	,lvlCounter(0)
-	,lvlPoints(0)
+	,lvlCounter(4)
+	,lvlPoints(25)
 	, _hpbar()
 	//, s()
 {
@@ -82,6 +82,8 @@ void GameEngine::Game_Init()
 		renderer = new Renderer(camera);
 		textGen = new TextGenerator(10.0, 10.0, t);
 		_hpbar.Init(renderer);
+		_lvlgen.AddBar(_hpbar);
+		_hpbar.setCoords(2, 5);
 		_Menu = new Menu(soundEngine, effectEngine, _gameState, window , *textGen, *renderer);
 		_map = renderer->getMap();
 		_map->LoadLevel(_lvlgen.generateLevel(_map,_gameDifficulty, _scenario));
@@ -276,9 +278,19 @@ void GameEngine::Game_Run()
 			if (!_characters[0].isTouchable() || _characters[0].isTransparent())
 				_characters[0].Blink();
 
-			_hpbar.setCurrent(_characters[0].getHealth());
-			_hpbar.setCoords(3, 0);
-			_hpbar.setMax(50);
+			//if boss scenario show hp
+
+			if (_scenario == Scenario::BossFight && _hpbar.getVisible() == true && _characters.size() > 1)
+			{
+				if (_characters[1].getHealth() <= 0)
+					_hpbar.Hidebar();
+				else
+					_hpbar.setCurrent(_characters[1].getHealth());
+
+			}
+
+			
+
 
 		
 
@@ -314,7 +326,8 @@ void GameEngine::Game_Run()
 		renderer->Render(_characters, &_ItemGenerator.getItems(), *textGen);
 		soundEngine.Refresh();
 		effectEngine.Refresh();
-		_hpbar.DrawSelf();
+		if(_scenario == Scenario::BossFight && _hpbar.getVisible() == true && _characters.size() > 1)
+			_hpbar.DrawSelf();
 
 		//DEBUG STUFF
 		updateInfo();
@@ -1010,6 +1023,7 @@ void GameEngine::GenNextLevel()
 	//Dodaj gracz
 	if (_gameDifficulty == Difficulty::BEGIN)
 	{
+		_hpbar.Hidebar();
 		_characters.clear();
 		_characters.push_back(Hero("player", 5.0, 5.0, 3.0, { 0.4,0.75 }, 9));
 		_characters[0].setRange(50);

@@ -112,9 +112,9 @@ void Bar::Hidebar()
 void Bar::DrawSelf()
 {
 	double moveX = 0;
-	if (_currentvalue / 2 < _maxvalue / 2)
-		moveX = (_maxvalue / 2 - _currentvalue / 2) * 0.06;
+	if (_currentvalue < _maxvalue)
+		moveX = _currentvalue / _maxvalue * 1.5 - 1.5;
 	
-	_renderer->drawText(Coords::_position._x + 0.2 - moveX, Coords::_position._y, AssetManager::Get().getSprite("frame")->getID(), { _currentvalue , _height  *0.1 }, glm::vec4(1.0));
-	_renderer->drawSelf(Coords::_position._x + 0.2 - moveX , Coords::_position._y, _texture->getID(), _currentvalue * 0.01, _height * 0.1, glm::vec4(1.0, 0.0, 0.0, 1.0));
+	
+	_renderer->drawSelf(Coords::_position._x  + moveX , Coords::_position._y, _texture->getID(), _currentvalue / _maxvalue  * 0.5 , _height * 0.1, glm::vec4(1.0, 0.0, 0.0, 1.0));
 }
